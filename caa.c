@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define FILESIZE 130
+#define FILESIZE 1000
 FILE *fp;
 typedef struct{
       char func[6];//to read add, read, delete based on first letter
@@ -122,9 +122,14 @@ void add(int index){
            break;
        }
    }
-   for()
+   for(a = b;a<b+size;a++){
+       Table[a]=1;
+   }
+   printf("\nFile Allocation Table\n");
+   printf("\nFileName\tLength\n");
+    printf("\n%d\t\t%d",b,size);
+    printf("\n");
 
-   printf("--went into add function--");
 }
 void read(){
    printf("--went into read function--");
