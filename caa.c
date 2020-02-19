@@ -10,11 +10,12 @@ typedef struct{
       int data[FILESIZE];
 }data;
 data d[10];//basically able to read 10 lines so got 10 different set of data
-int i = 0;
+int i = 0,pos = 0,Table[FILESIZE],r,a,b, fsize;
 int readFile();
 void add();
 void read();
 void delete();
+int freeMem();
 
 int readFile(){
 
@@ -55,7 +56,7 @@ int readFile(){
          *ptr++;
          size++;
       }
-      for(int k = 0; k < 2; k++){//2 instead of size idk le la i fked up
+      for(int k = 0; k < size; k++){//2 instead of size idk le la i fked up
          printf("%d,",d[c].data[k]);
       }
    }
@@ -72,7 +73,9 @@ void main()
       char *function = d[c].func;//d[1].func
       switch(*function){
          case 'a':
+         case 'A':
             printf("\naddpart1\n");
+            fsize = d[0].filename + FILESIZE;
             add(c);
             break;
          case 'r':
@@ -88,16 +91,39 @@ void main()
             break;
       }
    }
-
 }
 void add(int index){
    printf("%d",d[index].filename);
-   /*if(bFull()){
+   a= 0;
+   b=d[index].filename;
+   if(freeMem()){
       pos--;
       printf("\n\nNot Enough Free Space Available \n");
       return;
-   }*/
-   //d[1].filename
+   }
+   int *ptr = d[index].data;
+   int size = 0;
+      while(*ptr !=0){
+         *ptr++;
+         size++;
+   }
+   while(1){
+       if(b+size-1>FILESIZE){
+           continue;
+       }
+       if(Table[b]==0){
+           for(a = b + 1;a<b+size;a++){
+               if(Table[a]==1){
+                   break;
+               }
+           }
+       }
+       if(a==b+size){
+           break;
+       }
+   }
+   for()
+
    printf("--went into add function--");
 }
 void read(){
@@ -105,4 +131,7 @@ void read(){
 }
 void delete(){
    printf("--went into delete function--");
+}
+int freeMem(){
+    return 0;
 }

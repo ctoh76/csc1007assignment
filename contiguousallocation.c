@@ -139,8 +139,6 @@ void add()
         }
         if(i==r+F[pos].len)
             break;
-
-
     }
     F[pos].st=r;
     for(i=r;i<r+F[pos].len;i++)
@@ -152,7 +150,6 @@ void add()
         printf("\n%s\t\t%d\t%d",F[i].n,F[i].st,F[i].len);
         printf("\n");
     }
-
 }
 void delete()
 {
