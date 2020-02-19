@@ -80,7 +80,7 @@ void main()
             break;
          case 'r':
             printf("\nreadpart1\n");
-            read();
+            read(c);
             break;
          case 'd':
             printf("\ndeletepart1\n");
@@ -131,8 +131,29 @@ void add(int index){
     printf("\n");
 
 }
-void read(){
-   printf("--went into read function--");
+void read(int index){
+   printf("Read: %d\n",d[index].filename);
+   for(int c= 0; c < index;c++){
+      int *ptr = d[c].data;
+      int size = 0;
+      while(*ptr !=0){
+         *ptr++;
+         size++;
+      }
+      if(d[index].filename == d[c].filename)
+      {
+          printf("Display File: %d Data:",d[c].filename);
+          for(int k = 0; k < size; k++){
+             printf("..%d",d[c].data[k]);
+          }
+      }
+      for(int k = 0; k < size; k++){
+         if(d[index].filename == d[c].data[k]){
+             printf("Display Data: %d",d[c].data[k]);
+         }
+      }
+   }
+   printf("\n--went into read function--");
 }
 void delete(int index){
    printf("Deleted: %d\n",d[index].filename);
@@ -147,19 +168,31 @@ void delete(int index){
       {
           d[c].filename = 0;
           for(int k = 0; k < size; k++){
-             d[c].data[k]=0;
+             d[c].data[k] = 0;
           }
       }
       for(int k = 0; k < size; k++){
          if(d[index].filename == d[c].data[k]){
             d[c].data[k] = 0;
+            size = size -1;
          }
-         printf("Filename: %d ,Data inside: %d \n", d[c].filename,d[c].data[k]);
+         printf("Filename: %d ,Data inside: %d \n", d[c].filename,d[c].data[k]); //to print what is left in the code
       }
-      
    }
-   
-    
+   for(int c= 0; c < index;c++){
+      int *ptr = d[c].data;
+      int size = 0;
+      while(*ptr !=0){
+         *ptr++;
+         size++;
+      }
+      if(strcmp("read",d[c].func)!=0 && d[c].filename != 0){
+         printf("\nFilename: %d Data: ", d[c].filename);
+         for(int k = 0; k < size; k++){
+            printf("%d,",d[c].data[k]);
+         }
+      }
+   }
    printf("--went into delete function--");
 }
 int freeMem(){
