@@ -3,6 +3,7 @@
 #include <string.h>
 
 #define FILESIZE 1000
+#define MAX 130
 FILE *fp;
 typedef struct{
       char func[6];//to read add, read, delete based on first letter
@@ -10,12 +11,50 @@ typedef struct{
       int data[FILESIZE];
 }data;
 data d[10];//basically able to read 10 lines so got 10 different set of data
-int i = 0,pos = 0,Table[FILESIZE],r,a,b, fsize;
+
 int readFile();
 void add();
 void read();
 void delete();
 int freeMem();
+
+int i = 0,pos = 0,Table[FILESIZE],r,a,b, fsize;
+int volumecontrol1[] = {0}; 
+int volumecontrol2[] = {0};
+int indexf[MAX], block[MAX], dataf[MAX];
+
+int blockSize, excessBlock, dirBlocks,k;
+void initArray(){
+
+	int temp[MAX];
+	int counter = 0;
+	int blockNum = 1;
+
+	for(int a = 0; a<MAX;a++){
+		counter = counter + 1;
+		temp[a] = blockNum;
+		if(counter == blockSize){
+			counter = 0;
+			blockNum = blockNum +1;
+		}
+	}
+
+	for(int i = 0;i < MAX; i++){
+		indexf[i] = i;
+		block[i] = temp[i];
+		dataf[i] = 0;
+	}
+
+}
+
+void printDirectory(){
+	
+	printf("\n|  Index    Block    Entry\n");
+	for(int i = 0;i < MAX; i++){
+		printf("|    %d        %d        %d  \n", indexf[i],block[i],dataf[i]);
+		
+	}	
+}
 
 int readFile(){
 
@@ -24,7 +63,7 @@ int readFile(){
    char buff[1024];
 
    printf("Please Enter your desired csv file\n");
-   gets(file_name);
+   scanf("%s",&file_name);
 
    fp = fopen(file_name, "r"); // read mode
 
@@ -69,9 +108,25 @@ int readFile(){
 
    return 0;
 }
+void printVolumeControlBlock(){
+	int arrayLength = sizeof(volumecontrol1)/sizeof(volumecontrol1[0]);
+	printf("|  Index    File data  \n");
+	for(int i = 0; i< arrayLength;i++){
+		printf("|    %d       %d    \n", volumecontrol1[i],volumecontrol2[i]);
+	}
+}
 void main()
 {
    printf("\n Contiguous File Allocation \n\n");
+
+   printf("Enter block size: ");
+	scanf("%d", &blockSize);
+	excessBlock = 130%blockSize;
+	dirBlocks = (130-excessBlock)/blockSize;
+
+   initArray();
+   printDirectory();
+   printVolumeControlBlock();
    readFile();
    for(int c= 0; c < i;c++){
       char *function = d[c].func;//d[1].func
@@ -129,6 +184,7 @@ void add(int index){
        }
    }
    for(a = b;a<b+size;a++){
+       
        Table[a]=1;
    }
    printf("\nFile Allocation Table\n");
@@ -202,5 +258,14 @@ void delete(int index){
    printf("Exiting Delete Function");
 }
 int freeMem(){
-    return 0;
+    int i,j=0;
+    for(i=0;i<MAX;i++)
+        if (dataf[i]>0)
+        {
+            j++;
+        }
+    if(i>j)
+        return 0;
+    else
+        return 1;
 }
