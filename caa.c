@@ -57,7 +57,7 @@ int readFile(){
          size++;
       }
       if(size != 0){
-         printf("Data: ");
+         printf(" Data: ");
          for(int k = 0; k < size; k++){//2 instead of size idk le la i fked up
          printf("-%d-",d[c].data[k]);
          }
@@ -83,10 +83,12 @@ void main()
             add(c);
             break;
          case 'r':
+         case 'R':
             printf("\nreadpart1\n");
             read(c);
             break;
          case 'd':
+         case 'D':
             printf("\ndeletepart1\n");
             delete(c);
             break;
