@@ -23,7 +23,7 @@ int readFile(){
    char *token;
    char buff[1024];
 
-   printf("Enter name of a file you wish to see\n");
+   printf("Please Enter your desired csv file\n");
    gets(file_name);
 
    fp = fopen(file_name, "r"); // read mode
@@ -42,23 +42,27 @@ int readFile(){
       token = strtok(NULL,",");
       while(token != NULL){   
          d[i].data[j]= atoi(token);
-         printf("%d,",d[i].data[j]);//so they do scan in the values
+         printf("%d,",d[i].data[j]);//so they do scan in the values to be removed sooner or later cuz not required to printf
          token = strtok(NULL,",");
          j++;
       }
       i++;
    } 
    for(int c= 0; c < i;c++){
-      printf("\nFunction:--%s--Filename:--%d--Data:",d[c].func,d[c].filename);
+      printf("\nFunction: %s Filename: %d",d[c].func,d[c].filename);
       int *ptr = d[c].data;
       int size = 0;
       while(*ptr !=0){
          *ptr++;
          size++;
       }
-      for(int k = 0; k < size; k++){//2 instead of size idk le la i fked up
-         printf("%d,",d[c].data[k]);
+      if(size != 0){
+         printf("Data: ");
+         for(int k = 0; k < size; k++){//2 instead of size idk le la i fked up
+         printf("-%d-",d[c].data[k]);
+         }
       }
+      
    }
    
    fclose(fp);
