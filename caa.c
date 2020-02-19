@@ -78,28 +78,28 @@ void main()
       switch(*function){
          case 'a':
          case 'A':
-            printf("\naddpart1\n");
-            fsize = d[0].filename + FILESIZE;
+            printf("\nEntered Add Function\n");
+            //fsize = d[0].filename + FILESIZE;
             add(c);
             break;
          case 'r':
          case 'R':
-            printf("\nreadpart1\n");
+            printf("\nEntered Read Function\n");
             read(c);
             break;
          case 'd':
          case 'D':
-            printf("\ndeletepart1\n");
+            printf("\nEntered Delete Function\n");
             delete(c);
             break;
          default:
-            printf("whycometildefault");
+            printf("Reached Default");//dk what to type in default
             break;
       }
    }
 }
 void add(int index){
-   printf("%d",d[index].filename);
+   printf("To Add Filename: %d",d[index].filename);
    a= 0;
    b=d[index].filename;
    if(freeMem()){
@@ -159,7 +159,7 @@ void read(int index){
          }
       }
    }
-   printf("\n--went into read function--");
+   printf("\nExiting Read Function");
 }
 void delete(int index){
    printf("Deleted: %d\n",d[index].filename);
@@ -192,14 +192,14 @@ void delete(int index){
          *ptr++;
          size++;
       }
-      if(strcmp("read",d[c].func)!=0 && d[c].filename != 0){
-         printf("\nFilename: %d Data: ", d[c].filename);
+      if(strcmp("read",d[c].func) !=0 && d[c].filename != 0){
+         printf("\nFilename: %d Data: ", d[c].filename); // whats left
          for(int k = 0; k < size; k++){
             printf("%d,",d[c].data[k]);
          }
       }
    }
-   printf("--went into delete function--");
+   printf("Exiting Delete Function");
 }
 int freeMem(){
     return 0;
