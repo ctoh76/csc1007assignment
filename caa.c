@@ -84,7 +84,7 @@ void main()
             break;
          case 'd':
             printf("\ndeletepart1\n");
-            delete();
+            delete(c);
             break;
          default:
             printf("whycometildefault");
@@ -134,7 +134,32 @@ void add(int index){
 void read(){
    printf("--went into read function--");
 }
-void delete(){
+void delete(int index){
+   printf("Deleted: %d\n",d[index].filename);
+   for(int c= 0; c < index;c++){
+      int *ptr = d[c].data;
+      int size = 0;
+      while(*ptr !=0){
+         *ptr++;
+         size++;
+      }
+      if(d[index].filename == d[c].filename)
+      {
+          d[c].filename = 0;
+          for(int k = 0; k < size; k++){
+             d[c].data[k]=0;
+          }
+      }
+      for(int k = 0; k < size; k++){
+         if(d[index].filename == d[c].data[k]){
+            d[c].data[k] = 0;
+         }
+         printf("Filename: %d ,Data inside: %d \n", d[c].filename,d[c].data[k]);
+      }
+      
+   }
+   
+    
    printf("--went into delete function--");
 }
 int freeMem(){
