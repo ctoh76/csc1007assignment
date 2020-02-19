@@ -51,19 +51,29 @@ int readFile(){
       perror("Error while opening the file.\n");//if file does not exist
       exit(EXIT_FAILURE);
    }
-   while(fgets(buff,sizeof(buff),fp)){
+   while (fgets(buff, sizeof(buff), fp))
+   {
       int j = 0;
-      token = strtok(buff,",");
-      strcpy(d[i].func,token);
-      token = strtok(NULL,",");
+      token = strtok(buff, ",");
+      strcpy(d[i].func, token);
+      token = strtok(NULL, ",");
       d[i].filename = atoi(token);
-      token = strtok(NULL,",");
-      while(token != NULL){   
-         d[i].data[j]= atoi(token);
-         printf("%d,",d[i].data[j]);//so they do scan in the values
-         token = strtok(NULL,",");
-         j++;
+      token = strtok(NULL, ",");
+      if (token != NULL)
+      {
+         while (token != NULL)
+         {
+            d[i].data[j] = atoi(token);
+            // printf("%d,",d[i].data[j]);//so they do scan in the values
+            token = strtok(NULL, ",");
+            j++;
+         }
       }
+      else
+      {
+         d[i].data[j] = 0;
+      }
+
       i++;
    } 
 
