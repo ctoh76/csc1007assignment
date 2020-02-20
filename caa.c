@@ -33,19 +33,17 @@ void printDirectory();
 int i = 0,pos = 0,r,a,b, fsize;
 int volumecontrol1[] = {0}; 
 int volumecontrol2[] = {0};
-int indexf[MAX], block[MAX], dataf[MAX],startLoc[MAX],endLoc[MAX]; 
+int indexf[MAX], block[MAX], dataf[MAX],startLoc[MAX],endLoc[MAX],temp2 = 0; 
 int blockSize, excessBlock, dirBlocks,k;
 
 void initArray(){
    do{
       printf("Enter block size between(2-43): ");
-	   scanf("%d", &blockSize);
-      
+	   scanf("%d", &blockSize);  
    }while(blockSize < 2 || blockSize > 43);//to be explained by clarence
 
       //excessBlock = 130%blockSize;
 	   //dirBlocks = (130-excessBlock)/blockSize;
-
       int temp[MAX];
 	   int counter = 0;
 	   int blockNum = 0;
@@ -66,21 +64,38 @@ void initArray(){
          endLoc[i] = 0;
 	   }
 }
-void printStorage(){
-   printf("\n|  Index    Block    Entry\n");
-	for(int i = 0;i < MAX; i++){//
-      	printf("| %d %d %d %d %d |\n",indexf[i],block[i],dataf[i],startLoc[i],endLoc[i]);
-   }
-}
 void printDirectory(){
+   int temp[MAX];
 
-	printf("\n|  Index    Block    FileName   Start   End\n");
-	for(int i = 0;i < MAX; i++){
-      
-      	printf("| %d %d %d %d %d |\n",indexf[i],block[i],dataf[i],startLoc[i],endLoc[i]);
-   }	
+   while(temp[MAX]>(temp2 * blockSize)){
+      temp[MAX] -= 1;
+      temp2 += 1;
+   }
+   printf("*-------------Directory Section--------------*");
+	printf("\n|  Index    Block    FileData   Start    End\n");
+	for(int i = 0;i < (temp2 * blockSize); i++){
+      	printf("|   %d         %d         %d         %d       %d |\n",indexf[i],block[i],dataf[i],startLoc[i],endLoc[i]);
+   }
+   printf("*----------------------------------------------*\n");
+   printStorage(temp2);
 }
+void printStorage(int temp2){
+   int temp[MAX];
 
+   printf("*---------------Storage Section----------------*");
+   printf("\n|  Index    Block    Entry\n");
+	for(int i = (temp2 * blockSize);i < MAX; i++){//
+      	printf("|   %d         %d         %d                     |\n",indexf[i],block[i],dataf[i]);
+   }
+   printf("*----------------------------------------------*\n");
+}
+void printVolumeControlBlock(){
+	int arrayLength = sizeof(volumecontrol1)/sizeof(volumecontrol1[0]);
+	printf("|  Index    File data  \n");
+	for(int i = 0; i< arrayLength;i++){
+		printf("|    %d       %d    \n", volumecontrol1[i],volumecontrol2[i]);
+	}
+}
 int readFile(){
 
    char file_name[25];
@@ -106,15 +121,34 @@ int readFile(){
       token = strtok(NULL,",");
       while(token != NULL){   
          d[i].data[j]= atoi(token);
-         printf("%d,",d[i].data[j]);//so they do scan in the values to be removed sooner or later cuz not required to printf
+         //printf("%d,",d[i].data[j]);//so they do scan in the values to be removed sooner or later cuz not required to printf
          token = strtok(NULL,",");
          j++;
       }
       i++;
    } 
    for(int c= 0; c < i;c++){
-      printf("\nFunction: %s Filename: %d",d[c].func,d[c].filename);
-      int *ptr = d[c].data;
+      char *function = d[c].func;//d[1].func
+      switch(*function){
+         case 'a':
+         case 'A':
+            add(c);
+            break;
+         case 'r':
+         case 'R':
+            printf("\nEntered Read Function\n");
+            read(c);
+            break;
+         case 'd':
+         case 'D':
+            printf("\nEntered Delete Function\n");
+            delete(c);
+            break;
+         default:
+            printf("Reached Default");//dk what to type in default
+            break;
+      }
+      /*int *ptr = d[c].data;
       int size = 0;
       while(*ptr !=0){
          *ptr++;
@@ -122,10 +156,10 @@ int readFile(){
       }
       if(size != 0){
          printf(" Data: ");
-         for(int k = 0; k < size; k++){//2 instead of size idk le la i fked up
+         for(int k = 0; k < size; k++){
          printf("-%d-",d[c].data[k]);
          }
-      }
+      }*/
       
    }
    
@@ -133,13 +167,7 @@ int readFile(){
 
    return 0;
 }
-void printVolumeControlBlock(){
-	int arrayLength = sizeof(volumecontrol1)/sizeof(volumecontrol1[0]);
-	printf("|  Index    File data  \n");
-	for(int i = 0; i< arrayLength;i++){
-		printf("|    %d       %d    \n", volumecontrol1[i],volumecontrol2[i]);
-	}
-}
+
 void main()
 {
    initArray();
@@ -156,12 +184,12 @@ void main()
    printVolumeControlBlock();
    */
   readFile();
-   for(int c= 0; c < i;c++){
+   /*for(int c= 0; c < i;c++){
       char *function = d[c].func;//d[1].func
       switch(*function){
          case 'a':
          case 'A':
-            printf("\nEntered Add Function\n");
+            printf("\nEntered Add Function1\n");
             //fsize = d[0].filename + FILESIZE;
             //add(c);
             break;
@@ -179,13 +207,11 @@ void main()
             printf("Reached Default");//dk what to type in default
             break;
       }
-   }
+   }*/
 
 }
 void add(int index){
-   printf("To Add Filename: %d",d[index].filename);
-   a= 0;
-   b=d[index].filename;
+   printf("Adding File %d",d[index].filename);
    freespace();
    int *ptr = d[index].data;
    int size = 0;
@@ -193,14 +219,12 @@ void add(int index){
          *ptr++;
          size++;
    }
-   for(int k = 0; k < size; k++){
-      break;
+   if(size != 0){
+      printf(" Data: ");
+      for(int k = 0; k < size; k++){
+         printf("-%d-",d[index].data[k]);
+      }
    }
-   
-   printf("\nFile Allocation Table\n");
-   printf("\nFileName\tLength\n");
-    printf("\n%d\t\t%d",b,size);
-    printf("\n");
 
 }
 void read(int index){
@@ -270,7 +294,7 @@ void delete(int index){
 int IfFull()
 {
     int i,j=0;
-    for(i=0;i<MAX;i++)
+    for(i=(temp2 * blockSize);i<MAX;i++)
         if (dataf[i]>0)
         {
             j++;
