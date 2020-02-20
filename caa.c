@@ -179,6 +179,7 @@ void main()
 	excessBlock = 130%blockSize;
 	dirBlocks = (130-excessBlock)/blockSize;
 
+
    initArray();
    printDirectory();
    printVolumeControlBlock();
@@ -211,7 +212,7 @@ void main()
 
 }
 void add(int index){
-   printf("Adding File %d",d[index].filename);
+   printf("Adding File %d\n",d[index].filename);
    freespace();
    int *ptr = d[index].data;
    int size = 0;
@@ -313,18 +314,18 @@ void freespace()
     }
     else
     {
-        for(i=0;i<MAX;i++)
+        for(i=(temp2 * blockSize);i<MAX;i++)
         {
             if(dataf[i]>0)
             {
-                printf("Index   %d     0\n",i);
+                //printf("Index   %d     0\n",i);
             }
             else 
             {
-                printf("Index    %d     1\n",i);
+                //printf("Index    %d     1\n",i);
                 j++;
             }
         }
-        printf("Number of free space %d",j);
+        printf("Available of free space %d\n",j);
     }
 }
