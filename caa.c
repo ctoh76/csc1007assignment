@@ -2,23 +2,24 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define FILESIZE 1000
 #define MAX 130
 FILE *fp;
 typedef struct{
       char func[6];//to read add, read, delete based on first letter
       int filename;
-      int data[FILESIZE];
+      int data[MAX];
 }data;
 data d[10];//basically able to read 10 lines so got 10 different set of data
 
 int readFile();
+int IfFull();
 void add();
 void read();
 void delete();
-int freeMem();
+void freespace();
 
-int i = 0,pos = 0,Table[FILESIZE],r,a,b, fsize;
+
+int i = 0,pos = 0,r,a,b, fsize;
 int volumecontrol1[] = {0}; 
 int volumecontrol2[] = {0};
 int indexf[MAX], block[MAX], dataf[MAX];
@@ -135,7 +136,7 @@ void main()
          case 'A':
             printf("\nEntered Add Function\n");
             //fsize = d[0].filename + FILESIZE;
-            add(c);
+            //add(c);
             break;
          case 'r':
          case 'R':
@@ -157,36 +158,17 @@ void add(int index){
    printf("To Add Filename: %d",d[index].filename);
    a= 0;
    b=d[index].filename;
-   if(freeMem()){
-      pos--;
-      printf("\n\nNot Enough Free Space Available \n");
-      return;
-   }
+   freespace();
    int *ptr = d[index].data;
    int size = 0;
       while(*ptr !=0){
          *ptr++;
          size++;
    }
-   while(1){
-       if(b+size-1>FILESIZE){
-           continue;
-       }
-       if(Table[b]==0){
-           for(a = b + 1;a<b+size;a++){
-               if(Table[a]==1){
-                   break;
-               }
-           }
-       }
-       if(a==b+size){
-           break;
-       }
+   for(int k = 0; k < size; k++){
+      break;
    }
-   for(a = b;a<b+size;a++){
-       
-       Table[a]=1;
-   }
+   
    printf("\nFile Allocation Table\n");
    printf("\nFileName\tLength\n");
     printf("\n%d\t\t%d",b,size);
@@ -194,7 +176,7 @@ void add(int index){
 
 }
 void read(int index){
-   printf("Read: %d\n",d[index].filename);
+   printf("Reading: %d\n",d[index].filename);//read whatever is stored in struct
    for(int c= 0; c < index;c++){
       int *ptr = d[c].data;
       int size = 0;
@@ -257,7 +239,8 @@ void delete(int index){
    }
    printf("Exiting Delete Function");
 }
-int freeMem(){
+int IfFull()
+{
     int i,j=0;
     for(i=0;i<MAX;i++)
         if (dataf[i]>0)
@@ -268,4 +251,28 @@ int freeMem(){
         return 0;
     else
         return 1;
+}
+void freespace()
+{
+    int i,j=0;
+    if (IfFull())
+    {
+        printf("There is not space left");
+    }
+    else
+    {
+        for(i=0;i<MAX;i++)
+        {
+            if(dataf[i]>0)
+            {
+                printf("Index   %d     0\n",i);
+            }
+            else 
+            {
+                printf("Index    %d     1\n",i);
+                j++;
+            }
+        }
+        printf("Number of free space %d",j);
+    }
 }
