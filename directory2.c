@@ -11,7 +11,7 @@ typedef struct{
 }data;
 
 int readFile();
-
+int totalFunc = 0;
 int volumecontrol1[] = {0}; 
 int volumecontrol2[] = {0};
 int indexf[130], block[130], dataf[130][130];
@@ -72,7 +72,7 @@ int main(void)
 
 
 char file_name[25];
-   int i = 0;
+  // int i = 0;
    data d[10];//basically able to read 10 lines so got 10 different set of data
    char *token;
    char buff[1024];
@@ -89,16 +89,16 @@ char file_name[25];
    while(fgets(buff,sizeof(buff),fp)){
       int j = 0;
       token = strtok(buff,",");
-      strcpy(d[i].func,token);
+      strcpy(d[totalFunc].func,token);
       token = strtok(NULL,",");
-      d[i].filename = atoi(token);
+      d[totalFunc].filename = atoi(token);
       token = strtok(NULL,",");
  
    if (token != NULL)
       {
          while (token != NULL)
          {
-            d[i].data[j] = atoi(token);
+            d[totalFunc].data[j] = atoi(token);
             // printf("%d,",d[i].data[j]);//so they do scan in the values
             token = strtok(NULL, ",");
             j++;
@@ -106,10 +106,10 @@ char file_name[25];
       }
       else
       {
-         d[i].data[j] = 0;
+         d[totalFunc].data[j] = 0;
       }
 
-      i++;
+      totalFunc++;
    } 
 
    int temp[130];
@@ -124,7 +124,7 @@ char file_name[25];
 			blockNum = blockNum +1;
 		}
 	}
-   for(int c= 0; c < i;c++){
+   for(int c= 0; c < totalFunc;c++){
       printf("\nFunction:--%s--Filename:--%d--Data:",d[c].func,d[c].filename);
       int *ptr = d[c].data;
       int size = 0;
@@ -135,7 +135,7 @@ char file_name[25];
       }
         dataf[c][0] =  d[c].filename;  
         int noCounter = 1;
-      for(int k = 0; k < size; k++)
+      for(int k = 0; k < size+1; k++)
       {//2 instead of size idk le la i fked up
          //can display filename
        
