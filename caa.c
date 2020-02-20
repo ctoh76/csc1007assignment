@@ -2,14 +2,23 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define MAX 130
+#define MAX 130//define max size of data able to store
 FILE *fp;
-typedef struct{
+typedef struct{ //Struct created to read in function require, filename, data able to hold
       char func[6];//to read add, read, delete based on first letter
       int filename;
       int data[MAX];
 }data;
-data d[10];//basically able to read 10 lines so got 10 different set of data
+data d[MAX];//130 set of data able to read
+
+/*typedef struct{
+   int indexf[MAX];
+   int block[MAX];
+   int dataf[MAX];
+   int startLoc[MAX];
+   int endLoc[MAX];
+}directory;
+directory direct[MAX];*/
 
 int readFile();
 int IfFull();
@@ -17,44 +26,59 @@ void add();
 void read();
 void delete();
 void freespace();
-
+void initArray();
+void printStorage();
+void printDirectory();
 
 int i = 0,pos = 0,r,a,b, fsize;
 int volumecontrol1[] = {0}; 
 int volumecontrol2[] = {0};
-int indexf[MAX], block[MAX], dataf[MAX];
-
+int indexf[MAX], block[MAX], dataf[MAX],startLoc[MAX],endLoc[MAX]; 
 int blockSize, excessBlock, dirBlocks,k;
+
 void initArray(){
+   do{
+      printf("Enter block size between(2-43): ");
+	   scanf("%d", &blockSize);
+      
+   }while(blockSize < 2 || blockSize > 43);//to be explained by clarence
 
-	int temp[MAX];
-	int counter = 0;
-	int blockNum = 1;
+      //excessBlock = 130%blockSize;
+	   //dirBlocks = (130-excessBlock)/blockSize;
 
-	for(int a = 0; a<MAX;a++){
-		counter = counter + 1;
-		temp[a] = blockNum;
-		if(counter == blockSize){
-			counter = 0;
-			blockNum = blockNum +1;
-		}
-	}
+      int temp[MAX];
+	   int counter = 0;
+	   int blockNum = 0;
 
-	for(int i = 0;i < MAX; i++){
-		indexf[i] = i;
-		block[i] = temp[i];
-		dataf[i] = 0;
-	}
-
+	   for(int a = 0; a<MAX;a++){//get no. of blocks
+		   counter = counter + 1;
+		   temp[a] = blockNum;
+		   if(counter == blockSize){
+			   counter = 0;
+			   blockNum = blockNum +1;
+		   }
+      }
+      for(int i = 0;i < MAX; i++){//init the values and data/start/end to 0
+		   indexf[i] = i;
+		   block[i] = temp[i];
+		   dataf[i] = 0;
+         startLoc[i] = 0;
+         endLoc[i] = 0;
+	   }
 }
-
+void printStorage(){
+   printf("\n|  Index    Block    Entry\n");
+	for(int i = 0;i < MAX; i++){//
+      	printf("| %d %d %d %d %d |\n",indexf[i],block[i],dataf[i],startLoc[i],endLoc[i]);
+   }
+}
 void printDirectory(){
-	
-	printf("\n|  Index    Block    Entry\n");
+
+	printf("\n|  Index    Block    FileName   Start   End\n");
 	for(int i = 0;i < MAX; i++){
-		printf("|    %d        %d        %d  \n", indexf[i],block[i],dataf[i]);
-		
-	}	
+      
+      	printf("| %d %d %d %d %d |\n",indexf[i],block[i],dataf[i],startLoc[i],endLoc[i]);
+   }	
 }
 
 int readFile(){
@@ -118,7 +142,9 @@ void printVolumeControlBlock(){
 }
 void main()
 {
-   printf("\n Contiguous File Allocation \n\n");
+   initArray();
+   printDirectory();
+   /*printf("\n Contiguous File Allocation \n\n");
 
    printf("Enter block size: ");
 	scanf("%d", &blockSize);
@@ -128,7 +154,8 @@ void main()
    initArray();
    printDirectory();
    printVolumeControlBlock();
-   readFile();
+   */
+  readFile();
    for(int c= 0; c < i;c++){
       char *function = d[c].func;//d[1].func
       switch(*function){
@@ -153,6 +180,7 @@ void main()
             break;
       }
    }
+
 }
 void add(int index){
    printf("To Add Filename: %d",d[index].filename);
