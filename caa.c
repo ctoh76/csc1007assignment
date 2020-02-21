@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 #define MAX 130//define max size of data able to store
 FILE *fp;
@@ -21,7 +22,6 @@ data d[MAX];//130 set of data able to read
 directory direct[MAX];*/
 
 int readFile();
-int IfFull();
 void add();
 void read();
 void delete();
@@ -33,7 +33,7 @@ void printDirectory();
 int i = 0,pos = 0,r,a,b, fsize;
 int volumecontrol1[] = {0}; 
 int volumecontrol2[] = {0};
-int indexf[MAX], block[MAX], dataf[MAX],startLoc[MAX],endLoc[MAX],temp2 = 0; 
+int indexf[MAX], block[MAX], dataf[MAX],startLoc[MAX],endLoc[MAX],temp2 = 0, bitmap[MAX], freed[MAX]; 
 int blockSize, excessBlock, dirBlocks,k;
 
 void initArray(){
@@ -148,18 +148,6 @@ int readFile(){
             printf("Reached Default");//dk what to type in default
             break;
       }
-      /*int *ptr = d[c].data;
-      int size = 0;
-      while(*ptr !=0){
-         *ptr++;
-         size++;
-      }
-      if(size != 0){
-         printf(" Data: ");
-         for(int k = 0; k < size; k++){
-         printf("-%d-",d[c].data[k]);
-         }
-      }*/
       
    }
    
@@ -213,7 +201,7 @@ void main()
 }
 void add(int index){
    printf("Adding File %d\n",d[index].filename);
-   freespace();
+   freespace(index);
    int *ptr = d[index].data;
    int size = 0;
       while(*ptr !=0){
@@ -292,40 +280,27 @@ void delete(int index){
    }
    printf("Exiting Delete Function");
 }
-int IfFull()
+void freespace(int index)
 {
-    int i,j=0;
-    for(i=(temp2 * blockSize);i<MAX;i++)
-        if (dataf[i]>0)
-        {
-            j++;
-        }
-    if(i>j)
-        return 0;
-    else
-        return 1;
-}
-void freespace()
-{
-    int i,j=0;
-    if (IfFull())
-    {
-        printf("There is not space left");
-    }
-    else
-    {
-        for(i=(temp2 * blockSize);i<MAX;i++)
-        {
-            if(dataf[i]>0)
-            {
-                //printf("Index   %d     0\n",i);
-            }
-            else 
-            {
-                //printf("Index    %d     1\n",i);
-                j++;
-            }
-        }
-        printf("Available of free space %d\n",j);
-    }
+   int *ptr = d[index].data;
+   int size = 0;
+      while(*ptr !=0){
+         *ptr++;
+         size++;
+   }
+   int b = ceil(size/blockSize) + 1;
+   int count = 0;  
+   for(int i = temp2; i<floor(MAX/blockSize); i++){
+      if(bitmap[i] == 0 && count < b){
+         freed[count] = MAX - i; 
+         bitmap[i] = 1;
+         count++;
+      }
+   }
+   for(int i = temp2; i<floor(MAX/blockSize); i++){
+      if(bitmap[i] != 1){
+         
+      }
+   }
+
 }
