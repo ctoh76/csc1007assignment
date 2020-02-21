@@ -287,20 +287,17 @@ void freespace(int index)
       while(*ptr !=0){
          *ptr++;
          size++;
-   }
-   int b = ceil(size/blockSize) + 1;
+   }//size of data
+   int b = ceill((double)size/blockSize);//1
    int count = 0;  
-   for(int i = temp2; i<floor(MAX/blockSize); i++){
+   for(int i = temp2; i<floor((double)MAX/blockSize); i++){
       if(bitmap[i] == 0 && count < b){
-         freed[count] = MAX - i; 
+         freed[count] = i; 
          bitmap[i] = 1;
-         count++;
+         printf("Block %d is free\t", freed[count]);
+         count++;  
       }
    }
-   for(int i = temp2; i<floor(MAX/blockSize); i++){
-      if(bitmap[i] != 1){
-         
-      }
-   }
+   
 
 }
