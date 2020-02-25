@@ -12,28 +12,20 @@ typedef struct{ //Struct created to read in function require, filename, data abl
 }data;
 data d[MAX];//130 set of data able to read
 
-/*typedef struct{
-   int indexf[MAX];
-   int block[MAX];
-   int dataf[MAX];
-   int startLoc[MAX];
-   int endLoc[MAX];
-}directory;
-directory direct[MAX];*/
-
 int readFile();
 void add();
 void read();
 void delete();
 void freespace();
 void initArray();
+void initFreespace();
 void printStorage();
 void printDirectory();
 
-int i = 0,pos = 0,r,a,b, fsize;
+int i = 0,pos = 0,temp2 = 0,noOfBlock = 0,r,a,b,blocksRequired;
 int volumecontrol1[] = {0}; 
 int volumecontrol2[] = {0};
-int indexf[MAX], block[MAX], dataf[MAX],startLoc[MAX],endLoc[MAX],temp2 = 0, bitmap[MAX], freed[MAX]; 
+int indexf[MAX], block[MAX], dataf[MAX],startLoc[MAX],endLoc[MAX],bitmap[MAX], freed[MAX]; 
 int blockSize, excessBlock, dirBlocks,k;
 
 void initArray(){
@@ -46,7 +38,7 @@ void initArray(){
 	   //dirBlocks = (130-excessBlock)/blockSize;
       int temp[MAX];
 	   int counter = 0;
-	   int blockNum = 0;
+      int blockNum = 0;
 
 	   for(int a = 0; a<MAX;a++){//get no. of blocks
 		   counter = counter + 1;
@@ -63,6 +55,10 @@ void initArray(){
          startLoc[i] = 0;
          endLoc[i] = 0;
 	   }
+      for(int i = 0; i < blockNum; i++){//init bitmap for freespace
+         bitmap[i]=1;
+      }
+      noOfBlock = blockNum;
 }
 void printDirectory(){
    int temp[MAX];
@@ -77,9 +73,9 @@ void printDirectory(){
       	printf("|   %d         %d         %d         %d       %d |\n",indexf[i],block[i],dataf[i],startLoc[i],endLoc[i]);
    }
    printf("*----------------------------------------------*\n");
-   printStorage(temp2);
+   printStorage();
 }
-void printStorage(int temp2){
+void printStorage(){
    int temp[MAX];
 
    printf("*---------------Storage Section----------------*");
@@ -87,7 +83,9 @@ void printStorage(int temp2){
 	for(int i = (temp2 * blockSize);i < MAX; i++){//
       	printf("|   %d         %d         %d                     |\n",indexf[i],block[i],dataf[i]);
    }
-   printf("*----------------------------------------------*\n");
+   printf("*-----------------------------------------------*\n");
+   noOfBlock = noOfBlock-temp2;
+   initFreespace();
 }
 void printVolumeControlBlock(){
 	int arrayLength = sizeof(volumecontrol1)/sizeof(volumecontrol1[0]);
@@ -147,8 +145,7 @@ int readFile(){
          default:
             printf("Reached Default");//dk what to type in default
             break;
-      }
-      
+      } 
    }
    
    fclose(fp);
@@ -172,7 +169,7 @@ void main()
    printDirectory();
    printVolumeControlBlock();
    */
-  readFile();
+   readFile();
    /*for(int c= 0; c < i;c++){
       char *function = d[c].func;//d[1].func
       switch(*function){
@@ -201,13 +198,15 @@ void main()
 }
 void add(int index){
    printf("Adding File %d\n",d[index].filename);
-   freespace(index);
    int *ptr = d[index].data;
    int size = 0;
       while(*ptr !=0){
          *ptr++;
          size++;
    }
+   blocksRequired = ceil(size/blockSize)+1;
+   freespace();
+   
    if(size != 0){
       printf(" Data: ");
       for(int k = 0; k < size; k++){
@@ -280,24 +279,40 @@ void delete(int index){
    }
    printf("Exiting Delete Function");
 }
-void freespace(int index)
-{
-   int *ptr = d[index].data;
-   int size = 0;
-      while(*ptr !=0){
-         *ptr++;
-         size++;
-   }//size of data
-   int b = ceill((double)size/blockSize);//1
-   int count = 0;  
-   for(int i = temp2; i<floor((double)MAX/blockSize); i++){
-      if(bitmap[i] == 0 && count < b){
-         freed[count] = i; 
-         bitmap[i] = 1;
-         printf("Block %d is free\t", freed[count]);
-         count++;  
-      }
+void initFreespace(){
+   for(int i = 0; i < noOfBlock; i++){
+      bitmap[i] = 1;
    }
-   
+   bitmap[1] = 0;
+   bitmap[2] = 0;
+   bitmap[4] = 0;
+}
+void freespace()
+{ 
+   int k = 0;
+   for(int i = 0; i < noOfBlock; i++){
+      if(k<blocksRequired){
+         while(bitmap[i + k] == 1){
+            
+            k++;
+         }
+      }    
+   }
 
+   // int *ptr = d[index].data;
+   // int size = 0;
+   //    while(*ptr !=0){
+   //       *ptr++;
+   //       size++;
+   // }//size of data
+   // int b = ceill((double)size/blockSize);//1
+   // int count = 0;  
+   // for(int i = temp2; i<floor((double)MAX/blockSize); i++){
+   //    if(bitmap[i] == 0 && count < b){
+   //       freed[count] = i; 
+   //       bitmap[i] = 1;
+   //       printf("Block %d is free\t", freed[count]);
+   //       count++;  
+   //    }
+   // }
 }
