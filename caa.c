@@ -293,10 +293,10 @@ void freespace()
    for(int i = 0; i < noOfBlock; i++){
       if(k<blocksRequired){
          while(bitmap[i + k] == 1){
-            
             k++;
          }
-      }    
+      }  
+      printf("%d", bitmap[i]);  
    }
 
    // int *ptr = d[index].data;
