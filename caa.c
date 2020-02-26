@@ -217,15 +217,15 @@ void add(int index){
    }
    int l = 0;
    for(int j = 0; j<blocksRequired; j++){//allocated into freespace
-         l = freed[j];
-         bitmap[l] = 0;
-   }    
-   printf("TTTTTT:%d",temp2*blockSize);                                            
+      l = freed[j];
+      bitmap[l] = 0;
+   }                                      
    //but have not put data into block
+   //                        0     +   22  *    2     +   6 = 50
+   //to incement index = (freed[j] + temp2)*blockSize + length
    for(int i = (temp2 * blockSize);i < MAX; i++){
 
    }
-
 }
 void read(int index){
    printf("Reading: %d\n",d[index].filename);//read whatever is stored in struct
