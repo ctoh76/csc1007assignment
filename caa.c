@@ -16,13 +16,13 @@ int readFile();
 void add();
 void read();
 void delete();
-void freespace();
+int freespace();
 void initArray();
 void initFreespace();
 void printStorage();
 void printDirectory();
 
-int i = 0,pos = 0,temp2 = 0,noOfBlock = 0,r,a,b,blocksRequired,blockAvail;
+int i = 0,pos = 0,temp2 = 0,noOfBlock = 0,blocksRequired,blockAvail;
 int volumecontrol1[] = {0}; 
 int volumecontrol2[] = {0};
 int indexf[MAX], block[MAX], dataf[MAX],startLoc[MAX],endLoc[MAX],bitmap[MAX], freed[MAX]; 
@@ -164,7 +164,6 @@ void main()
 	excessBlock = 130%blockSize;
 	dirBlocks = (130-excessBlock)/blockSize;
 
-
    initArray();
    printDirectory();
    printVolumeControlBlock();
@@ -198,34 +197,42 @@ void main()
 
 }
 void add(int index){
-   printf("Adding File %d\n",d[index].filename);
-   int *ptr = d[index].data;
+   int *ptr = d[index].data; 
    int size = 0;
       while(*ptr !=0){
          *ptr++;
          size++;
    }
    double value = ceil((double)size/blockSize);
-   blocksRequired = value;
-   freespace();
-   
-   if(size != 0){
-      printf(" Data: ");
-      for(int k = 0; k < size; k++){
-         printf("-%d-",d[index].data[k]);
-      }
-   }
-   int l = 0;
-   for(int j = 0; j<blocksRequired; j++){//allocated into freespace
-      l = freed[j];
-      bitmap[l] = 0;
-   }                                      
+   blocksRequired = value;//get amount of blocksrequired to place in storage structure.
+   //freespace();
+   if(freespace()){
+      printf("\nNot allocated due to full Storage\n");
+   }else{
+      printf("\nAdding File %d\n",d[index].filename);//get file name from struct
+      if(size != 0){
+         printf(" Data: ");
+         for(int k = 0; k < size; k++){
+            printf("-%d-",d[index].data[k]);
+         }
+      }    
    //but have not put data into block
    //                        0     +   22  *    2     +   6 = 50
    //to incement index = (freed[j] + temp2)*blockSize + length
-   for(int i = (temp2 * blockSize);i < MAX; i++){
-
-   }
+   //List of array able to use bitmap[](consist of 0s and 1s)|freed[](consist of the empty block no.)|d[].data[](consist of the real data)
+   //data is in d[index].data[k]
+      int k = 0;
+      int q = (freed[0] + temp2) * blockSize;
+      for(int i = q,k = 0;i <(q + size) && k<size;i++,k++){
+         dataf[i] = d[index].data[k];
+      } 
+      int l = 0;
+      for(int j = 0; j<blocksRequired; j++){//allocated into freespace
+         l = freed[j];
+         bitmap[l] = 0;
+      } 
+   }                        
+   
 }
 void read(int index){
    printf("Reading: %d\n",d[index].filename);//read whatever is stored in struct
@@ -249,11 +256,12 @@ void read(int index){
          }
       }
    }
-   printf("\nExiting Read Function");
+   printf("\nExiting Read Function\n");
 }
 void delete(int index){
    printf("Deleted: %d\n",d[index].filename);
-   for(int c= 0; c < index;c++){
+   /*for(int c= 0; c < index;c++){
+
       int *ptr = d[c].data;
       int size = 0;
       while(*ptr !=0){
@@ -272,70 +280,66 @@ void delete(int index){
             d[c].data[k] = 0;
             size = size -1;
          }
-         printf("Filename: %d ,Data inside: %d \n", d[c].filename,d[c].data[k]); //to print what is left in the code
       }
-   }
-   for(int c= 0; c < index;c++){
-      int *ptr = d[c].data;
-      int size = 0;
-      while(*ptr !=0){
+   }*/
+
+   int *ptr = d[index].data;
+   int size = 0;
+   while(*ptr !=0){
          *ptr++;
          size++;
-      }
-      if(strcmp("read",d[c].func) !=0 && d[c].filename != 0){
-         printf("\nFilename: %d Data: ", d[c].filename); // whats left
-         for(int k = 0; k < size; k++){
-            printf("%d,",d[c].data[k]);
-         }
-      }
    }
-   printf("Exiting Delete Function");
+   
+   printf("\nExiting Delete Function\n");
 }
 void initFreespace(){
    for(int i = 0; i < noOfBlock; i++){
       bitmap[i] = 1;
    }
 }
-void freespace()
+int ifFull(){
+   int count4bit = 0;
+   for(int i = 0; i < noOfBlock; i++){
+      if(bitmap[i] == 0){
+         count4bit++;
+      }
+   }
+   printf("count = %d",count4bit);
+   if(count4bit>=noOfBlock){  
+      return 1;
+   }else{
+      return 0;
+   }
+}
+int freespace()
 { 
-   printf("Blocks required :%d || No. of Blocks :%d \n", blocksRequired,noOfBlock);
    int k = 0;
-   for(int i = 0; i < noOfBlock; i++){//scan the noOfblocks in the directory
-      if(k == blocksRequired){//if 3 == 3 break
-         break;
-      }
-      if(k < blocksRequired && bitmap[i] == 1){//if 0 < 3 && bitmap[0] == 1 ,freed[0] = block no(i)
-         freed[k] = i;
-         k++;
-      }
-      else{
-         for(int j = 0; j<blocksRequired;j++){
-            freed[j] = 0;
+   if(ifFull()){
+      return 1;
+   }
+   else{   
+      for(int i = 0; i < noOfBlock; i++){//scan the noOfblocks in the directory
+         if(k == blocksRequired){//if 3 == 3 break
+            break;
          }
-         k = 0;
+         if(k < blocksRequired && bitmap[i] == 1){//if 0 < 3 && bitmap[0] == 1 ,freed[0] = block no(i)
+            freed[k] = i;
+            k++;
+         }
+         else{
+            for(int j = 0; j<blocksRequired;j++){
+               freed[j] = 0;
+            }
+            k = 0;
+         }
       }
+   
+      printf("Found free: ");
+      for(int i = 0; i < blocksRequired; i++){
+         printf(" B%d,",freed[i]+temp2);
+      }
+      printf("\n");
+      return 0;
    }
-   //have not done the if overload how condition
-   printf("Found free: ");
-   for(int i = 0; i < blocksRequired; i++){
-      printf(" B%d,",freed[i]+temp2);
-   }
-   printf("\n");
-
-   // int *ptr = d[index].data;
-   // int size = 0;
-   //    while(*ptr !=0){
-   //       *ptr++;
-   //       size++;
-   // }//size of data
-   // int b = ceill((double)size/blockSize);//1
-   // int count = 0;  
-   // for(int i = temp2; i<floor((double)MAX/blockSize); i++){
-   //    if(bitmap[i] == 0 && count < b){
-   //       freed[count] = i; 
-   //       bitmap[i] = 1;
-   //       printf("Block %d is free\t", freed[count]);
-   //       count++;  
-   //    }
-   // }
+    
 }
