@@ -22,7 +22,7 @@ void initFreespace();
 void printStorage();
 void printDirectory();
 
-int i = 0,pos = 0,temp2 = 0,noOfBlock = 0,blocksRequired,blockAvail;
+int i = 0,pos = 0,temp2 = 0,noOfBlock = 0,blocksRequired,blockAvail,c = 0;
 int volumecontrol1[] = {0}; 
 int volumecontrol2[] = {0};
 int indexf[MAX], block[MAX], dataf[MAX],startLoc[MAX],endLoc[MAX],bitmap[MAX], freed[MAX]; 
@@ -158,7 +158,6 @@ void main()
    initArray();
    printDirectory();
    /*printf("\n Contiguous File Allocation \n\n");
-
    printf("Enter block size: ");
 	scanf("%d", &blockSize);
 	excessBlock = 130%blockSize;
@@ -166,10 +165,9 @@ void main()
 
    initArray();
    printDirectory();
-   printVolumeControlBlock();
-   */
+   printVolumeControlBlock();*/
    readFile();
-   printStorage();
+   printDirectory();
    /*for(int c= 0; c < i;c++){
       char *function = d[c].func;//d[1].func
       switch(*function){
@@ -207,6 +205,7 @@ void add(int index){
    blocksRequired = value;//get amount of blocksrequired to place in storage structure.
    //freespace();
    if(freespace()){
+      printf("\nAdding File %d\n",d[index].filename);
       printf("\nNot allocated due to full Storage\n");
    }else{
       printf("\nAdding File %d\n",d[index].filename);//get file name from struct
@@ -223,9 +222,22 @@ void add(int index){
    //data is in d[index].data[k]
       int k = 0;
       int q = (freed[0] + temp2) * blockSize;
-      for(int i = q,k = 0;i <(q + size) && k<size;i++,k++){
+      for(int i = q,k = 0;i <(q + size) && k<size;i++,k++){//fill data into dataf
          dataf[i] = d[index].data[k];
-      } 
+      }
+      //required to fill filename and start and end
+      //run via index run 1 time per function need to noe the jump to the next index
+      //done adding into directory structure
+      if(c == temp2 * blockSize){
+         printf("Exceeded Directory allocated");
+      }else{
+         dataf[c] = d[index].filename;
+         startLoc[c] = freed[0] + temp2;
+         endLoc[c] = freed[0] + temp2 + (value -1);
+         c++;
+      }
+      
+
       int l = 0;
       for(int j = 0; j<blocksRequired; j++){//allocated into freespace
          l = freed[j];
@@ -259,7 +271,6 @@ void read(int index){
    printf("\nExiting Read Function\n");
 }
 void delete(int index){
-   printf("Deleted: %d\n",d[index].filename);
    /*for(int c= 0; c < index;c++){
 
       int *ptr = d[c].data;
@@ -282,13 +293,13 @@ void delete(int index){
          }
       }
    }*/
-
    int *ptr = d[index].data;
    int size = 0;
    while(*ptr !=0){
          *ptr++;
          size++;
    }
+   
    
    printf("\nExiting Delete Function\n");
 }
@@ -304,7 +315,6 @@ int ifFull(){
          count4bit++;
       }
    }
-   printf("count = %d",count4bit);
    if(count4bit>=noOfBlock){  
       return 1;
    }else{
@@ -333,7 +343,6 @@ int freespace()
             k = 0;
          }
       }
-   
       printf("Found free: ");
       for(int i = 0; i < blocksRequired; i++){
          printf(" B%d,",freed[i]+temp2);
