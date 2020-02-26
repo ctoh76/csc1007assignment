@@ -22,7 +22,7 @@ void initFreespace();
 void printStorage();
 void printDirectory();
 
-int i = 0,pos = 0,temp2 = 0,noOfBlock = 0,r,a,b,blocksRequired;
+int i = 0,pos = 0,temp2 = 0,noOfBlock = 0,r,a,b,blocksRequired,blockAvail;
 int volumecontrol1[] = {0}; 
 int volumecontrol2[] = {0};
 int indexf[MAX], block[MAX], dataf[MAX],startLoc[MAX],endLoc[MAX],bitmap[MAX], freed[MAX]; 
@@ -170,6 +170,7 @@ void main()
    printVolumeControlBlock();
    */
    readFile();
+   printStorage();
    /*for(int c= 0; c < i;c++){
       char *function = d[c].func;//d[1].func
       switch(*function){
@@ -204,7 +205,8 @@ void add(int index){
          *ptr++;
          size++;
    }
-   blocksRequired = ceil(size/blockSize)+1;
+   double value = ceil((double)size/blockSize);
+   blocksRequired = value;
    freespace();
    
    if(size != 0){
@@ -212,6 +214,16 @@ void add(int index){
       for(int k = 0; k < size; k++){
          printf("-%d-",d[index].data[k]);
       }
+   }
+   int l = 0;
+   for(int j = 0; j<blocksRequired; j++){//allocated into freespace
+         l = freed[j];
+         bitmap[l] = 0;
+   }    
+   printf("TTTTTT:%d",temp2*blockSize);                                            
+   //but have not put data into block
+   for(int i = (temp2 * blockSize);i < MAX; i++){
+
    }
 
 }
@@ -283,21 +295,32 @@ void initFreespace(){
    for(int i = 0; i < noOfBlock; i++){
       bitmap[i] = 1;
    }
-   bitmap[1] = 0;
-   bitmap[2] = 0;
-   bitmap[4] = 0;
 }
 void freespace()
 { 
+   printf("Blocks required :%d || No. of Blocks :%d \n", blocksRequired,noOfBlock);
    int k = 0;
-   for(int i = 0; i < noOfBlock; i++){
-      if(k<blocksRequired){
-         while(bitmap[i + k] == 1){
-            k++;
+   for(int i = 0; i < noOfBlock; i++){//scan the noOfblocks in the directory
+      if(k == blocksRequired){//if 3 == 3 break
+         break;
+      }
+      if(k < blocksRequired && bitmap[i] == 1){//if 0 < 3 && bitmap[0] == 1 ,freed[0] = block no(i)
+         freed[k] = i;
+         k++;
+      }
+      else{
+         for(int j = 0; j<blocksRequired;j++){
+            freed[j] = 0;
          }
-      }  
-      printf("%d", bitmap[i]);  
+         k = 0;
+      }
    }
+   //have not done the if overload how condition
+   printf("Found free: ");
+   for(int i = 0; i < blocksRequired; i++){
+      printf(" B%d,",freed[i]+temp2);
+   }
+   printf("\n");
 
    // int *ptr = d[index].data;
    // int size = 0;
