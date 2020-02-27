@@ -83,7 +83,7 @@ void printStorage(){
 
    printf("*---------------Storage Section----------------*");
    printf("\n|  Index    Block    Entry\n");
-	for(int i = (temp2 * blockSize);i < MAX; i++){//
+	for(int i = (temp2 * blockSize);i < MAX; i++){// need include something to push up the list if i decide to add a new file in it will appear at the bottom uh...
       	printf("|   %d         %d         %d                    |\n",indexf[i],block[i],dataf[i]);//i add startLoc[] in this which reflects the start block of each file
    }
    printf("*-----------------------------------------------*\n");
@@ -223,13 +223,13 @@ void read(int index){
          t4 = 1;
       }
    }
-    for(int i = (temp2*blockSize); i<MAX; i++){
-      if(d[index].filename == dataf[i]){//if the filename from the struct which store the readfile meaning like read 200 filename is 200 compare with the directory structure to find 200
+    for(int i = (temp2*blockSize); i<MAX; i++){//if user wanna find file data #for loop to run thru the storage struct
+      if(d[index].filename == dataf[i]){//if filename = file data 
          printf("File : %d",startLoc[i]);
-         t1 = dataf[i];//filename blk 22
-         t2 = startLoc[i];
-         t3 = (i/blockSize);
-         t4 = 2;
+         t1 = dataf[i];//file data eg read 1401 t1 = 1401
+         t2 = startLoc[i];//file start block 
+         t3 = (i/blockSize);//file block location of the data
+         t4 = 2;//condition
       }
    }
    if(t1 != d[index].filename){//just to say if nosuch file it will be 0
@@ -243,7 +243,6 @@ void read(int index){
       printf(".%d.",dataf[i]);//print the data
    }
    printf("\n");
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 }
