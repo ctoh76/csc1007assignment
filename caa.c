@@ -244,74 +244,37 @@ void add(int index){
    
 }
 void read(int index){
-   /*printf("Reading: %d\n",d[index].filename);//read whatever is stored in struct
-   for(int c= 0; c < index;c++){
-      int *ptr = d[c].data;
-      int size = 0;
-      while(*ptr !=0){
-         *ptr++;
-         size++;
-      }
+   //as when we read file the data stored is based on the index so like d[0].filename = 100 cuz we add 100 first then d[1].filename = 200 cuz we add 200 next
+   int size = 0;//so d[0].data is the data in d[0].filename which is 101-106, i basically count the length of it cuz idk why but i cant use sizeof 
+   for(int c= 0; c < index;c++){  
       if(d[index].filename == d[c].filename)
       {
-          printf("Display File: %d Data:",d[c].filename);
-          for(int k = 0; k < size; k++){
-             printf("..%d",d[c].data[k]);
-          }
-      }
-      for(int k = 0; k < size; k++){
-         if(d[index].filename == d[c].data[k]){
-             printf("Display Data: %d",d[c].data[k]);
+         int *ptr = d[c].data;
+         while(*ptr !=0){//to count the size of data basically is like len(data)
+            *ptr++;
+            size++;
          }
       }
    }
-   printf("\nExiting Read Function\n");*/
-   int *ptr = d[index].data;
-   int size = 0;
-   while(*ptr !=0){
-      *ptr++;
-      size++;
-   }
-   int t1 = 0, t2 = 0,t3 = 0;
-   for(int i = 0; i<temp2*blockSize; i++){
-      if(d[index].filename == dataf[i]){
-         printf("File : %d Start: %d End: %d", dataf[i],startLoc[i],endLoc[i]);
-         t1 = dataf[i];
-         t2 = startLoc[i];
-         t3 = endLoc[i];
+   int t1 = 0, t2 = 0,t3 = 0;//created 3 temp int to store the dataf[i] startLoc[i] endLoc[i]
+   for(int i = 0; i<temp2*blockSize; i++){//this for loop run based on the directory structure cuz it runs from blk 0 to 21,lets say for blocksize 2 it runs from index 0 to index 43
+      if(d[index].filename == dataf[i]){//if the filename from the struct which store the readfile meaning like read 200 filename is 200 compare with the directory structure to find 200
+         printf("File : %d Start: %d End: %d", dataf[i],startLoc[i],endLoc[i]);//gets its file name which is 200 just to cfm de la then get its startLoc and endLoc which is like 25 and 27
+         t1 = dataf[i];//filename
+         t2 = startLoc[i];//if we  alr added 200 to block 25- block 27 and we read filename 200 should appear blk 25 
+         t3 = endLoc[i]; // should appear block 27
       }
    }
-   printf("\nData in %d:",t1);
-   for(int i = t2*blockSize;i< (t3*blockSize+size);i++){
-      printf(".%d.",dataf[i]);
+   //havent go add function() for if read de file is not anyof the file added
+   printf("\nData in %d:",t1);//filename which should be 200 but will varies depend on what we read
+   for(int i = t2*blockSize;i<((t2*blockSize)+size);i++){//for loop from index(blk 25 * blocksize 2)start block of the file to index(blk 25 * blocksize + length of the data inside(6))
+      printf(".%d.",dataf[i]);//print the data
    }
    printf("\n");
    
    printf("\nExiting Read Function\n");
 }
 void delete(int index){
-   /*for(int c= 0; c < index;c++){
-
-      int *ptr = d[c].data;
-      int size = 0;
-      while(*ptr !=0){
-         *ptr++;
-         size++;
-      }
-      if(d[index].filename == d[c].filename)
-      {
-          d[c].filename = 0;
-          for(int k = 0; k < size; k++){
-             d[c].data[k] = 0;
-          }
-      }
-      for(int k = 0; k < size; k++){
-         if(d[index].filename == d[c].data[k]){
-            d[c].data[k] = 0;
-            size = size -1;
-         }
-      }
-   }*/
    int size = 0;
    for(int c= 0; c < index;c++){  
       if(d[index].filename == d[c].filename)
@@ -347,9 +310,9 @@ void delete(int index){
       bitmap[i] = 1;
    }
 }
-void initFreespace(){
+void initFreespace(){//initialize a freespace bitmap based of the total noofblocks available in storage structure 
    for(int i = 0; i < noOfBlock; i++){
-      bitmap[i] = 1;
+      bitmap[i] = 1;//initiate all into 1 so that all is free (1 = free, 0 = used).
    }
 }
 int ifFull(){//runs thru the who block to check if bitmap[] reaches all 0 #for bitmap[] it stores a value of 0 or 1 to indicate each block in storage structure is used or not used
@@ -377,22 +340,22 @@ int freespace()
             break;// eg. if user type blocksize 2 and add file de data length is 6  6/2 = 3 if 3 == 3 break 
          }//# for some cases where like if data input is 5 cuz its contiguous alloc so need ceiling it ceil(5/2) = 3
          if(count < blocksRequired && bitmap[i] == 1){//eg. if count(0) less than blocksRequired(3) and bitmap of block 0 is free to use, freed[0] = block no(i)
-            freed[count] = i;
+            freed[count] = i;//freed[count] stores the blockno its currently adding for example freed[0] = 4, 5 or 6
             count++;
          }
-         else{
-            for(int j = 0; j<blocksRequired;j++){
+         else{//else there isnt 3 space avail for blockrequired(3) clear counter and clear the freed[] basically reset it
+            for(int j = 0; j<blocksRequired;j++){//clear freed[] array 
                freed[j] = 0;
             }
-            count = 0;
+            count = 0;//clear counter
          }
       }
       printf(" found free ");
-      for(int i = 0; i < blocksRequired; i++){
-         printf("-B%d-",freed[i]+temp2);
+      for(int i = 0; i < blocksRequired; i++){//if found 3 space for blockrequired(3)
+         printf("-B%d-",freed[i]+temp2);//print which block is free
       }
       printf("\n");
-      return 0;
+      return 0;//then return 0 or false # i might have messed up whether 0 is true or false but basically return it to the add function
    }
     
 }
