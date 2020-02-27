@@ -204,17 +204,16 @@ void add(int index){
    double value = ceil((double)size/blockSize);
    blocksRequired = value;//get amount of blocksrequired to place in storage structure.
    //freespace();
+   printf("\nAdding File %d and",d[index].filename);
    if(freespace()){
-      printf("\nAdding File %d\n",d[index].filename);
-      printf("\nNot allocated due to full Storage\n");
+      printf("Not allocated due to full Storage\n");
    }else{
-      printf("\nAdding File %d\n",d[index].filename);//get file name from struct
-      if(size != 0){
+      /*if(size != 0){
          printf(" Data: ");
          for(int k = 0; k < size; k++){
             printf("-%d-",d[index].data[k]);
          }
-      }    
+      }*/   
    //but have not put data into block
    //                        0     +   22  *    2     +   6 = 50
    //to incement index = (freed[j] + temp2)*blockSize + length
@@ -236,8 +235,6 @@ void add(int index){
          endLoc[c] = freed[0] + temp2 + (value -1);
          c++;
       }
-      
-
       int l = 0;
       for(int j = 0; j<blocksRequired; j++){//allocated into freespace
          l = freed[j];
@@ -247,7 +244,7 @@ void add(int index){
    
 }
 void read(int index){
-   printf("Reading: %d\n",d[index].filename);//read whatever is stored in struct
+   /*printf("Reading: %d\n",d[index].filename);//read whatever is stored in struct
    for(int c= 0; c < index;c++){
       int *ptr = d[c].data;
       int size = 0;
@@ -268,6 +265,28 @@ void read(int index){
          }
       }
    }
+   printf("\nExiting Read Function\n");*/
+   int *ptr = d[index].data;
+   int size = 0;
+   while(*ptr !=0){
+      *ptr++;
+      size++;
+   }
+   int t1 = 0, t2 = 0,t3 = 0;
+   for(int i = 0; i<temp2*blockSize; i++){
+      if(d[index].filename == dataf[i]){
+         printf("File : %d Start: %d End: %d", dataf[i],startLoc[i],endLoc[i]);
+         t1 = dataf[i];
+         t2 = startLoc[i];
+         t3 = endLoc[i];
+      }
+   }
+   printf("\nData in %d:",t1);
+   for(int i = t2*blockSize;i< (t3*blockSize+size);i++){
+      printf(".%d.",dataf[i]);
+   }
+   printf("\n");
+   
    printf("\nExiting Read Function\n");
 }
 void delete(int index){
@@ -293,59 +312,84 @@ void delete(int index){
          }
       }
    }*/
-   int *ptr = d[index].data;
    int size = 0;
-   while(*ptr !=0){
-         *ptr++;
-         size++;
+   for(int c= 0; c < index;c++){  
+      if(d[index].filename == d[c].filename)
+      {
+         int *ptr = d[c].data;
+         while(*ptr !=0){
+            *ptr++;
+            size++;
+         }
+      }
    }
-   
-   
-   printf("\nExiting Delete Function\n");
+   double value = ceil((double)size/blockSize);
+   blocksRequired = value;
+   int t1 = 0, t2 = 0,t3 = 0;
+   for(int i = 0; i<temp2*blockSize; i++){
+      if(d[index].filename == dataf[i]){
+         printf("File : %d Start: %d End: %d", dataf[i],startLoc[i],endLoc[i]);
+         t1 = dataf[i];
+         t2 = startLoc[i];
+         t3 = endLoc[i];
+         dataf[i] = 0;
+         startLoc[i] = 0;
+         endLoc[i] = 0;
+      }
+   }
+   printf("\nData in %d:",t1);
+   for(int i = t2*blockSize;i< (t2*blockSize+size);i++){
+      printf("Deleting data : %d",dataf[i]);
+      dataf[i] = 0;
+   }
+   printf("\n");
+   for(int i = t2 - temp2; i< t3-temp2; i++){
+      bitmap[i] = 1;
+   }
 }
 void initFreespace(){
    for(int i = 0; i < noOfBlock; i++){
       bitmap[i] = 1;
    }
 }
-int ifFull(){
-   int count4bit = 0;
-   for(int i = 0; i < noOfBlock; i++){
-      if(bitmap[i] == 0){
-         count4bit++;
+int ifFull(){//runs thru the who block to check if bitmap[] reaches all 0 #for bitmap[] it stores a value of 0 or 1 to indicate each block in storage structure is used or not used
+   int count4bit = 0;//counter
+   for(int i = 0; i < noOfBlock; i++){//run the whole block eg. if block size 2, total storage block got 43(B22 - B64)
+      if(bitmap[i] == 0){//checks eg. if block size 2, B22 - B64 is all 0s 0= used, 1=free to use
+         count4bit++;//increment per 0 in bitmap
       }
    }
-   if(count4bit>=noOfBlock){  
-      return 1;
+   if(count4bit>=noOfBlock){ //if counter bigger than or equal to total storage block(43) means fully used
+      return 1; //return 1 or true
    }else{
-      return 0;
+      return 0; //return 0 or false
    }
 }
 int freespace()
 { 
-   int k = 0;
-   if(ifFull()){
-      return 1;
+   int count = 0;//counter
+   if(ifFull()){//run ifFull
+      return 1;//if ifFull() is full le return 1 or true to add func
    }
-   else{   
-      for(int i = 0; i < noOfBlock; i++){//scan the noOfblocks in the directory
-         if(k == blocksRequired){//if 3 == 3 break
-            break;
-         }
-         if(k < blocksRequired && bitmap[i] == 1){//if 0 < 3 && bitmap[0] == 1 ,freed[0] = block no(i)
-            freed[k] = i;
-            k++;
+   else{  //if ifFull() is not full continue run
+      for(int i = 0; i < noOfBlock; i++){//scan the noOfblocks in the storage structure(basically 43)B22- B64
+         if(count == blocksRequired){//blocksrequired is calculated based on size or length of data in add divide by blocksize typed by user
+            break;// eg. if user type blocksize 2 and add file de data length is 6  6/2 = 3 if 3 == 3 break 
+         }//# for some cases where like if data input is 5 cuz its contiguous alloc so need ceiling it ceil(5/2) = 3
+         if(count < blocksRequired && bitmap[i] == 1){//eg. if count(0) less than blocksRequired(3) and bitmap of block 0 is free to use, freed[0] = block no(i)
+            freed[count] = i;
+            count++;
          }
          else{
             for(int j = 0; j<blocksRequired;j++){
                freed[j] = 0;
             }
-            k = 0;
+            count = 0;
          }
       }
-      printf("Found free: ");
+      printf(" found free ");
       for(int i = 0; i < blocksRequired; i++){
-         printf(" B%d,",freed[i]+temp2);
+         printf("-B%d-",freed[i]+temp2);
       }
       printf("\n");
       return 0;
