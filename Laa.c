@@ -72,7 +72,7 @@ void printDirectory(){//print directory
       temp2 += 1;
    }
    printf("*-------------Directory Section--------------*");
-	printf("\n|  Index    Block    FileData   Start    End\n");
+	printf("\n|  Index    Block    FileData   Start    End|\n");
 	for(int i = 0;i < (temp2 * blockSize); i++){
       	printf("|   %d         %d         %d         %d       %d |\n",indexf[i],block[i],dataf[i],startLoc[i],endLoc[i]);
    }
@@ -82,7 +82,7 @@ void printDirectory(){//print directory
 void printStorage(){
 
    printf("*---------------Storage Section----------------*");
-   printf("\n|  Index    Block    Entry\n");
+   printf("\n|  Index    Block    Entry|\n");
 	for(int i = (temp2 * blockSize);i < MAX; i++){// need include something to push up the list if i decide to add a new file in it will appear at the bottom uh...
       	printf("|   %d         %d         %d                    |\n",indexf[i],block[i],dataf[i]);//i add startLoc[] in this which reflects the start block of each file
    }
@@ -160,26 +160,10 @@ void main()
     printDirectory();
 }
 void add(int index){
-   int *ptr = d[index].data; //get the length of file data inthe struct which stored in readfile()
-   int size = 0;
-      while(*ptr !=0){
-         *ptr++;
-         size++;//eg. if file is 100 data is 101-106 size or filelength is 6
-   }
-   if (size % blockSize == 0) {//calculate total number of blks required the file
-        blocksRequired = size / blockSize + 1;
-   } else {
-        blocksRequired = size / blockSize + 2;
-   }
-
-
-
 }
-void read(int index){
-    
+void read(int index){ 
 }
 void delete(int index){
-   
 }
 void initFreespace(){
    for(int i = 0; i < noOfBlock; i++){
@@ -187,38 +171,38 @@ void initFreespace(){
    }
 }
 int ifFull(){
-   int counter =   0;//counter
-   for(int i = 0; i < noOfBlock; i++){//run the whole block eg. if block size 2, total storage block got 43(B22 - B64)
-      if(bitmap[i] == 0){//checks eg. if block size 2, B22 - B64 is all 0s 0= used, 1=free to use
-         counter++;//increment per 0 in bitmap
+   int count4bit =   0;
+   for(int i = 0; i < noOfBlock; i++){
+      if(bitmap[i] == 0){
+         count4bit++;
       }
    }
-   if(counter>=noOfBlock){ //if counter bigger than or equal to total storage block(43) means fully used
-      return 1; //return 1 or true
+   if(count4bit>=noOfBlock){
+      return 1;
    }else{
-      return 0; //return 0 or false
+      return 0;
    }
 }
-int freespace(){///##TO EDIT CUZ DIFF ALLOCATION DIFF WAYS
-   int count = 0;//counter
-   if(ifFull()){//run ifFull
-      return 1;//if ifFull() is full le return 1 or true to add func
+int freespace(){
+   int count = 0;
+   if(ifFull()){
+      return 1;
    }
    else{
-      for(int i = 0; i < noOfBlock; i++){//scan the noOfblocks in the storage structure(basically 43)B22- B64
-         if(count == blocksRequired){//blocksrequired is calculated based on size or length of data in add divide by blocksize typed by user
-            break;// eg. if user type blocksize 2 and add file de data length is 6  6/2 = 3 if 3 == 3 break
-         }//# for some cases where like if data input is 5 cuz its contiguous alloc so need ceiling it ceil(5/2) = 3
-         if(count < blocksRequired && bitmap[i] == 1){//eg. if count(0) less than blocksRequired(3) and bitmap of block 0 is free to use, freed[0] = block no(i)
-            freed[count] = i;//freed[count] stores the blockno its currently adding for example freed[0] = 4, 5 or 6
+      for(int i = 0; i < noOfBlock; i++){
+         if(count == blocksRequired){
+            break;
+         }
+         if(count < blocksRequired && bitmap[i] == 1){
+            freed[count] = i;
             count++;
          }
       }
    }
    printf(" found free ");
-   for(int i = 0; i < blocksRequired; i++){//if found 3 space for blockrequired(3)
-      printf("-B%d-",freed[i]+temp2);//print which block is free
+   for(int i = 0; i < blocksRequired; i++){
+      printf("-B%d-",freed[i]+temp2);
    }
    printf("\n");
-   return 0;//then return 0 or false # i might have messed up whether 0 is true or false but basically return it to the add function
+   return 0;
 }

@@ -36,7 +36,7 @@ void initArray(){//init array
    //so like if we put block size 1 we need like 130 index to fill in out file info into directory so means its impossible de so can only start from 2 as to why its until 43
    //cuz if we used 44 so we will have we only have 2 pathetic blocks of size 44 then funny thing is use gonna need to throw away 42 block space cuz redudant 
    //then 1 for directory 1 for storage which wont make sense uh u use such a big space of index 44
-   //to store 1 goddamn file info... anw this can edit de if u got better de tell me 
+   //to store 1 goddamn file info... anw this can edit de if u got better de lets follow it!!!
 
       //excessBlock = 130%blockSize; dk how use this
 	   //dirBlocks = (130-excessBlock)/blockSize; same for this dk how use
@@ -289,13 +289,13 @@ void initFreespace(){//initialize a freespace bitmap based of the total noofbloc
    }
 }
 int ifFull(){//runs thru the who block to check if bitmap[] reaches all 0 #for bitmap[] it stores a value of 0 or 1 to indicate each block in storage structure is used or not used
-   int count4bit = 0;//counter
+   int countbitmap = 0;//counter
    for(int i = 0; i < noOfBlock; i++){//run the whole block eg. if block size 2, total storage block got 43(B22 - B64)
       if(bitmap[i] == 0){//checks eg. if block size 2, B22 - B64 is all 0s 0= used, 1=free to use
-         count4bit++;//increment per 0 in bitmap
+         countbitmap++;//increment per 0 in bitmap
       }
    }
-   if(count4bit>=noOfBlock){ //if counter bigger than or equal to total storage block(43) means fully used
+   if(countbitmap>=noOfBlock){ //if counter bigger than or equal to total storage block(43) means fully used
       return 1; //return 1 or true
    }else{
       return 0; //return 0 or false
