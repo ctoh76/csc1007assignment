@@ -87,7 +87,6 @@ void printStorage(){
       	printf("|   %d         %d         %d                    |\n",indexf[i],block[i],dataf[i]);//i add startLoc[] in this which reflects the start block of each file
    }
    printf("*-----------------------------------------------*\n");
-   
    noOfBlock = noOfBlock-temp2;
    initFreespace();
 }
@@ -167,8 +166,12 @@ void add(int index){
          *ptr++;
          size++;//eg. if file is 100 data is 101-106 size or filelength is 6
    }
-   double value = ceil((double)size/blockSize);// 6/2 = 3 or 6/5 = 2 cuz we actually need 2 blocks to store all 6 data uh
-   blocksRequired = value;//get amount of blocksrequired to place in storage structure.
+   if (size % blockSize == 0) {//calculate total number of blks required the file
+        blocksRequired = size / blockSize + 1;
+    } else {
+        blocksRequired = size / blockSize + 2;
+    }
+   //get amount of blocksrequired to place in storage structure.
    // printf("\nAdding File %d and",d[index].filename);//print filename
    // if(freespace()){//run freespace to check got space or not
    //    printf("Not allocated due to full Storage\n");
@@ -199,18 +202,7 @@ void add(int index){
    //       bitmap[l] = 0;//put used(1) into the bitmap to show its used
    //    } 
    // }
-   printf("freed[0] = %d",freed[0]);
-   int q =(freed[0] + temp2)*blockSize;//
-   for (int i = q; i<q+size; i++){
-      if(blocksRequired>blockSize){
-         break;
-      }else
-      {
-         dataf[i] = freed[0] + temp2;
-      }
-      
-   }
-
+   
 
 
 }
