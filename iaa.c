@@ -45,7 +45,7 @@ void initArray(){//init array
       int blockNum = 0;
 
 	   for(int a = 0; a<MAX;a++){//get no. of blocks
-		   counter = counter + 1;
+           counter = counter + 1;
 		   temp[a] = blockNum;
 		   if(counter == blockSize){
 			   counter = 0;
@@ -153,21 +153,97 @@ int readFile(){//read csv and store everything into struct d[]
    fclose(fp);//close the file
    return 0;
 }
-void main(){
+void main()
+{
     initArray();//initialize array
     printDirectory();//print the empty one out once
     readFile();//read csv file
     printDirectory();
 }
 void add(int index){
-    printf("add");
+    int *ptr = d[index].data; //get the length of file data inthe struct which stored in readfile()
+   int size = 0;
+      while(*ptr !=0){
+         *ptr++;
+         size++;//eg. if file is 100 data is 101-106 size or filelength is 6
+   }
+   double value = ceil((double)size/blockSize);// 6/2 = 3 or 6/5 = 2 cuz we actually need 2 blocks to store all 6 data uh
+   blocksRequired = value;//get amount of blocksrequired to place in storage structure.
+   printf("\nAdding File %d and",d[index].filename);//print filename
+   if(freespace()){//run freespace to check got space or not
+      printf("Not allocated due to full Storage\n");
+   }else{  //if freespace got space run here
+   //                        0     +   22  *    2     +   6 = 50
+   //to incement index = (freed[j] + temp2)*blockSize + length
+   //List of array able to use bitmap[](consist of 0s and 1s)|freed[](consist of the empty block no.)|d[].data[](consist of the real data)
+   //data is in d[index].data[k]
+      int k = 0;
+      int q = (freed[0] + temp2) * blockSize;
+      for(int i = q,k = 0;i <(q + size) && k<size;i++,k++){//fill data from struct into dataf[] from storage struct
+         dataf[i] = d[index].data[k];
+         startLoc[i] = d[index].filename;//fill the startblock for the file into it
+      }
+      //i swear go rmb what is temp2 cuz its everywhere so dumb for a temp int but i did this mess
+      //temp2 is the starting block no. of the storage sturcture so if blocksize is 2 temp2 will be 22 if blocksize is 3 temp2 will be 11.
+      if(c == temp2 * blockSize - 1){//create a counter for directory struct so if counter reaches the max block of directory struct which is 21 means full le by right shouldnt reach here will be damn weird
+         printf("Exceeded Directory allocated");
+      }else{
+         dataf[c] = d[index].filename;//add per add file into directory struct
+         startLoc[c] = freed[0] + temp2;//add where it start into directory struct
+         endLoc[c] = freed[0] + temp2 + (value -1);//add where it end into directory struct
+         c++;
+      }
+      int l = 0;//temp int
+      for(int j = 0; j<blocksRequired; j++){//allocated into freespace
+         l = freed[j];//freed[j] = block number to add in here very blurry cuz damn long do de
+         bitmap[l] = 0;//put used(1) into the bitmap to show its used
+      } 
+   }                       
 }
 void read(int index){
-    printf("add");
+    
 }
 void delete(int index){
-    printf("delete");
+   
 }
 void initFreespace(){
-    printf("Reached freespace");
+   for(int i = 0; i < noOfBlock; i++){
+      bitmap[i] = 1;//initiate all into 1 so that all is free (1 = free, 0 = used).
+   }
+}
+int ifFull(){
+   int count4bit =   0;//counter
+   for(int i = 0; i < noOfBlock; i++){//run the whole block eg. if block size 2, total storage block got 43(B22 - B64)
+      if(bitmap[i] == 0){//checks eg. if block size 2, B22 - B64 is all 0s 0= used, 1=free to use
+         count4bit++;//increment per 0 in bitmap
+      }
+   }
+   if(count4bit>=noOfBlock){ //if counter bigger than or equal to total storage block(43) means fully used
+      return 1; //return 1 or true
+   }else{
+      return 0; //return 0 or false
+   }
+}
+int freespace(){
+   int count = 0;//counter
+   if(ifFull()){//run ifFull
+      return 1;//if ifFull() is full le return 1 or true to add func
+   }
+   else{
+      for(int i = 0; i < noOfBlock; i++){//scan the noOfblocks in the storage structure(basically 43)B22- B64
+         if(count == blocksRequired){//blocksrequired is calculated based on size or length of data in add divide by blocksize typed by user
+            break;// eg. if user type blocksize 2 and add file de data length is 6  6/2 = 3 if 3 == 3 break
+         }//# for some cases where like if data input is 5 cuz its contiguous alloc so need ceiling it ceil(5/2) = 3
+         if(count < blocksRequired && bitmap[i] == 1){//eg. if count(0) less than blocksRequired(3) and bitmap of block 0 is free to use, freed[0] = block no(i)
+            freed[count] = i;//freed[count] stores the blockno its currently adding for example freed[0] = 4, 5 or 6
+            count++;
+         }
+      }
+   }
+   printf(" found free ");
+   for(int i = 0; i < blocksRequired; i++){//if found 3 space for blockrequired(3)
+      printf("-B%d-",freed[i]+temp2);//print which block is free
+   }
+   printf("\n");
+   return 0;//then return 0 or false # i might have messed up whether 0 is true or false but basically return it to the add function
 }

@@ -301,8 +301,8 @@ int ifFull(){//runs thru the who block to check if bitmap[] reaches all 0 #for b
       return 0; //return 0 or false
    }
 }
-int freespace()
-{ 
+int freespace(){
+
    int count = 0;//counter
    if(ifFull()){//run ifFull
       return 1;//if ifFull() is full le return 1 or true to add func
@@ -330,5 +330,4 @@ int freespace()
       printf("\n");
       return 0;//then return 0 or false # i might have messed up whether 0 is true or false but basically return it to the add function
    }
-    
 }
