@@ -87,6 +87,7 @@ void printStorage(){
       	printf("|   %d         %d         %d                    |\n",indexf[i],block[i],dataf[i]);//i add startLoc[] in this which reflects the start block of each file
    }
    printf("*-----------------------------------------------*\n");
+   
    noOfBlock = noOfBlock-temp2;
    initFreespace();
 }
