@@ -161,7 +161,7 @@ void main()
     printDirectory();
 }
 void add(int index){
-    int *ptr = d[index].data; //get the length of file data inthe struct which stored in readfile()
+   int *ptr = d[index].data; //get the length of file data inthe struct which stored in readfile()
    int size = 0;
       while(*ptr !=0){
          *ptr++;
@@ -169,36 +169,50 @@ void add(int index){
    }
    double value = ceil((double)size/blockSize);// 6/2 = 3 or 6/5 = 2 cuz we actually need 2 blocks to store all 6 data uh
    blocksRequired = value;//get amount of blocksrequired to place in storage structure.
-   printf("\nAdding File %d and",d[index].filename);//print filename
-   if(freespace()){//run freespace to check got space or not
-      printf("Not allocated due to full Storage\n");
-   }else{  //if freespace got space run here
-   //                        0     +   22  *    2     +   6 = 50
-   //to incement index = (freed[j] + temp2)*blockSize + length
-   //List of array able to use bitmap[](consist of 0s and 1s)|freed[](consist of the empty block no.)|d[].data[](consist of the real data)
-   //data is in d[index].data[k]
-      int k = 0;
-      int q = (freed[0] + temp2) * blockSize;
-      for(int i = q,k = 0;i <(q + size) && k<size;i++,k++){//fill data from struct into dataf[] from storage struct
-         dataf[i] = d[index].data[k];
-         startLoc[i] = d[index].filename;//fill the startblock for the file into it
+   // printf("\nAdding File %d and",d[index].filename);//print filename
+   // if(freespace()){//run freespace to check got space or not
+   //    printf("Not allocated due to full Storage\n");
+   // }else{  //if freespace got space run here
+   // //                        0     +   22  *    2     +   6 = 50
+   // //to incement index = (freed[j] + temp2)*blockSize + length
+   // //List of array able to use bitmap[](consist of 0s and 1s)|freed[](consist of the empty block no.)|d[].data[](consist of the real data)
+   // //data is in d[index].data[k]
+   //    int k = 0;
+   //    int q = (freed[0] + temp2) * blockSize;
+   //    for(int i = q,k = 0;i <(q + size) && k<size;i++,k++){//fill data from struct into dataf[] from storage struct
+   //       dataf[i] = d[index].data[k];
+   //       startLoc[i] = d[index].filename;//fill the startblock for the file into it
+   //    }
+   //    //i swear go rmb what is temp2 cuz its everywhere so dumb for a temp int but i did this mess
+   //    //temp2 is the starting block no. of the storage sturcture so if blocksize is 2 temp2 will be 22 if blocksize is 3 temp2 will be 11.
+   //    if(c == temp2 * blockSize - 1){//create a counter for directory struct so if counter reaches the max block of directory struct which is 21 means full le by right shouldnt reach here will be damn weird
+   //       printf("Exceeded Directory allocated");
+   //    }else{
+   //       dataf[c] = d[index].filename;//add per add file into directory struct
+   //       startLoc[c] = freed[0] + temp2;//add where it start into directory struct
+   //       endLoc[c] = freed[0] + temp2 + (value -1);//add where it end into directory struct
+   //       c++;
+   //    }
+   //    int l = 0;//temp int
+   //    for(int j = 0; j<blocksRequired; j++){//allocated into freespace
+   //       l = freed[j];//freed[j] = block number to add in here very blurry cuz damn long do de
+   //       bitmap[l] = 0;//put used(1) into the bitmap to show its used
+   //    } 
+   // }
+   printf("freed[0] = %d",freed[0]);
+   int q =(freed[0] + temp2)*blockSize;//
+   for (int i = q; i<q+size; i++){
+      if(blocksRequired>blockSize){
+         break;
+      }else
+      {
+         dataf[i] = freed[0] + temp2;
       }
-      //i swear go rmb what is temp2 cuz its everywhere so dumb for a temp int but i did this mess
-      //temp2 is the starting block no. of the storage sturcture so if blocksize is 2 temp2 will be 22 if blocksize is 3 temp2 will be 11.
-      if(c == temp2 * blockSize - 1){//create a counter for directory struct so if counter reaches the max block of directory struct which is 21 means full le by right shouldnt reach here will be damn weird
-         printf("Exceeded Directory allocated");
-      }else{
-         dataf[c] = d[index].filename;//add per add file into directory struct
-         startLoc[c] = freed[0] + temp2;//add where it start into directory struct
-         endLoc[c] = freed[0] + temp2 + (value -1);//add where it end into directory struct
-         c++;
-      }
-      int l = 0;//temp int
-      for(int j = 0; j<blocksRequired; j++){//allocated into freespace
-         l = freed[j];//freed[j] = block number to add in here very blurry cuz damn long do de
-         bitmap[l] = 0;//put used(1) into the bitmap to show its used
-      } 
-   }                       
+      
+   }
+
+
+
 }
 void read(int index){
     
