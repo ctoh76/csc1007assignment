@@ -44,6 +44,7 @@ void initArray(){//init array
 	   int counter = 0;
       int blockNum = 0;
 
+
 	   for(int a = 0; a<MAX;a++){//get no. of blocks
 		   counter = counter + 1;
 		   temp[a] = blockNum;
@@ -63,12 +64,13 @@ void initArray(){//init array
          bitmap[i]=1;
       }
       noOfBlock = blockNum;//total block no.
+      printf("%d",temp[MAX]);
 }
 void printDirectory(){//print directory
-   int temp[MAX];
+   int temp3 = noOfBlock;
    
-   while(temp[MAX]>(temp2 * blockSize)){//this is the cool shit which calculate the blocksize for directory and blocksize for storage temp is directory end block,temp2 is storage start block
-      temp[MAX] -= 1;
+   while(temp3>(temp2 * blockSize)){//this is the cool shit which calculate the blocksize for directory and blocksize for storage temp is directory end block,temp2 is storage start block
+      temp3 -= 1;
       temp2 += 1;
    }
    printf("*-------------Directory Section--------------*");
