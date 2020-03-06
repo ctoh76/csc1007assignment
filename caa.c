@@ -66,7 +66,8 @@ void initArray(){//init array
 }
 void printDirectory(){//print directory
    int temp[MAX];
-   
+   printf("%d",noOfBlock);
+   printf("%d",temp[MAX]);
    while(temp[MAX]>(temp2 * blockSize)){//this is the cool shit which calculate the blocksize for directory and blocksize for storage temp is directory end block,temp2 is storage start block
       temp[MAX] -= 1;
       temp2 += 1;
