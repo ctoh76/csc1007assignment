@@ -71,6 +71,7 @@ void printDirectory(){//print directory
       temp[MAX] -= 1;
       temp2 += 1;
    }
+   printf("%d",temp2);
    printf("*-------------Directory Section--------------*");
 	printf("\n|  Index    Block    FileData   Start    End\n");
 	for(int i = 0;i < (temp2 * blockSize); i++){
