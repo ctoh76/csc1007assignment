@@ -6,31 +6,28 @@
 #define FILESIZE 100
 FILE *fp;
 typedef struct{
-      char func[6];//to read add, read, delete based on first letter
-      int filename;
+      char func[6];//to read add, read, delete based on first letter -->n 
+      int filename; //-->len
       int data[FILESIZE];
-}data;
-
-int readFile(); 
-void allocate();
-void deallocate();
-void display();
-int BFull();
-struct Link
-{
-    char n[30];
-    int len;
-    int st;
+      int st;
     struct node
     {
         int index;
         struct node *next;
     }*Start,*current,*newnode,*temp;
-}F[30];
+}data;
+data d[10];//basically able to read 10 lines so got 10 different set of data
+
+int readFile(); 
+void allocate();
+void deallocate();
+//void display();
+int BFull();
+
 int Table[TB+1],pos=0,r,i,j,ch,B=0;
 char fn[30];
-int i = 0;
-data d[10];//basically able to read 10 lines so got 10 different set of data
+
+
 //Reading file 
 int readFile(){
 
@@ -76,6 +73,7 @@ int readFile(){
          *ptr++;
          size++;
       }
+      printf("\n%d\n",size);
       for(int k = 0; k < size; k++){//2 instead of size idk le la i fked up
          printf("%d,",d[c].data[k]);
       }
@@ -108,7 +106,7 @@ int main()
 
                 case 'r':
                     printf("\nChoice display");
-                    display(c);
+                    //display(c);
                     break;
 
                 default:
@@ -125,26 +123,28 @@ void allocate(int index)
   // printf("\nFile Length : ");
   //scanf("%d",&(F[pos].n));
    //scanf("%d",&(F[pos].len));
-   for(int c= 0; c < i;c++){
-  int *ptr = d[index].data;
-      int size = 0;
-      while(*ptr !=0){
+ 
+    int *ptr = d[index].data;
+    int size = 0;
+    while(*ptr !=0){
          *ptr++;
          size++;
       }
-       printf("\nFileLength:%d",d[index].data[size]);
-   }
-   F[pos].Start=NULL;
+    printf("\nFileLength:%d",size);
+     
+    d[pos].Start=NULL;
+    /*
    if(BFull())
    {
-        pos--;
+       pos--;
        printf("\n\nNo Enough Free Space Available \n");
        return;
    }
+   */
 
-   for(i=1;i<=F[pos].len;i++)
+   for(i=1;i<=size;i++)
    {
-        F[pos].newnode=(struct node *)malloc(sizeof(struct node));
+        d[pos].newnode=(struct node *)malloc(sizeof(struct node));
 
         while(1)
         {
@@ -152,17 +152,17 @@ void allocate(int index)
             r=rand()%TB+1;
             if(Table[r]==0)
             {
-                    F[pos].newnode->index =r;
-                    F[pos].newnode->next=NULL;
-                    if(F[pos].Start==NULL)
+                    d[pos].newnode->index =r;
+                    d[pos].newnode->next=NULL;
+                    if(d[pos].Start==NULL)
                     {
-                        F[pos].Start=F[pos].newnode;
-                        F[pos].current=F[pos].newnode;
+                        d[pos].Start=d[pos].newnode;
+                        d[pos].current=d[pos].newnode;
                     }
                     else
                     {
-                        F[pos].current->next=F[pos].newnode;
-                        F[pos].current=F[pos].newnode;
+                        d[pos].current->next=d[pos].newnode;
+                        d[pos].current=d[pos].newnode;
                     }
 
                     Table[r]=1;
@@ -170,40 +170,53 @@ void allocate(int index)
             }
         }
     }
-    F[pos].st=F[pos].Start->index;
-    for(i=r;i<r+F[pos].len;i++)
+    d[pos].st=d[pos].Start->index;
+    printf("\nHi :%d",d[pos].st);
+    for(i=r;i<r+size;i++)
         Table[i]=1;
     printf("\n\tFile Allocation Table\n");
     printf("\nFileName\tStart\tEnd\tLength\n");
-    for(i=1;i<=pos;i++)
+    printf("\n%d\t\t%d\t%d\t%d",d[index].filename,d[pos].st,d[pos].current->index,size);
+}
+   /* for(i=1;i<=pos;i++)
     {
-        printf("\n%s\t\t%d\t%d\t%d",F[i].n,F[i].st,F[pos].current->index,F[i].len);
+        printf("\nhi");
+        printf("\n%s\t\t%d\t%d\t%d",d[i].func,d[i].st,d[pos].current->index,d[i].data);
         printf("\n");
     }
-
-}
+}  
+*/
+   
+    
 //delete
-void deallocate()
+void deallocate(int index)
 {
-   printf("\nEnter The File Name : ");
-   scanf("%s",&fn);
+   printf("\nFileName that to delete:",d[index].filename);
+    int *ptr = d[index].data;
+    int size = 0;
+    while(*ptr !=0){
+         *ptr++;
+         size++;
+      }
+      char fn = d[index].filename;
    for(i=1;i<=pos;i++)
    {
-            if(strcmp(F[i].n,fn)==0)
+            if(strcmp(d[i].func,fn)==0)  //n-->function 
             {
-                F[i].current=F[i].Start;
-                while(F[i].current)
+                d[i].current=d[i].Start;
+                while(d[i].current)
                 {
-                    Table[F[i].current->index]=0;
-                    F[i].temp=F[i].current;
-                    F[i].current=F[i].current->next;
-                    free(F[i].temp);
+                    Table[d[i].current->index]=0;
+                    d[i].temp=d[i].current;
+                    d[i].current=d[i].current->next;
+                    free(d[i].temp);
                 }
 
-                strcpy(F[i].n,"NULL");
-                F[i].st=0;
-                F[i].len=0;
-                printf("\nFile (%s) Deleted Successfully \n",fn);
+                strcpy(d[i].func,"NULL");
+                d[i].st=0;
+               
+              
+                printf("\nFile (%d) Deleted Successfully \n",fn);
                 break;
             }
             else
@@ -211,12 +224,14 @@ void deallocate()
     }
     printf("\n\t\tFile Allocation Table\n");
     printf("\nFileName\tStart\tLength\n");
-    for(i=1;i<=pos;i++)
+    printf("\n%d\t\t%d\t%d",d[i].filename,d[i].st,size);
+    /*for(i=1;i<=pos;i++)
     {
-        printf("\n%s\t\t%d\t%d",F[i].n,F[i].st,F[i].len);
+        
         printf("\n");
-    }
+    }*/
 }
+
 //read
 void display()
 {
@@ -241,12 +256,14 @@ void display()
         printf("\n\nNo File Found\n");
     }
 }
+
 int BFull()
 {
     for(i=1,B=0;i<=pos;i++)
-        B=B+F[i].len;
+        B=B+d[i].size;
     if(B>TB)
         return 1;
     else
         return 0;
 }
+
