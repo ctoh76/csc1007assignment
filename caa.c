@@ -225,14 +225,6 @@ void add(int index){
    //to incement index = (freed[j] + temp2)*blockSize + length
    //List of array able to use bitmap[](consist of 0s and 1s)|freed[](consist of the empty block no.)|d[].data[](consist of the real data)
    //data is in d[index].data[k]
-      for(int i = 0;i < (c + 1); i++){
-         if(dataf[i] == 0 && startLoc[i] == 0 && endLoc[i] == 0){
-            dataf[i] = dataf[i + 1];
-            startLoc[i] = startLoc[i + 1];
-            endLoc[i] = endLoc[i + 1];
-         }
-      }
-
       int k = 0;
       int q = (freed[0] + temp2) * blockSize;
       for(int i = q,k = 0;i <(q + size) && k<size;i++,k++){//fill data from struct into dataf[] from storage struct
@@ -253,6 +245,15 @@ void add(int index){
       for(int j = 0; j<blocksRequired; j++){//allocated into freespace
          l = freed[j];//freed[j] = block number to add in here very blurry cuz damn long do de
          bitmap[l] = 0;//put used(1) into the bitmap to show its used
+      }
+      for(int i = 0;i < temp2; i++){
+         if(dataf[i] == 0 && startLoc[i] == 0 && endLoc[i] == 0){
+            for(int j = i;j < temp2; j++){
+               dataf[j] = dataf[j + 1];
+               startLoc[j] = startLoc[j + 1];
+               endLoc[j] = endLoc[j + 1];
+            }
+         }
       }
    }
 }
