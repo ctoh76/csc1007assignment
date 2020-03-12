@@ -110,7 +110,6 @@ void initArray(){//init array
          bitmap[i]=1;
       }
       noOfBlock = blockNum;//total block no.
-      printf("nob: %d",noOfBlock);
 }
 void printDirectory(){//print directory
    int temp3 = noOfBlock;
@@ -119,8 +118,6 @@ void printDirectory(){//print directory
       temp2 += 1;
       
    }
-   printf("temp2: %d",temp2);
-   printf("temp3: %d",temp3);
    printf("*-------------Directory Section--------------*");
 	printf("\n|  Index    Block    FileData   Start    End\n");
 	for(int i = 0;i < (temp2 * blockSize); i++){

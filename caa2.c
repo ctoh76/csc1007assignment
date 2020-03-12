@@ -5,19 +5,13 @@
 #include "header.h"
 #define MAX 130//define max size of data able to store
 
-
-
+void addCont();
+void readCont();
+void deleteCont();
 int checkFunc();//i have lost track of how many functions i had might have some that was redudant
-int freespace();
-void add();
-void read();
-void delete();
-void initArray();
-void initFreespace();
-void printStorage();
-void printDirectory();
-void runFirst();
-int i = 0,pos = 0,blocksRequired,blockAvail,c = 0;//dk which nvr used need to clear it when i make the code look pretty
+int freespaceCont();
+
+int blocksRequired,blockAvail;//dk which nvr used need to clear it when i make the code look pretty
 int volumecontrol1[] = {0}; //nvr used
 int volumecontrol2[] = {0}; //nvr used dk what is volume control need recap abt it
 
@@ -43,28 +37,27 @@ int checkFunc(){//read csv and store everything into struct d[]
          case 'a'://read until character a or A means add la, r or R means read, d or D means delete
          case 'A':
             printf("Reached add Func");//1
-            add(c);
+            addCont(c);
             break;
          case 'r':
          case 'R':
             printf("\nEntered Read Function\n");
-            read(c);
+            readCont(c);
             break;
          case 'd':
          case 'D':
             printf("\nEntered Delete Function\n");
-            delete(c);
+            deleteCont(c);
             break;
          default:
             printf("Reached Default");//dk what to type in default should i even have a default here idk help me
             break;
       } 
    }
-
    return 0;
 }
 
-void add(int index){
+void addCont(int index){
    int *ptr = d[index].data; //get the length of file data inthe struct which stored in readfile()
    int size = 0;
    while(*ptr !=0){
@@ -74,7 +67,7 @@ void add(int index){
    double value = ceil((double)size/blockSize);// 6/2 = 3 or 6/5 = 2 cuz we actually need 2 blocks to store all 6 data uh
    blocksRequired = value;//get amount of blocksrequired to place in storage structure.
    printf("\nAdding File %d and",d[index].filename);//print filename
-   if(freespace()){//run freespace to check got space or not
+   if(freespaceCont()){//run freespace to check got space or not
       printf("Not allocated due to full Storage\n");
    }else{  //if freespace got space run here
    //                        0     +   22  *    2     +   6 = 50
@@ -116,7 +109,7 @@ void add(int index){
 
 
 
-void read(int index){
+void readCont(int index){
    //as when we read file the data stored is based on the index so like d[0].filename = 100 cuz we add 100 first then d[1].filename = 200 cuz we add 200 next
    int size = 0;//so d[0].data is the data in d[0].filename which is 101-106, i basically count the length of it cuz idk why but i cant use sizeof 
    for(int c= 0; c < index;c++){//cuz read 200 which is d[i].filename = 200 got no data!!! so need to look back into the filename 200 containing the data
@@ -173,7 +166,7 @@ void read(int index){
 }
 
 
-void delete(int index){//
+void deleteCont(int index){//
    int size = 0;
    for(int c= 0; c < index;c++){  
       if(d[index].filename == d[c].filename)//just to find the data's size
@@ -224,7 +217,7 @@ void delete(int index){//
 
 
 
-int ifFull(){//runs thru the who block to check if bitmap[] reaches all 0 #for bitmap[] it stores a value of 0 or 1 to indicate each block in storage structure is used or not used
+int ifFullCont(){//runs thru the who block to check if bitmap[] reaches all 0 #for bitmap[] it stores a value of 0 or 1 to indicate each block in storage structure is used or not used
    int countbitmap = 0;//counter
    for(int i = 0; i < noOfBlock; i++){//run the whole block eg. if block size 2, total storage block got 43(B22 - B64)
       if(bitmap[i] == 0){//checks eg. if block size 2, B22 - B64 is all 0s 0= used, 1=free to use
@@ -237,12 +230,9 @@ int ifFull(){//runs thru the who block to check if bitmap[] reaches all 0 #for b
       return 0; //return 0 or false
    }
 }
-
-
-int freespace(){
-
+int freespaceCont(){
    int count = 0;//counter
-   if(ifFull()){//run ifFull
+   if(ifFullCont()){//run ifFull
       return 1;//if ifFull() is full le return 1 or true to add func
    }
    else{  //if ifFull() is not full continue run

@@ -3,6 +3,7 @@
 #include <string.h>
 #include <math.h>// for ceiling function
 #include "caa2.c"
+#include "qwerty.c"
 #include "header.h"
 //#include "iaa.c"
 FILE *fp;
@@ -12,6 +13,8 @@ void printDirectory();
 void methodSelection();
 void printStorage();
 void printDirectory();
+void initFreespace();
+void initArray();
 
 //int indexf[MAX], block[MAX], dataf[MAX],startLoc[MAX],endLoc[MAX] , bitmap[MAX], freed[MAX];
 //int count1;
@@ -19,6 +22,7 @@ void printDirectory();
 
 void main(){
    readFile();
+   initArray();
    methodSelection();
 }
 
@@ -58,28 +62,27 @@ void readFile(){//read csv and store everything into struct d[]
 
 void methodSelection(){
     int method_choice;
-   printf("\nPlease select allocation method: 1. contiguous 2. linked 3. indexed 4. New Method");
+      printf("\nPlease select allocation method: 1. contiguous 2. linked 3. indexed 4. New Method");
 		scanf("%d", &method_choice);
       switch(method_choice)
 		{
 			case 1:
             printf("inside first method");
             // call method contigous
-            initArray();
             printDirectory();
             checkFunc();
             printDirectory();
             break;
 			case 2:
-         initArray();
+            printDirectory();
+            checkFuncLink();
    // call method linked
             break;
          case 3:
-         initArray();
-            // call method indexed
+            printDirectory();
+            // call method indexedB
             break;
          case 4:
-         initArray();
          // call method new method
             break;
 
@@ -90,9 +93,9 @@ void methodSelection(){
 }
 
 void initArray(){//init array
-int choice;
+   int choice;
    do{
-      printf("\nPlease select an option: ");
+      printf("\nPlease select an option: (1)BlockSize (2)No. of Blocks ");
 		scanf("%d", &choice);
       
 		switch(choice)
@@ -200,7 +203,7 @@ void printStorage(){
    printf("*-----------------------------------------------*\n");
    
    noOfBlock = noOfBlock-temp2;
-   initFreespace(noOfBlock);
+   initFreespace();
 }
 
 void initFreespace(){//initialize a freespace bitmap based of the total noofblocks available in storage structure 

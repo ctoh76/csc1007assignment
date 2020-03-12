@@ -12,7 +12,7 @@ struct data{ //Struct created to read in function require, filename, data able t
 
 int indexf[MAX], block[MAX], dataf[MAX],startLoc[MAX],endLoc[MAX] , bitmap[MAX], freed[MAX];
 int count1;
-int noOfBlock = 0 , temp2 = 0, temp3 = 0,blockSize = 0, e =0;
+int noOfBlock = 0 , temp2 = 0, temp3 = 0,blockSize = 0, e = 0, i = 0, c = 0;
 #endif
 //extern data d;//130 set of data able to read
 
