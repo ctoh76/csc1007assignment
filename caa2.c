@@ -7,7 +7,7 @@
 
 
 
-int checkFunc(struct data d[MAX] , int dataf[MAX], int startLoc[MAX], int endLoc[MAX]);//i have lost track of how many functions i had might have some that was redudant
+int checkFunc();//i have lost track of how many functions i had might have some that was redudant
 int freespace();
 void add();
 void read();
@@ -26,14 +26,24 @@ int choice,anotherdirblock;
 
 
 
-int checkFunc(struct data d[MAX] ,int dataf[MAX], int startLoc[MAX], int endLoc[MAX]){//read csv and store everything into struct d[]
+int checkFunc(){//read csv and store everything into struct d[]
 
-   for(int c= 0; c < i;c++){//interestingly enuf a readfile function i go put in here that after every func add, read or delete i go add immediately
+   /*for(int i = 0; i<5; i++){
+      printf("Filename: %d\n",d[i].filename);
+      printf("Data Func: %s\n",d[i].func);
+      for(int k = 0;k < 6;k++){
+         printf("data: %d\n",d[i].data[k]);
+      }
+   }*/
+   for(int c= 0; c < e;c++){//interestingly enuf a readfile function i go put in here that after every func add, read or delete i go add immediately
+     // printf("function  %s" , d[0].func);
+    //  printf("why not running here ");
       char *function = d[c].func;//d[1].func
       switch(*function){
          case 'a'://read until character a or A means add la, r or R means read, d or D means delete
          case 'A':
-            add(c , d , dataf,startLoc,endLoc);
+            printf("Reached add Func");//1
+            add(c);
             break;
          case 'r':
          case 'R':
@@ -43,7 +53,7 @@ int checkFunc(struct data d[MAX] ,int dataf[MAX], int startLoc[MAX], int endLoc[
          case 'd':
          case 'D':
             printf("\nEntered Delete Function\n");
-           delete(c);
+            delete(c);
             break;
          default:
             printf("Reached Default");//dk what to type in default should i even have a default here idk help me
@@ -54,26 +64,7 @@ int checkFunc(struct data d[MAX] ,int dataf[MAX], int startLoc[MAX], int endLoc[
    return 0;
 }
 
-
-void runFirst()
-{
-checkFunc(d ,  dataf,startLoc,endLoc);
- //  initArray();//initialize array
- //  printDirectory();//print the empty one out once
-  //read csv file
-  // printDirectory();//after running everything print the directory and storage structure again
-}
-
-void printVolumeControlBlock(){//nvr used at all dk how to use
-	int arrayLength = sizeof(volumecontrol1)/sizeof(volumecontrol1[0]);
-	printf("|  Index    File data  \n");
-	for(int i = 0; i< arrayLength;i++){
-		printf("|    %d       %d    \n", volumecontrol1[i],volumecontrol2[i]);
-	}
-}//pls teach me how to use it
-
-
-void add(int index ,struct data d[MAX]){
+void add(int index){
    int *ptr = d[index].data; //get the length of file data inthe struct which stored in readfile()
    int size = 0;
    while(*ptr !=0){
@@ -90,14 +81,6 @@ void add(int index ,struct data d[MAX]){
    //to incement index = (freed[j] + temp2)*blockSize + length
    //List of array able to use bitmap[](consist of 0s and 1s)|freed[](consist of the empty block no.)|d[].data[](consist of the real data)
    //data is in d[index].data[k]
-      for(int i = 0;i < (c + 1); i++){
-         if(dataf[i] == 0 && startLoc[i] == 0 && endLoc[i] == 0){
-            dataf[i] = dataf[i + 1];
-            startLoc[i] = startLoc[i + 1];
-            endLoc[i] = endLoc[i + 1];
-         }
-      }
-
       int k = 0;
       int q = (freed[0] + temp2) * blockSize;
       for(int i = q,k = 0;i <(q + size) && k<size;i++,k++){//fill data from struct into dataf[] from storage struct
@@ -118,6 +101,15 @@ void add(int index ,struct data d[MAX]){
       for(int j = 0; j<blocksRequired; j++){//allocated into freespace
          l = freed[j];//freed[j] = block number to add in here very blurry cuz damn long do de
          bitmap[l] = 0;//put used(1) into the bitmap to show its used
+      }
+      for(int i = 0;i < temp2; i++){
+         if(dataf[i] == 0 && startLoc[i] == 0 && endLoc[i] == 0){
+            for(int j = i;j < temp2; j++){
+               dataf[j] = dataf[j + 1];
+               startLoc[j] = startLoc[j + 1];
+               endLoc[j] = endLoc[j + 1];
+            }
+         }
       }
    }
 }
@@ -167,6 +159,16 @@ void read(int index){
       printf(".%d.",dataf[i]);//print the data
    }
    printf("\n");
+
+   for(int i = 0;i < temp2; i++){
+         if(dataf[i] == 0 && startLoc[i] == 0 && endLoc[i] == 0){
+            for(int j = i;j < temp2; j++){
+               dataf[j] = dataf[j + 1];
+               startLoc[j] = startLoc[j + 1];
+               endLoc[j] = endLoc[j + 1];
+            }
+         }
+      }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 
@@ -206,6 +208,16 @@ void delete(int index){//
    for(int i = t2 - temp2; i< t3-temp2; i++){//set bitmap back to 1 so its free but mainly is this bitmap cuz dataf nvr set 0 it oso can be overwrite
       bitmap[i] = 1;
    }
+
+   for(int i = 0;i < temp2; i++){
+         if(dataf[i] == 0 && startLoc[i] == 0 && endLoc[i] == 0){
+            for(int j = i;j < temp2; j++){
+               dataf[j] = dataf[j + 1];
+               startLoc[j] = startLoc[j + 1];
+               endLoc[j] = endLoc[j + 1];
+            }
+         }
+      }
 }
 
 

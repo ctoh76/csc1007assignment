@@ -13,7 +13,6 @@ void methodSelection();
 void printStorage();
 void printDirectory();
 
-int e = 0;
 //int indexf[MAX], block[MAX], dataf[MAX],startLoc[MAX],endLoc[MAX] , bitmap[MAX], freed[MAX];
 //int count1;
 
@@ -64,12 +63,12 @@ void methodSelection(){
       switch(method_choice)
 		{
 			case 1:
-         printf("inside first method");
-         // call method contigous
-         initArray();
-         printDirectory();
-         checkFunc(d , dataf,startLoc,endLoc);
-          printDirectory();
+            printf("inside first method");
+            // call method contigous
+            initArray();
+            printDirectory();
+            checkFunc();
+            printDirectory();
             break;
 			case 2:
          initArray();
@@ -91,7 +90,6 @@ void methodSelection(){
 }
 
 void initArray(){//init array
-int blockSize;
 int choice;
    do{
       printf("\nPlease select an option: ");
@@ -118,7 +116,6 @@ int choice;
       }else{
          count1 = 1;
       }
-      
       
    }while(count1 =0);
    //why blocksize must be 2 to 43 is cuz when u calculate right per block we have we need an index to store the added block de start and end
@@ -176,16 +173,14 @@ int choice;
 }
 
 void printDirectory(){//print directory
-   int temp3 = noOfBlock;
-   while(temp3>(temp2 * blockSize)){//this is the cool shit which calculate the blocksize for directory and blocksize for storage temp is directory end block,temp2 is storage start block
+   temp3 = noOfBlock;
+   while(temp3 > (temp2 * blockSize)){//this is the cool shit which calculate the blocksize for directory and blocksize for storage temp is directory end block,temp2 is storage start block
       temp3 -= 1;
-        temp2 += 1;
+      temp2 += 1;
    }
    printf("*-------------Directory Section--------------*");
 	printf("\n|  Index    Block    FileData   Start    End\n"); 
-   printf("temp2 %d" , temp2);
 	for(int i = 0;i < (temp2 * blockSize); i++){
-     //  printf("temp2 %d" , temp2);
    //   printf("why not running");
       	printf("|   %d         %d         %d         %d       %d |\n",indexf[i],block[i],dataf[i],startLoc[i],endLoc[i]);
  
