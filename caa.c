@@ -148,8 +148,12 @@ void initArray(){//init array
       
 }
 void printDirectory(){//print directory
+<<<<<<< HEAD
    
    temp3 = noOfBlock;
+=======
+   int temp3 = noOfBlock;
+>>>>>>> 554b582a76ed9040e3e3af00a637b40b7a227a67
    while(temp3>(temp2 * blockSize)){//this is the cool shit which calculate the blocksize for directory and blocksize for storage temp is directory end block,temp2 is storage start block
       temp3 -= 1;
       temp2 += 1;
@@ -158,7 +162,7 @@ void printDirectory(){//print directory
    printf("*-------------Directory Section--------------*");
 	printf("\n|  Index    Block    FileData   Start    End\n");
 	for(int i = 0;i < (temp2 * blockSize); i++){
-      	printf("|   %d         %d         %d         %d       %d |\n",indexf[i],block[i],dataf[i],startLoc[i],endLoc[i]);
+      printf("|   %d         %d         %d         %d       %d |\n",indexf[i],block[i],dataf[i],startLoc[i],endLoc[i]);
    }
    printf("*----------------------------------------------*\n");
    printStorage();
@@ -249,9 +253,9 @@ void main()
 void add(int index){
    int *ptr = d[index].data; //get the length of file data inthe struct which stored in readfile()
    int size = 0;
-      while(*ptr !=0){
-         *ptr++;
-         size++;//eg. if file is 100 data is 101-106 size or filelength is 6
+   while(*ptr !=0){
+      *ptr++;
+      size++;//eg. if file is 100 data is 101-106 size or filelength is 6
    }
    double value = ceil((double)size/blockSize);// 6/2 = 3 or 6/5 = 2 cuz we actually need 2 blocks to store all 6 data uh
    blocksRequired = value;//get amount of blocksrequired to place in storage structure.
@@ -289,8 +293,17 @@ void add(int index){
          l = freed[j];//freed[j] = block number to add in here very blurry cuz damn long do de
       
          bitmap[l] = 0;//put used(1) into the bitmap to show its used
-      } 
-   }                       
+      }
+      for(int i = 0;i < temp2; i++){
+         if(dataf[i] == 0 && startLoc[i] == 0 && endLoc[i] == 0){
+            for(int j = i;j < temp2; j++){
+               dataf[j] = dataf[j + 1];
+               startLoc[j] = startLoc[j + 1];
+               endLoc[j] = endLoc[j + 1];
+            }
+         }
+      }
+   }
 }
 void read(int index){
    //as when we read file the data stored is based on the index so like d[0].filename = 100 cuz we add 100 first then d[1].filename = 200 cuz we add 200 next
@@ -336,7 +349,6 @@ void read(int index){
    }
    printf("\n");
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 }
 void delete(int index){//
    int size = 0;
@@ -406,6 +418,7 @@ int freespace(){
       return 1;//if ifFull() is full le return 1 or true to add func
    }
    else{  //if ifFull() is not full continue run
+
       for(int i = 0; i < noOfBlock; i++){//scan the noOfblocks in the storage structure(basically 43)B22- B64
          if(count == blocksRequired){//blocksrequired is calculated based on size or length of data in add divide by blocksize typed by user
             break;// eg. if user type blocksize 2 and add file de data length is 6  6/2 = 3 if 3 == 3 break 
