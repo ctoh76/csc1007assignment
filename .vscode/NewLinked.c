@@ -3,6 +3,7 @@
 #include<string.h>
 #include <math.h>
 
+#define TB 100
 #define MAX 130
 FILE *fp;
 typedef struct{
@@ -12,15 +13,11 @@ typedef struct{
       int st;
     struct node
     {
-        int index;//data
+        int index;
         struct node *next;
-        int key;
-    };
+    }*Start,*current,*newnode,*temp;
 }data;
 data d[MAX];
-
-struct node *head = NULL;
-struct node *current = NULL;
 
 int readFile(); 
 int freespace();
@@ -32,6 +29,7 @@ void initFreespace();
 void printStorage();
 void printDirectory();
 
+int Table[TB+1],r,B=0;
 int f[50];
 
 
@@ -209,7 +207,7 @@ void main()
 }
 
 //add
-void allocate(int index,int key)
+void allocate(int index)
 
 //get the func,filename and data
 {
@@ -220,9 +218,6 @@ void allocate(int index,int key)
          *ptr++;
          size++;
       }
-
-
-
 //get the blockszie require 
    if(blockSize<size){
       value = ceil(size/(blockSize-1));
@@ -239,42 +234,58 @@ void allocate(int index,int key)
      printf("Not allocated due to full Storage\n");
    }
    else{
-      int k = 0;
-      int j = freed[0] + temp2;//22 -->startig block ,temp=22,freed[0]=0,store temp2 string block inside freed array [0]
-      int q = (freed[0] + temp2) * blockSize; //22*2=44(user enter blk) ---starting index  
-      int w = (freed[blocksRequired-1]+ temp2)*blockSize; //block require 10-1,since starting at [0],9+22=31,it will go store until blk 31,and index size 62(31*2)---> this is to calculate index
+         for(i=1;i<=size;i++){
+        d[pos].newnode=(struct node *)malloc(sizeof(struct node));
+        r=rand();
+        f[i]=0;
+      int st = (freed[i] + temp2) * blockSize;
+      if (f[st] == 0){
+        d[pos].newnode ->index =r
+        d[pos].newnode ->next =NULL;
+        if(d[pos].Start==NULL)
+        {
+             d[pos].Start=d[pos].newnode;
+            d[pos].current=d[pos].newnode;
+        }
+        else
+        {
+            d[pos].current->next=d[pos].newnode;
+            d[pos].current=d[pos].newnode;
+        }
+     else{
+
+     }
+   }
+         }
+       
+      
+
+      /*int k = 0;
+      int q = (freed[0] + temp2) * blockSize;
+      int w = (freed[blocksRequired-1]+ temp2)*blockSize;
       for(int i = q,k = 0;i <w && k<size;i++,k++){//fill data from struct into dataf[] from storage struct
-                //create a link
- 
-         
-         
-         if(blocksRequired>1){   
-            dataf[i] = d[index].data[k];   //entry colunm in storage table
+         if(blocksRequired>1){
+            dataf[i] = d[index].data[k];
             printf("\ndata inside File %d",d[index].data[k]);
-            
-         
+            startLoc[i] = d[index].filename;
          }
          else{
             dataf[i] = d[index].data[k];
-            
+            printf("\ndata inside File %d",d[index].data[k]);
+            startLoc[i] = d[index].filename;
          } 
-      }
+      }*/
 
-      
+      //i swear go rmb what is temp2 cuz its everywhere so dumb for a temp int but i did this mess
       //temp2 is the starting block no. of the storage sturcture so if blocksize is 2 temp2 will be 22 if blocksize is 3 temp2 will be 11.
       if(c == temp2 * blockSize - 1){//create a counter for directory struct so if counter reaches the max block of directory struct which is 21 means full le by right shouldnt reach here will be damn weird
          printf("Exceeded Directory allocated");
       }else{
          
-  
-    dataf[c] = d[index].filename;//add per add file into directory struct
+         dataf[c] = d[index].filename;//add per add file into directory struct
          startLoc[c] = freed[0] + temp2;//add where it start into directory struct
          endLoc[c] = freed[0] + temp2 + (value -1);
          c++;
-
-
-         
-
       }
       int l = 0;//temp int
       for(int j = 0; j<blocksRequired; j++){//allocated into freespace
@@ -300,11 +311,11 @@ void initFreespace(){//initialize a freespace bitmap based of the total noofbloc
 
 int ifFull(){//runs thru the who block to check if bitmap[] reaches all 0 #for bitmap[] it stores a value of 0 or 1 to indicate each block in storage structure is used or not used
    int countbitmap = 0;//counter
-   /*for(int i = 0; i < noOfBlock; i++){//run the whole block eg. if block size 2, total storage block got 43(B22 - B64)
+   for(int i = 0; i < noOfBlock; i++){//run the whole block eg. if block size 2, total storage block got 43(B22 - B64)
       if(bitmap[i] == 0){//checks eg. if block size 2, B22 - B64 is all 0s 0= used, 1=free to use
          countbitmap++;//increment per 0 in bitmap
       }
-   }*/
+   }
    if(countbitmap>=noOfBlock){ //if counter bigger than or equal to total storage block(43) means fully used
       return 1; //return 1 or true
    }else{
@@ -324,12 +335,12 @@ int freespace(){
          //# for some cases where like if data input is 5 cuz its contiguous alloc so need ceiling it ceil(5/2) = 3
          //eg. if count(0) less than blocksRequired(3) and bitmap of block 0 is free to use, freed[0] = block no(i)
            if(count < blocksRequired){
-              freed[count] = i;//freed[count] stores the blockno its currently adding for example freed[0] = 4, 5 or 6
+               freed[count] = i;//freed[count] stores the blockno its currently adding for example freed[0] = 4, 5 or 6
                count++;
            }  
-           
       }
       printf(" found free ");
+      
       for(int i = 0; i < blocksRequired; i++){//if found 3 space for blockrequired(3)
          printf("-B%d-",freed[i]+temp2);//print which block is free
       }
@@ -452,13 +463,6 @@ void display(int index)
 printf(">--%d-->",d[index].current->index);
     
 }
-
-
-
-
-
-
-
 
 
 

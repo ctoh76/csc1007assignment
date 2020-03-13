@@ -121,7 +121,7 @@ void printDirectory(){//print directory
    printf("*-------------Directory Section--------------*");
 	printf("\n|  Index    Block    FileData   Start    End\n");
 	for(int i = 0;i < (temp2 * blockSize); i++){
-      	printf("|   %d         %d         %d         %d       %d |\n",indexf[i],block[i],dataf[i],startLoc[i],endLoc[i]);
+      printf("|   %d         %d         %d         %d       %d |\n",indexf[i],block[i],dataf[i],startLoc[i],endLoc[i]);
    }
    printf("*----------------------------------------------*\n");
    printStorage();
