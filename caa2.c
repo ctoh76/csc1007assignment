@@ -96,7 +96,7 @@ void addCont(int index){
          bitmap[l] = 0;//put used(1) into the bitmap to show its used
       }
       for(int i = 0;i < temp2; i++){
-         if(dataf[i] == 0 && startLoc[i] == 0 && endLoc[i] == 0){
+         if(dataf[i] == -1 && startLoc[i] == -1 && endLoc[i] == -1){
             for(int j = i;j < temp2; j++){
                dataf[j] = dataf[j + 1];
                startLoc[j] = startLoc[j + 1];
@@ -152,7 +152,7 @@ void readCont(int index){
    printf("\n");
 
    for(int i = 0;i < temp2; i++){
-         if(dataf[i] == 0 && startLoc[i] == 0 && endLoc[i] == 0){
+         if(dataf[i] == -1 && startLoc[i] == -1 && endLoc[i] == -1){
             for(int j = i;j < temp2; j++){
                dataf[j] = dataf[j + 1];
                startLoc[j] = startLoc[j + 1];
@@ -183,16 +183,16 @@ void deleteCont(int index){//
          t1 = dataf[i];//allocate into t1 to use
          t2 = startLoc[i];//allocate into t2 to use
          t3 = endLoc[i];//allocate into t3 to use
-         dataf[i] = 0;//set it to 0 cuz its been "deleted"
-         startLoc[i] = 0;//set it to 0 cuz its been "deleted"
-         endLoc[i] = 0;//set it to 0 cuz its been "deleted"
+         dataf[i] = -1;//set it to 0 cuz its been "deleted"
+         startLoc[i] = -1;//set it to 0 cuz its been "deleted"
+         endLoc[i] = -1;//set it to 0 cuz its been "deleted"
       }
    }
    printf("\nData in %d:",t1);
    for(int i = t2*blockSize;i< (t2*blockSize+size);i++){//set dataf[] inthe storage struct into 0 so can use
       printf(".%d.",dataf[i]);
-      dataf[i] = 0;
-      startLoc[i] = 0;
+      dataf[i] = -1;
+      startLoc[i] = -1;
    }
    printf("Has been deleted");
    printf("\n");
@@ -201,7 +201,7 @@ void deleteCont(int index){//
    }
 
    for(int i = 0;i < temp2; i++){
-         if(dataf[i] == 0 && startLoc[i] == 0 && endLoc[i] == 0){
+         if(dataf[i] == -1 && startLoc[i] == -1 && endLoc[i] == -1){
             for(int j = i;j < temp2; j++){
                dataf[j] = dataf[j + 1];
                startLoc[j] = startLoc[j + 1];

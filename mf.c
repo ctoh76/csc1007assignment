@@ -77,6 +77,8 @@ void methodSelection(){
 			case 2:
             printDirectory();
             checkFuncLink();
+            printDirectory();
+
    // call method linked
             break;
          case 3:
@@ -168,9 +170,9 @@ void initArray(){//init array
       for(int i = 0;i < MAX; i++){//init the values and data/start/end to 0
 		   indexf[i] = i;
 		   block[i] = temp[i];
-		   dataf[i] = 0;
-         startLoc[i] = 0;
-         endLoc[i] = 0;
+		   dataf[i] = -1;
+         startLoc[i] = -1;
+         endLoc[i] = -1;
 	   }
       for(int i = 0; i < blockNum; i++){//init bitmap for freespace
          bitmap[i]=1;

@@ -63,23 +63,32 @@ void addLink(int index){
    double value1 = ceil((double)size/(blockSize-1));
    blocksRequired = value1;
    printf("\nAdding File %d and",d[index].filename);//print filename
+   int j = 0;
    if(freespaceLink()){//run freespace to check got space or not
       printf("Not allocated due to full Storage\n");
    }else{
-
-
-
-
-
-
-
-
-
-
-
-      for(int i = freed[0]; i < freed[0] + blocksRequired; i++){
+      for(int i = freed[0]; i < (freed[0] + blocksRequired); i++){
          bitmap[i] = 0;
       }
+      for(int i = 0; i< blocksRequired; i++){
+         for(int k = ((freed[i] + temp2) * blockSize);k < (((freed[i] + temp2) * blockSize)+ blockSize); k++)
+         {
+            if(k == (((freed[i] + temp2) * blockSize)+ blockSize)-1){       
+               dataf[k] = freed[i + 1] + temp2;
+               if(dataf[k] == temp2){
+                  dataf[k] = -1;
+               }
+               printf(".Index: %d. Data: %d ", k,dataf[k]);
+            }
+            else{
+               if(j<=size){
+                  dataf[k] = d[index].data[j];
+                  printf(".Index: %d. Data: %d ", k,dataf[k]);
+                  j++;
+               } 
+            }  
+         } 
+      } 
    }
 }
 
@@ -116,6 +125,10 @@ int freespaceLink(){
       printf(" found free ");
       for(int i = 0; i < blocksRequired; i++){//if found 3 space for blockrequired(3)
          printf("-B%d-",freed[i]+temp2);//print which block is free
+      }
+      printf("BitMap");
+      for(int i = 0; i < noOfBlock; i++){
+         printf("%d",bitmap[i]);
       }
       printf("\n");
       return 0;//then return 0 or false # i might have messed up whether 0 is true or false but basically return it to the add function
