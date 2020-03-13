@@ -2,213 +2,62 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>// for ceiling function
-
+#include "header.h"
 #define MAX 130//define max size of data able to store
-FILE *fp;
-typedef struct{ //Struct created to read in function require, filename, data able to hold
-      char func[6];//to read add, read, delete based on first letter
-      int filename;
-      int data[MAX];
-}data;
-data d[MAX];//130 set of data able to read
 
-int readFile();//i have lost track of how many functions i had might have some that was redudant
-int freespace();
-void add();
-void read();
-void delete();
-void initArray();
-void initFreespace();
-void printStorage();
-void printDirectory();
+void addCont();
+void readCont();
+void deleteCont();
+int checkFunc();//i have lost track of how many functions i had might have some that was redudant
+int freespaceCont();
 
-int i = 0,pos = 0,temp2 = 0,noOfBlock = 0,blocksRequired,blockAvail,c = 0;//dk which nvr used need to clear it when i make the code look pretty
+int blockAvail;//dk which nvr used need to clear it when i make the code look pretty
 int volumecontrol1[] = {0}; //nvr used
 int volumecontrol2[] = {0}; //nvr used dk what is volume control need recap abt it
-int indexf[MAX], block[MAX], dataf[MAX],startLoc[MAX],endLoc[MAX],bitmap[MAX], freed[MAX];//here de all got used  
+
 int blockSize, excessBlock, dirBlocks,k;//excess and dir block havent used need rmb to make it remove redudant blocks but if no time do jiu suan le
-int choice,anotherdirblock ;
-int count1;
-void initArray(){//init array
-   do{
-      printf("\nPlease select an option: ");
-		scanf("%d", &choice);
-      
-		switch(choice)
-		{
-			case 1:
-            printf("Enter block size between(2-43): ");
-	         scanf("%d", &blockSize); 
-            break;
-			case 2:
-			   printf("Enter the amount of block you want:");
-            scanf("%d", &anotherdirblock);
-            break;
-         default:
-            printf("Reached Default");//dk what to type in default should i even have a default here idk help me
-            break;
+int choice,anotherdirblock;
+
+
+
+int checkFunc(){//read csv and store everything into struct d[]
+
+   /*for(int i = 0; i<5; i++){
+      printf("Filename: %d\n",d[i].filename);
+      printf("Data Func: %s\n",d[i].func);
+      for(int k = 0;k < 6;k++){
+         printf("data: %d\n",d[i].data[k]);
       }
-      if(blockSize<2 || blockSize > 43){
-         count1 = 0;
-      }else if(anotherdirblock < 2 || anotherdirblock > 43){
-         count1 = 0;
-      }else{
-         count1 = 1;
-      }
-      
-      
-   }while(count1 =0);
-   //why blocksize must be 2 to 43 is cuz when u calculate right per block we have we need an index to store the added block de start and end
-   //so like if we put block size 1 we need like 130 index to fill in out file info into directory so means its impossible de so can only start from 2 as to why its until 43
-   //cuz if we used 44 so we will have we only have 2 pathetic blocks of size 44 then funny thing is use gonna need to throw away 42 block space cuz redudant 
-   //then 1 for directory 1 for storage which wont make sense uh u use such a big space of index 44
-   //to store 1 goddamn file info... anw this can edit de if u got better de lets follow it!!!
-
-      //excessBlock = 130%blockSize; dk how use this
-	   //dirBlocks = (130-excessBlock)/blockSize; same for this dk how use
-      int temp[MAX]; 
-	   int counter = 0;
-      int blockNum = 0;
-
-      if(choice == 1)
-      {
-         for(int a = 0; a<MAX;a++)\
-         {//get no. of blocks
-            counter = counter + 1;
-            temp[a] = blockNum;
-            if(counter == blockSize)
-            {
-               counter = 0;
-               blockNum = blockNum +1;
-            }
-         }
-      }else if(choice == 2)
-      {
-         printf("dir:%d",anotherdirblock);
-         blockSize = MAX/anotherdirblock;
-         printf("bs: %d:",blockSize);
-         for(int a = 0; a<MAX;a++)
-         {//get no. of blocks
-            counter = counter + 1;
-            temp[a] = blockNum;
-            if(counter == blockSize)
-            {
-			      counter = 0;
-			      blockNum = blockNum +1;
-		      }
-         }
-      }
-      
-      for(int i = 0;i < MAX; i++){//init the values and data/start/end to 0
-		   indexf[i] = i;
-		   block[i] = temp[i];
-		   dataf[i] = 0;
-         startLoc[i] = 0;
-         endLoc[i] = 0;
-	   }
-      for(int i = 0; i < blockNum; i++){//init bitmap for freespace
-         bitmap[i]=1;
-      }
-      noOfBlock = blockNum;//total block no.
-}
-void printDirectory(){//print directory
-   int temp3 = noOfBlock;
-   while(temp3>(temp2 * blockSize)){//this is the cool shit which calculate the blocksize for directory and blocksize for storage temp is directory end block,temp2 is storage start block
-      temp3 -= 1;
-      temp2 += 1;
-      
-   }
-   printf("*-------------Directory Section--------------*");
-	printf("\n|  Index    Block    FileData   Start    End\n");
-	for(int i = 0;i < (temp2 * blockSize); i++){
-      printf("|   %d         %d         %d         %d       %d |\n",indexf[i],block[i],dataf[i],startLoc[i],endLoc[i]);
-   }
-   printf("*----------------------------------------------*\n");
-   printStorage();
-}
-void printStorage(){
-
-   printf("*---------------Storage Section----------------*");
-   printf("\n|  Index    Block    Entry\n");
-	for(int i = (temp2 * blockSize);i < MAX; i++){// need include something to push up the list if i decide to add a new file in it will appear at the bottom uh...
-      	printf("|   %d         %d         %d                    |\n",indexf[i],block[i],dataf[i]);//i add startLoc[] in this which reflects the start block of each file
-   }
-   printf("*-----------------------------------------------*\n");
-   
-   noOfBlock = noOfBlock-temp2;
-   initFreespace();
-}
-void printVolumeControlBlock(){//nvr used at all dk how to use
-	int arrayLength = sizeof(volumecontrol1)/sizeof(volumecontrol1[0]);
-	printf("|  Index    File data  \n");
-	for(int i = 0; i< arrayLength;i++){
-		printf("|    %d       %d    \n", volumecontrol1[i],volumecontrol2[i]);
-	}
-}//pls teach me how to use it
-int readFile(){//read csv and store everything into struct d[]
-
-   char file_name[25];
-   char *token;
-   char buff[1024];
-
-   printf("Please Enter your desired csv file\n");//get csv filename
-   scanf("%s",&file_name);
-
-   fp = fopen(file_name, "r"); // read mode
-
-   if (fp == NULL)
-   {
-      perror("Error while opening the file.\n");//if file does not exist
-      exit(EXIT_FAILURE);
-   }
-   while(fgets(buff,sizeof(buff),fp)){//store file into d[].func d[].filename d[].data
-      int j = 0;
-      token = strtok(buff,",");
-      strcpy(d[i].func,token);
-      token = strtok(NULL,",");
-      d[i].filename = atoi(token);
-      token = strtok(NULL,",");
-      while(token != NULL){   
-         d[i].data[j]= atoi(token);
-         token = strtok(NULL,",");
-         j++;
-      }
-      i++;
-   } 
-   for(int c= 0; c < i;c++){//interestingly enuf a readfile function i go put in here that after every func add, read or delete i go add immediately
+   }*/
+   for(int c= 0; c < e;c++){//interestingly enuf a readfile function i go put in here that after every func add, read or delete i go add immediately
+     // printf("function  %s" , d[0].func);
+    //  printf("why not running here ");
       char *function = d[c].func;//d[1].func
       switch(*function){
          case 'a'://read until character a or A means add la, r or R means read, d or D means delete
          case 'A':
-            add(c);
+            printf("Reached add Func");//1
+            addCont(c);
             break;
          case 'r':
          case 'R':
             printf("\nEntered Read Function\n");
-            read(c);
+            readCont(c);
             break;
          case 'd':
          case 'D':
             printf("\nEntered Delete Function\n");
-            delete(c);
+            deleteCont(c);
             break;
          default:
             printf("Reached Default");//dk what to type in default should i even have a default here idk help me
             break;
       } 
    }
-   fclose(fp);//close the file
    return 0;
 }
 
-void main()
-{
-   initArray();//initialize array
-   printDirectory();//print the empty one out once
-   readFile();//read csv file
-   printDirectory();//after running everything print the directory and storage structure again
-}
-void add(int index){
+void addCont(int index){
    int *ptr = d[index].data; //get the length of file data inthe struct which stored in readfile()
    int size = 0;
    while(*ptr !=0){
@@ -218,7 +67,7 @@ void add(int index){
    double value = ceil((double)size/blockSize);// 6/2 = 3 or 6/5 = 2 cuz we actually need 2 blocks to store all 6 data uh
    blocksRequired = value;//get amount of blocksrequired to place in storage structure.
    printf("\nAdding File %d and",d[index].filename);//print filename
-   if(freespace()){//run freespace to check got space or not
+   if(freespaceCont()){//run freespace to check got space or not
       printf("Not allocated due to full Storage\n");
    }else{  //if freespace got space run here
    //                        0     +   22  *    2     +   6 = 50
@@ -247,7 +96,7 @@ void add(int index){
          bitmap[l] = 0;//put used(1) into the bitmap to show its used
       }
       for(int i = 0;i < temp2; i++){
-         if(dataf[i] == 0 && startLoc[i] == 0 && endLoc[i] == 0){
+         if(dataf[i] == -1 && startLoc[i] == -1 && endLoc[i] == -1){
             for(int j = i;j < temp2; j++){
                dataf[j] = dataf[j + 1];
                startLoc[j] = startLoc[j + 1];
@@ -257,7 +106,8 @@ void add(int index){
       }
    }
 }
-void read(int index){
+
+void readCont(int index){
    //as when we read file the data stored is based on the index so like d[0].filename = 100 cuz we add 100 first then d[1].filename = 200 cuz we add 200 next
    int size = 0;//so d[0].data is the data in d[0].filename which is 101-106, i basically count the length of it cuz idk why but i cant use sizeof 
    for(int c= 0; c < index;c++){//cuz read 200 which is d[i].filename = 200 got no data!!! so need to look back into the filename 200 containing the data
@@ -300,9 +150,21 @@ void read(int index){
       printf(".%d.",dataf[i]);//print the data
    }
    printf("\n");
+
+   for(int i = 0;i < temp2; i++){
+         if(dataf[i] == -1 && startLoc[i] == -1 && endLoc[i] == -1){
+            for(int j = i;j < temp2; j++){
+               dataf[j] = dataf[j + 1];
+               startLoc[j] = startLoc[j + 1];
+               endLoc[j] = endLoc[j + 1];
+            }
+         }
+      }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
-void delete(int index){//
+
+
+void deleteCont(int index){//
    int size = 0;
    for(int c= 0; c < index;c++){  
       if(d[index].filename == d[c].filename)//just to find the data's size
@@ -321,29 +183,39 @@ void delete(int index){//
          t1 = dataf[i];//allocate into t1 to use
          t2 = startLoc[i];//allocate into t2 to use
          t3 = endLoc[i];//allocate into t3 to use
-         dataf[i] = 0;//set it to 0 cuz its been "deleted"
-         startLoc[i] = 0;//set it to 0 cuz its been "deleted"
-         endLoc[i] = 0;//set it to 0 cuz its been "deleted"
+         dataf[i] = -1;//set it to 0 cuz its been "deleted"
+         startLoc[i] = -1;//set it to 0 cuz its been "deleted"
+         endLoc[i] = -1;//set it to 0 cuz its been "deleted"
       }
    }
    printf("\nData in %d:",t1);
    for(int i = t2*blockSize;i< (t2*blockSize+size);i++){//set dataf[] inthe storage struct into 0 so can use
       printf(".%d.",dataf[i]);
-      dataf[i] = 0;
-      startLoc[i] = 0;
+      dataf[i] = -1;
+      startLoc[i] = -1;
    }
    printf("Has been deleted");
    printf("\n");
    for(int i = t2 - temp2; i< t3-temp2; i++){//set bitmap back to 1 so its free but mainly is this bitmap cuz dataf nvr set 0 it oso can be overwrite
       bitmap[i] = 1;
    }
+
+   for(int i = 0;i < temp2; i++){
+         if(dataf[i] == -1 && startLoc[i] == -1 && endLoc[i] == -1){
+            for(int j = i;j < temp2; j++){
+               dataf[j] = dataf[j + 1];
+               startLoc[j] = startLoc[j + 1];
+               endLoc[j] = endLoc[j + 1];
+            }
+         }
+      }
 }
-void initFreespace(){//initialize a freespace bitmap based of the total noofblocks available in storage structure 
-   for(int i = 0; i < noOfBlock; i++){
-      bitmap[i] = 1;//initiate all into 1 so that all is free (1 = free, 0 = used).
-   }
-}
-int ifFull(){//runs thru the who block to check if bitmap[] reaches all 0 #for bitmap[] it stores a value of 0 or 1 to indicate each block in storage structure is used or not used
+
+
+
+
+
+int ifFullCont(){//runs thru the who block to check if bitmap[] reaches all 0 #for bitmap[] it stores a value of 0 or 1 to indicate each block in storage structure is used or not used
    int countbitmap = 0;//counter
    for(int i = 0; i < noOfBlock; i++){//run the whole block eg. if block size 2, total storage block got 43(B22 - B64)
       if(bitmap[i] == 0){//checks eg. if block size 2, B22 - B64 is all 0s 0= used, 1=free to use
@@ -356,10 +228,9 @@ int ifFull(){//runs thru the who block to check if bitmap[] reaches all 0 #for b
       return 0; //return 0 or false
    }
 }
-int freespace(){
-
+int freespaceCont(){
    int count = 0;//counter
-   if(ifFull()){//run ifFull
+   if(ifFullCont()){//run ifFull
       return 1;//if ifFull() is full le return 1 or true to add func
    }
    else{  //if ifFull() is not full continue run
