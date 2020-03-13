@@ -22,7 +22,7 @@ void initFreespace();
 void printStorage();
 void printDirectory();
 
-int i = 0,pos = 0,temp2 = 0,noOfBlock = 0,blocksRequired,blockAvail,c = 0;//dk which nvr used need to clear it when i make the code look pretty
+int i = 0,pos = 0,temp2 = 0,noOfBlock = 0,blocksRequired,blockAvail,c = 0,temp3;//dk which nvr used need to clear it when i make the code look pretty
 int volumecontrol1[] = {0}; //nvr used
 int volumecontrol2[] = {0}; //nvr used dk what is volume control need recap abt it
 int indexf[MAX], block[MAX], dataf[MAX],startLoc[MAX],endLoc[MAX],bitmap[MAX], freed[MAX];//here de all got used  
@@ -39,11 +39,19 @@ void initArray(){//init array
 			case 1:
             printf("Enter block size between(2-43): ");
 	         scanf("%d", &blockSize); 
+            excessBlock = 130%blockSize;
+            dirBlocks = (130-excessBlock)/blockSize;
+            printf("%d Total Blocks of %d entries each with excess entry of %d on Block %d\n", dirBlocks,blockSize,excessBlock,dirBlocks);
+   
             break;
 			case 2:
 			   printf("Enter the amount of block you want:");
             scanf("%d", &anotherdirblock);
+            excessBlock = 130%anotherdirblock;
+            blockSize =(130-excessBlock)/anotherdirblock;
+            printf("%d Total Blocks of %d entries each with excess entry of %d on Block %d\n", anotherdirblock,blockSize,excessBlock,anotherdirblock);
             break;
+
          default:
             printf("Reached Default");//dk what to type in default should i even have a default here idk help me
             break;
@@ -64,14 +72,15 @@ void initArray(){//init array
    //then 1 for directory 1 for storage which wont make sense uh u use such a big space of index 44
    //to store 1 goddamn file info... anw this can edit de if u got better de lets follow it!!!
 
-      //excessBlock = 130%blockSize; dk how use this
-	   //dirBlocks = (130-excessBlock)/blockSize; same for this dk how use
+      
       int temp[MAX]; 
 	   int counter = 0;
       int blockNum = 0;
 
       if(choice == 1)
       {
+         
+         
          for(int a = 0; a<MAX;a++)\
          {//get no. of blocks
             counter = counter + 1;
@@ -82,6 +91,7 @@ void initArray(){//init array
                blockNum = blockNum +1;
             }
          }
+         
       }else if(choice == 2)
       {
          printf("dir:%d",anotherdirblock);
@@ -90,13 +100,15 @@ void initArray(){//init array
          for(int a = 0; a<MAX;a++)
          {//get no. of blocks
             counter = counter + 1;
-            temp[a] = blockNum;
+            temp[a] = dirBlocks;
             if(counter == blockSize)
             {
 			      counter = 0;
-			      blockNum = blockNum +1;
+			      dirBlocks = dirBlocks +1;
 		      }
          }
+         
+      
       }
       
       for(int i = 0;i < MAX; i++){//init the values and data/start/end to 0
@@ -106,14 +118,38 @@ void initArray(){//init array
          startLoc[i] = 0;
          endLoc[i] = 0;
 	   }
-      for(int i = 0; i < blockNum; i++){//init bitmap for freespace
+      for(int i = 0; i < dirBlocks; i++){//init bitmap for freespace
          bitmap[i]=1;
       }
-      noOfBlock = blockNum;//total block no.
+      if(choice==1)
+      {
+         if(excessBlock > 0)
+         {
+            noOfBlock = dirBlocks -1;//total block no.
+            printf("%d",noOfBlock);
+         }
+         else
+         {
+            noOfBlock = dirBlocks;    
+         }
+      }
+      else if (choice ==2)
+      {
+         if(excessBlock > 0)
+         {
+            noOfBlock = anotherdirblock -1;//total block no.
+         }
+         else
+         {
+            noOfBlock = dirBlocks;
+         }
+      }
+      
+      
 }
 void printDirectory(){//print directory
-   int temp3 = noOfBlock;
    
+   temp3 = noOfBlock;
    while(temp3>(temp2 * blockSize)){//this is the cool shit which calculate the blocksize for directory and blocksize for storage temp is directory end block,temp2 is storage start block
       temp3 -= 1;
       temp2 += 1;
@@ -136,7 +172,7 @@ void printStorage(){
    }
    printf("*-----------------------------------------------*\n");
    
-   noOfBlock = noOfBlock-temp2;
+   noOfBlock = noOfBlock;
    initFreespace();
 }
 void printVolumeControlBlock(){//nvr used at all dk how to use
@@ -204,6 +240,7 @@ int readFile(){//read csv and store everything into struct d[]
 
 void main()
 {
+  
    initArray();//initialize array
    printDirectory();//print the empty one out once
    readFile();//read csv file
@@ -229,8 +266,13 @@ void add(int index){
       int k = 0;
       int q = (freed[0] + temp2) * blockSize;
       for(int i = q,k = 0;i <(q + size) && k<size;i++,k++){//fill data from struct into dataf[] from storage struct
-         dataf[i] = d[index].data[k];
-         startLoc[i] = d[index].filename;//fill the startblock for the file into it
+         if(i>noOfBlock*blockSize + blockSize - 1){
+            break;
+         }
+         else{
+            dataf[i] = d[index].data[k];
+            startLoc[i] = d[index].filename;//fill the startblock for the file into it
+         } 
       }
       //i swear go rmb what is temp2 cuz its everywhere so dumb for a temp int but i did this mess
       //temp2 is the starting block no. of the storage sturcture so if blocksize is 2 temp2 will be 22 if blocksize is 3 temp2 will be 11.
@@ -245,6 +287,7 @@ void add(int index){
       int l = 0;//temp int
       for(int j = 0; j<blocksRequired; j++){//allocated into freespace
          l = freed[j];//freed[j] = block number to add in here very blurry cuz damn long do de
+      
          bitmap[l] = 0;//put used(1) into the bitmap to show its used
       } 
    }                       
@@ -338,14 +381,21 @@ void initFreespace(){//initialize a freespace bitmap based of the total noofbloc
 }
 int ifFull(){//runs thru the who block to check if bitmap[] reaches all 0 #for bitmap[] it stores a value of 0 or 1 to indicate each block in storage structure is used or not used
    int countbitmap = 0;//counter
+   int countbitmap1 = noOfBlock;
    for(int i = 0; i < noOfBlock; i++){//run the whole block eg. if block size 2, total storage block got 43(B22 - B64)
       if(bitmap[i] == 0){//checks eg. if block size 2, B22 - B64 is all 0s 0= used, 1=free to use
          countbitmap++;//increment per 0 in bitmap
+         countbitmap1--;
       }
    }
+   printf("%d", noOfBlock);
    if(countbitmap>=noOfBlock){ //if counter bigger than or equal to total storage block(43) means fully used
       return 1; //return 1 or true
-   }else{
+   }else if(countbitmap1<blocksRequired){
+     return 1;
+   }
+   else
+   {
       return 0; //return 0 or false
    }
 }
