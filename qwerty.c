@@ -25,6 +25,11 @@ int checkFuncLink(){//read csv and store everything into struct d[]
          printf("data: %d\n",d[i].data[k]);
       }
    }*/
+   bitmap[0] = 0;
+   bitmap[5] = 0;
+   bitmap[6] = 0;
+   bitmap[7] = 0;
+   bitmap[9] = 0;
    for(int c= 0; c < e;c++){//interestingly enuf a readfile function i go put in here that after every func add, read or delete i go add immediately
      // printf("function  %s" , d[0].func);
     //  printf("why not running here ");
@@ -54,6 +59,7 @@ int checkFuncLink(){//read csv and store everything into struct d[]
    return 0;
 }
 void addLink(int index){
+   int count2;
    int *ptr = d[index].data; //get the length of file data inthe struct which stored in readfile()
    int size = 0;
    while(*ptr !=0){
@@ -70,39 +76,37 @@ void addLink(int index){
       for(int i = freed[0]; i < (freed[0] + blocksRequired); i++){
          bitmap[i] = 0;
       }
-      for(int i = 0; i< blocksRequired; i++){
-         for(int k = ((freed[i] + temp2) * blockSize);k < (((freed[i] + temp2) * blockSize)+ blockSize); k++)
-         {
-            if(k == (((freed[i] + temp2) * blockSize)+ blockSize)-1){       
-               dataf[k] = freed[i + 1] + temp2;
+      for(int i = 0; i < blocksRequired; i++){ 
+         for(int k = (freed[i]+temp2)*blockSize;k<(freed[i]+temp2)*blockSize + blockSize;k++){
+            if(k == (freed[i]+temp2)*blockSize + blockSize - 1){
+               dataf[k] = freed[i+1] + temp2;
                if(dataf[k] == temp2){
                   dataf[k] = -1;
                }
-               printf(".Index: %d. Data: %d ", k,dataf[k]);
+            }else{
+               dataf[k]=d[index].data[j];
+               j++;
             }
-            else{
-               if(j<=size){
-                  dataf[k] = d[index].data[j];
-                  printf(".Index: %d. Data: %d ", k,dataf[k]);
-                  j++;
-               } 
-            }  
-         } 
-      } 
+         }
+      }
    }
 }
 
 int ifFullLink(){//runs thru the who block to check if bitmap[] reaches all 0 #for bitmap[] it stores a value of 0 or 1 to indicate each block in storage structure is used or not used
    int countbitmap = 0;//counter
+   int countbitmap1 = noOfBlock;
    for(int i = 0; i < noOfBlock; i++){//run the whole block eg. if block size 2, total storage block got 43(B22 - B64)
       if(bitmap[i] == 0){//checks eg. if block size 2, B22 - B64 is all 0s 0= used, 1=free to use
          countbitmap++;//increment per 0 in bitmap
+         countbitmap1--;
       }
    }
    if(countbitmap>=noOfBlock){ //if counter bigger than or equal to total storage block(43) means fully used
       return 1; //return 1 or true
+   }else if(countbitmap1 < blocksRequired){
+      return 1; //return 0 or false
    }else{
-      return 0; //return 0 or false
+      return 0;
    }
 }
 int freespaceLink(){
@@ -121,6 +125,7 @@ int freespaceLink(){
             freed[count] = i;//freed[count] stores the blockno its currently adding for example freed[0] = 4, 5 or 6
             count++;
          }
+         
       }
       printf(" found free ");
       for(int i = 0; i < blocksRequired; i++){//if found 3 space for blockrequired(3)
