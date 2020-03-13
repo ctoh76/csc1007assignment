@@ -11,7 +11,7 @@ void deleteCont();
 int checkFunc();//i have lost track of how many functions i had might have some that was redudant
 int freespaceCont();
 
-int blocksRequired,blockAvail;//dk which nvr used need to clear it when i make the code look pretty
+int blockAvail;//dk which nvr used need to clear it when i make the code look pretty
 int volumecontrol1[] = {0}; //nvr used
 int volumecontrol2[] = {0}; //nvr used dk what is volume control need recap abt it
 
@@ -106,8 +106,6 @@ void addCont(int index){
       }
    }
 }
-
-
 
 void readCont(int index){
    //as when we read file the data stored is based on the index so like d[0].filename = 100 cuz we add 100 first then d[1].filename = 200 cuz we add 200 next

@@ -11,7 +11,7 @@ void addLink();
 void readLink();
 void deleteLink();
 
-int blocksRequired,blockAvail;//dk which nvr used need to clear it when i make the code look pretty
+int blockAvail;//dk which nvr used need to clear it when i make the code look pretty
 int blockSize, excessBlock, dirBlocks,k;//excess and dir block havent used need rmb to make it remove redudant blocks but if no time do jiu suan le
 int choice,anotherdirblock ;
 int count1;
@@ -54,13 +54,33 @@ int checkFuncLink(){//read csv and store everything into struct d[]
    return 0;
 }
 void addLink(int index){
-    int *ptr = d[index].data; //get the length of file data inthe struct which stored in readfile()
+   int *ptr = d[index].data; //get the length of file data inthe struct which stored in readfile()
    int size = 0;
    while(*ptr !=0){
       *ptr++;
       size++;//eg. if file is 100 data is 101-106 size or filelength is 6
    }
-   double blocksRequired = ceil((double)size/blockSize-1);
+   double value1 = ceil((double)size/(blockSize-1));
+   blocksRequired = value1;
+   printf("\nAdding File %d and",d[index].filename);//print filename
+   if(freespaceLink()){//run freespace to check got space or not
+      printf("Not allocated due to full Storage\n");
+   }else{
+
+
+
+
+
+
+
+
+
+
+
+      for(int i = freed[0]; i < freed[0] + blocksRequired; i++){
+         bitmap[i] = 0;
+      }
+   }
 }
 
 int ifFullLink(){//runs thru the who block to check if bitmap[] reaches all 0 #for bitmap[] it stores a value of 0 or 1 to indicate each block in storage structure is used or not used
@@ -85,11 +105,13 @@ int freespaceLink(){
    else{  //if ifFull() is not full continue run
 
       for(int i = 0; i < noOfBlock; i++){//scan the noOfblocks in the storage structure(basically 43)B22- B64//# for some cases where like if data input is 5 cuz its contiguous alloc so need ceiling it ceil(5/2) = 3
+         if(count == blocksRequired){
+            break;
+         }
          if(count < blocksRequired && bitmap[i] == 1){//eg. if count(0) less than blocksRequired(3) and bitmap of block 0 is free to use, freed[0] = block no(i)
             freed[count] = i;//freed[count] stores the blockno its currently adding for example freed[0] = 4, 5 or 6
             count++;
          }
-         printf("%d",freed[count]);
       }
       printf(" found free ");
       for(int i = 0; i < blocksRequired; i++){//if found 3 space for blockrequired(3)
