@@ -86,20 +86,18 @@ int store = 0;
 
     int k = 0;
       for(int j = 0; j < blocksRequired; j++){
-    
          for (int i = (freed[j] + temp2) * blockSize; i < (freed[j] + temp2) * blockSize + blockSize; i++)
          {
             printf("freed why dun %d \n" , freed[j]);
            printf("print the freed[j] + temp2 %d\n" , (freed[j] + temp2) * blockSize);
             printf("print the calcutions %d\n" , (freed[j] + temp2) * blockSize + blockSize);
              dataf[i] = d[index].data[k];
-         startLoc[i] = d[index].filename;//fill the startblock for the file into it
+            startLoc[i] = d[index].filename;//fill the startblock for the file into it
            
              k++;
           //    printf("dataf [i]%d \n" , dataf[i]);
             //  bitmap[freed[j]] = 0;
         //  printf("j is this %d\n" , j);
-    
          }
         printf("freed and bitmap inside %d \n" , freed[j]);
          bitmap[freed[j]] = 0; 
@@ -424,6 +422,7 @@ int freespaceHMethod(){
             count++;
             break;
          }
+         printf("%d", bitmap[i]);
       }
    }
    printf(" found free ");

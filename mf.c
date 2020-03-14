@@ -57,6 +57,7 @@ void readFile(){//read csv and store everything into struct d[]
          j++;
       }
       e++;
+      
    } 
    fclose(fp);//close the file
 }
