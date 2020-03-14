@@ -183,9 +183,9 @@ void deleteCont(int index){//
          t1 = dataf[i];//allocate into t1 to use
          t2 = startLoc[i];//allocate into t2 to use
          t3 = endLoc[i];//allocate into t3 to use
-         dataf[i] = -1;//set it to 0 cuz its been "deleted"
-         startLoc[i] = -1;//set it to 0 cuz its been "deleted"
-         endLoc[i] = -1;//set it to 0 cuz its been "deleted"
+         dataf[i] = -1;//set it to -1 cuz its been "deleted"
+         startLoc[i] = -1;//set it to -1 cuz its been "deleted"
+         endLoc[i] = -1;//set it to -1 cuz its been "deleted"
       }
    }
    printf("\nData in %d:",t1);
