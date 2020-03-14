@@ -147,31 +147,25 @@ void addHContigous(int index, int size)
     
  */
 
-      int indexRequiredBlock = ceil((double)blocksRequired / blockSize);
+      int indexRequiredBlock = ceil((double)blocksRequired / blockSize); // calcutate how much block pointer need to use 
       int countIndex = 0;
       int countStart = indexRequiredBlock * blockSize;
       int k = 0;
       for (int j = 0; j < blocksRequired + indexRequiredBlock; j++)
       {
-       
-         for (int i = (freed[j] + temp2) * blockSize; i < (freed[j] + temp2) * blockSize + blockSize; i++)
+         for (int i = (freed[j] + temp2) * blockSize; i < (freed[j] + temp2) * blockSize + blockSize; i++) 
          {  
-            printf("print the first round %d\n", freed[0]);
-            if (countIndex < blocksRequired)
+            if (countIndex < blocksRequired)// put in the pointer 
             {
-
-               //    printf("go innnnnn %d\n" , countIndex);
                dataf[i] = freed[j] + temp2 + countIndex;
                countIndex++;
-               //  printf("print the indexRequiredBlock %d\n" ,   bitmap[freed[j]]);
                bitmap[freed[j]] = 0;
                countStart--;
                printf("go innnnnn 22222222222 %d\n", countStart);
             }
             else
             {
-               //     printf("print the calcutions %d\n" , bitmap[freed[j]]);
-               if (countIndex >= blocksRequired && countStart == 0)
+               if (countIndex >= blocksRequired && countStart == 0) // add the datafile 
                {
                   dataf[i] = d[index].data[k];
                   startLoc[i] = d[index].filename; //fill the startblock for the file into it
@@ -183,6 +177,7 @@ void addHContigous(int index, int size)
                }
                else
                {
+                  // minus off the block used by the pointer
                   bitmap[freed[j]] = 0;
                   countStart--;
                   printf("go innnnnn %d\n", countStart);
