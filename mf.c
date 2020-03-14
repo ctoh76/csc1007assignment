@@ -216,3 +216,4 @@ void initFreespace(){//initialize a freespace bitmap based of the total noofbloc
       bitmap[i] = 1;//initiate all into 1 so that all is free (1 = free, 0 = used).
    }
 }
+
