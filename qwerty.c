@@ -25,11 +25,6 @@ int checkFuncLink(){//read csv and store everything into struct d[]
          printf("data: %d\n",d[i].data[k]);
       }
    }*/
-   bitmap[0] = 0;
-   bitmap[5] = 0;
-   bitmap[6] = 0;
-   bitmap[7] = 0;
-   bitmap[9] = 0;
    for(int c= 0; c < e;c++){//interestingly enuf a readfile function i go put in here that after every func add, read or delete i go add immediately
      // printf("function  %s" , d[0].func);
     //  printf("why not running here ");

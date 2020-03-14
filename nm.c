@@ -26,22 +26,56 @@ int blockSize, excessBlock, dirBlocks,k;
 
 
 void addHContigous(int index , int size){
-
-   double value = ceil((double)size/blockSize);// 6/2 = 3 or 6/5 = 2 cuz we actually need 2 blocks to store all 6 data uh
-   blocksRequired = value;//get amount of blocksrequired to place in storage structure.
-   printf("\nAdding File %d and",d[index].filename);//print filename
-   if(freespaceCont()){//run freespace to check got space or not
+int counter = 0;
+int requiredCount = 0;
+float num = 1.0f;
+  double value = ceil((double)size/blockSize);// 6/2 = 3 or 6/5 = 2 cuz we actually need 2 blocks to store all 6 data uh
+if(freespaceCont()){//run freespace to check got space or not
       printf("Not allocated due to full Storage\n");
    }else{  //if freespace got space run here
    //                        0     +   22  *    2     +   6 = 50
    //to incement index = (freed[j] + temp2)*blockSize + length
    //List of array able to use bitmap[](consist of 0s and 1s)|freed[](consist of the empty block no.)|d[].data[](consist of the real data)
    //data is in d[index].data[k]
+   
+      int q = (counter + temp2) * blockSize;
+    if (roundf(size / blockSize) == num) {//calculate total number of blks required the file
+  
+        blocksRequired = size / blockSize;
+    for(int i = q,k = 0;i <(q + size);i++){//fill data from struct into dataf[] from storage struct
+    while (requiredCount > blockSize || requiredCount == 0)
+    { 
+       dataf[i] = counter + temp2; 
+         startLoc[i] = d[index].filename;//fill the startblock for the file into it
+          requiredCount++;
+         printf("Not allocated due to full Storage %d\n" , requiredCount);
+       /* code */
+    }
+    if(c){
+       requiredCount++;  
+    }
+      
+   
+      
+      //   printf("print dataf for loop %d\n" , dataf[i]);
+        
+      //   printf("print dataf for loop startLoc %d\n" ,  startLoc[i]);
+      }
+        counter++;
+       indexed++;   
+   } else {
+        blocksRequired = ceil((double)size/blockSize);
+         counter++;
+
+   }
       int k = 0;
-      int q = (freed[0] + temp2) * blockSize;
+       q = (indexed + temp2) * blockSize;
+     // printf("temp2%d" , temp2); // missing value for temp2 temp2 currently is 0
       for(int i = q,k = 0;i <(q + size) && k<size;i++,k++){//fill data from struct into dataf[] from storage struct
          dataf[i] = d[index].data[k];
+         printf("print dataf for loop %d\n" , dataf[i]);
          startLoc[i] = d[index].filename;//fill the startblock for the file into it
+         printf("print dataf for loop startLoc %d\n" ,  startLoc[i]);
       }
       //i swear go rmb what is temp2 cuz its everywhere so dumb for a temp int but i did this mess
       //temp2 is the starting block no. of the storage sturcture so if blocksize is 2 temp2 will be 22 if blocksize is 3 temp2 will be 11.
@@ -58,15 +92,20 @@ void addHContigous(int index , int size){
          l = freed[j];//freed[j] = block number to add in here very blurry cuz damn long do de
          bitmap[l] = 0;//put used(1) into the bitmap to show its used
       }
+
+
       for(int i = 0;i < temp2; i++){
          if(dataf[i] == 0 && startLoc[i] == 0 && endLoc[i] == 0){
             for(int j = i;j < temp2; j++){
                dataf[j] = dataf[j + 1];
+                printf("print dataf %d\n" , dataf[j] );
                startLoc[j] = startLoc[j + 1];
+               printf("print startLoc %d\n" , startLoc[j]);
                endLoc[j] = endLoc[j + 1];
+                printf("print endLoc %d\n" ,endLoc[j]);
             }
          }
-      }
+      }// end for loop
    }
 }
 
@@ -85,12 +124,13 @@ void addIndex(int index ,  int size){
    }
       indexed++;
        for (int i = 0; i < blockSize; i++) {//store free block index
-       while(dataf[counter+temp2*blockSize]!=0){
+       while(dataf[counter+temp2*blockSize]!=0){ // allow the index 
           counter++;
        }
 
       if(i < blocksRequired){
         if(dataf[counter+temp2*blockSize]==0){ 
+           printf("print data counter %d" , dataf[counter+temp2*blockSize]); // put the pointer 
            dataf[counter + temp2*blockSize] = indexed + temp2;
            counter++;
            indexed++;
@@ -98,7 +138,7 @@ void addIndex(int index ,  int size){
 
       }else
         {
-          if(dataf[counter+temp2*blockSize]==0){ 
+          if(dataf[counter+temp2*blockSize]==0){ // check if the block is the used and change 0 to -1 
            dataf[counter + temp2*blockSize] = -1;
            counter++;
         }
@@ -107,7 +147,7 @@ void addIndex(int index ,  int size){
    }
 
 
-   for(k=0;k<blocksRequired*blockSize; k++){
+   for(k=0;k<blocksRequired*blockSize; k++){ // it is for the data pointer -1
       if(k<size){
       if(dataf[counter+temp2*blockSize]==0){
       dataf[counter + temp2*blockSize] = d[index].data[k];
@@ -162,9 +202,14 @@ void addMethod(int index){
    }
 
    if(size > 7){ // check if data more than 8 , if more than run index allocation
-       addIndex(index ,size);// call index add method
+      // addIndex(index ,size);// call index add method
+     //  printf(" inside index printf %d" , size);
+    
    }else{
-      addHContigous(index , size); // call contigous add method
+    addHContigous(index , size); // call contigous add method
+     //  addIndex(index ,size);// call index add method
+    //   printf("contigous printf %d" , size);
+    
    }             
 }
 
@@ -293,33 +338,23 @@ int ifFull(){//runs thru the who block to check if bitmap[] reaches all 0 #for b
 
 
 int freespaceHMethod(){
-
-   int count = 0;//counter
+ int count = 0;//counter
    if(ifFull()){//run ifFull
       return 1;//if ifFull() is full le return 1 or true to add func
    }
-   else{  //if ifFull() is not full continue run
-
+   else{
       for(int i = 0; i < noOfBlock; i++){//scan the noOfblocks in the storage structure(basically 43)B22- B64
-         if(count == blocksRequired){//blocksrequired is calculated based on size or length of data in add divide by blocksize typed by user
-            break;// eg. if user type blocksize 2 and add file de data length is 6  6/2 = 3 if 3 == 3 break 
-         }//# for some cases where like if data input is 5 cuz its contiguous alloc so need ceiling it ceil(5/2) = 3
-         if(count < blocksRequired && bitmap[i] == 1){//eg. if count(0) less than blocksRequired(3) and bitmap of block 0 is free to use, freed[0] = block no(i)
+         if( bitmap[i] == 1){//eg. if count(0) less than blocksRequired(3) and bitmap of block 0 is free to use, freed[0] = block no(i)
             freed[count] = i;//freed[count] stores the blockno its currently adding for example freed[0] = 4, 5 or 6
             count++;
-         }
-         else{//else there isnt 3 space avail for blockrequired(3) clear counter and clear the freed[] basically reset it
-            for(int j = 0; j<blocksRequired;j++){//clear freed[] array 
-               freed[j] = 0;
-            }
-            count = 0;//clear counter
+            break;
          }
       }
-      printf(" found free ");
-      for(int i = 0; i < blocksRequired; i++){//if found 3 space for blockrequired(3)
-         printf("-B%d-",freed[i]+temp2);//print which block is free
-      }
-      printf("\n");
-      return 0;//then return 0 or false # i might have messed up whether 0 is true or false but basically return it to the add function
    }
+   printf(" found free ");
+   for(int i = 0; i < blocksRequired; i++){//if found 3 space for blockrequired(3)
+      printf("-B%d-",freed[i]+temp2);//print which block is free
+   }
+   printf("\n");
+   return 0;//then return 0 or false # i might have messed up whether 0 is true or false but basically return it to the add function
 }
