@@ -88,7 +88,8 @@ void methodSelection(){
          case 4:
          // call method new method
           printDirectory();
-            //checkFuncNM();
+            checkFuncNM();
+             printDirectory();
             break;
 
          default:
