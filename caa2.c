@@ -75,10 +75,12 @@ void addCont(int index){
    //List of array able to use bitmap[](consist of 0s and 1s)|freed[](consist of the empty block no.)|d[].data[](consist of the real data)
    //data is in d[index].data[k]
       int k = 0;
-      int q = (freed[0] + temp2) * blockSize;
-      for(int i = q,k = 0;i <(q + size) && k<size;i++,k++){//fill data from struct into dataf[] from storage struct
-         dataf[i] = d[index].data[k];
-         startLoc[i] = d[index].filename;//fill the startblock for the file into it
+      for(int i = 0; i<blocksRequired; i++){
+         for(int j = (freed[i] + temp2) * blockSize; j<(freed[i] + temp2) * blockSize + blockSize; j++){
+            dataf[i] = d[index].data[k];
+            startLoc[i] = d[index].filename;
+            k++;
+         }
       }
       //i swear go rmb what is temp2 cuz its everywhere so dumb for a temp int but i did this mess
       //temp2 is the starting block no. of the storage sturcture so if blocksize is 2 temp2 will be 22 if blocksize is 3 temp2 will be 11.
