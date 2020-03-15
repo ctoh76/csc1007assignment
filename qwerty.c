@@ -77,7 +77,7 @@ void addLink(int index){
          for(int k = ((freed[i]+temp2)*blockSize);k<(freed[i]+temp2)*blockSize + blockSize;k++){   //position freed[i]+temp=22*2=index 44,the first index,K is less than 44+2,46,K++   --> we know that we need 2 block each time for each data 
             if(k == (freed[i]+temp2)*blockSize + blockSize - 1){  //44=2=46-1 =45 index
                dataf[k] = (freed[i+1] + temp2);  //44 = 0+1+22 =23 ,index 45 store 23 ,Node
-               if(dataf[k] == temp2){  //44 ==22
+               if(dataf[k] == freed[i]+temp2){  //44 ==22
                   dataf[k] = -1;   
                }
             }else{
