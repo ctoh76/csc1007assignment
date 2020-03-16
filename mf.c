@@ -5,7 +5,7 @@
 #include "caa2.c"
 #include "qwerty.c"
 #include "header.h"
-#include "nm2.c"
+//#include "nm2.c"
 
 //#include "iaa.c"
 FILE *fp;
@@ -20,7 +20,8 @@ void initArray();
 
 //int indexf[MAX], block[MAX], dataf[MAX],startLoc[MAX],endLoc[MAX] , bitmap[MAX], freed[MAX];
 //int count1;
-
+int blockSize, excessBlock, dirBlocks;//excess and dir block havent used need rmb to make it remove redudant blocks but if no time do jiu suan le
+int anotherdirblock;
 
 void main(){
    readFile();
@@ -90,7 +91,7 @@ void methodSelection(){
          case 4:
          // call method new method
             printDirectory();
-            checkFuncNM();
+            //checkFuncNM();
              printDirectory();
             break;
 
@@ -111,10 +112,14 @@ void initArray(){//init array
 			case 1:
             printf("Enter block size between(2-43): ");
 	         scanf("%d", &blockSize); 
+            excessBlock = 130%blockSize;
+            dirBlocks = (130-excessBlock)/blockSize;
             break;
 			case 2:
 			   printf("Enter the amount of block you want:");
             scanf("%d", &anotherdirblock);
+            excessBlock = 130%anotherdirblock;
+            blockSize =(130-excessBlock)/anotherdirblock;
             break;
          default:
             printf("Reached Default");//dk what to type in default should i even have a default here idk help me
@@ -128,7 +133,7 @@ void initArray(){//init array
          count1 = 1;
       }
       
-   }while(count1 =0);
+   }while(count1 = 0);
    //why blocksize must be 2 to 43 is cuz when u calculate right per block we have we need an index to store the added block de start and end
    //so like if we put block size 1 we need like 130 index to fill in out file info into directory so means its impossible de so can only start from 2 as to why its until 43
    //cuz if we used 44 so we will have we only have 2 pathetic blocks of size 44 then funny thing is use gonna need to throw away 42 block space cuz redudant 
@@ -180,11 +185,33 @@ void initArray(){//init array
       for(int i = 0; i < blockNum; i++){//init bitmap for freespace
          bitmap[i]=1;
       }
-      noOfBlock = blockNum;//total block no.
+      if(choice==1)
+      {
+         if(excessBlock > 0)
+         {
+            noOfBlock = dirBlocks -1;//total block no.
+            printf("%d",noOfBlock);
+         }
+         else
+         {
+            noOfBlock = dirBlocks;    
+         }
+      }
+      else if (choice ==2)
+      {
+         if(excessBlock > 0)
+         {
+            noOfBlock = anotherdirblock -1;//total block no.
+         }
+         else
+         {
+            noOfBlock = dirBlocks;
+         }
+      }
 }
 
 void printDirectory(){//print directory
-   temp3 = noOfBlock;
+   temp3 = noOfBlock; 
    while(temp3 > (temp2 * blockSize)){//this is the cool shit which calculate the blocksize for directory and blocksize for storage temp is directory end block,temp2 is storage start block
       temp3 -= 1;
       temp2 += 1;

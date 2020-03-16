@@ -16,9 +16,7 @@ int volumecontrol1[] = {0}; //nvr used
 int volumecontrol2[] = {0}; //nvr used dk what is volume control need recap abt it
 
 int blockSize, excessBlock, dirBlocks,k;//excess and dir block havent used need rmb to make it remove redudant blocks but if no time do jiu suan le
-int choice,anotherdirblock;
-
-
+int choice,anotherdirblock ;
 
 int checkFunc(){//read csv and store everything into struct d[]
 
@@ -75,13 +73,18 @@ void addCont(int index){
    //List of array able to use bitmap[](consist of 0s and 1s)|freed[](consist of the empty block no.)|d[].data[](consist of the real data)
    //data is in d[index].data[k]
       int k = 0;
-      for(int i = 0; i<blocksRequired; i++){
+      int q = (freed[0] + temp2) * blockSize;
+      for(int i = q,k = 0;i <(q + size) && k<size;i++,k++){//fill data from struct into dataf[] from storage struct
+         dataf[i] = d[index].data[k];
+         startLoc[i] = d[index].filename;//fill the startblock for the file into it
+      }
+      /*for(int i = 0; i<blocksRequired; i++){
          for(int j = (freed[i] + temp2) * blockSize; j<(freed[i] + temp2) * blockSize + blockSize; j++){
             dataf[i] = d[index].data[k];
             startLoc[i] = d[index].filename;
             k++;
          }
-      }
+      }*/
       //i swear go rmb what is temp2 cuz its everywhere so dumb for a temp int but i did this mess
       //temp2 is the starting block no. of the storage sturcture so if blocksize is 2 temp2 will be 22 if blocksize is 3 temp2 will be 11.
       if(c == temp2 * blockSize - 1){//create a counter for directory struct so if counter reaches the max block of directory struct which is 21 means full le by right shouldnt reach here will be damn weird
@@ -132,9 +135,8 @@ void readCont(int index){
          t4 = 1;
       }
    }
-    for(int i = (temp2*blockSize); i<MAX; i++){//if user wanna find file data #for loop to run thru the storage struct
+   for(int i = (temp2*blockSize); i<(noOfBlock+temp2)*blockSize; i++){//if user wanna find file data #for loop to run thru the storage struct
       if(d[index].filename == dataf[i]){//if filename = file data 
-         printf("File : %d",startLoc[i]);
          t1 = dataf[i];//file data eg read 1401 t1 = 1401
          t2 = startLoc[i];//file start block 
          t3 = (i/blockSize);//file block location of the data
