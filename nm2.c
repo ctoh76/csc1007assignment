@@ -22,11 +22,6 @@ int blockSize, excessBlock, dirBlocks, k;
 
 void addHContigous(int index, int size)
 {
-   int counter = 0;
-   int counterSet = 0;
-   int requiredCount = 0;
-   float num = 1.0f;
-   int store = 0;
    double value = ceil((double)size / blockSize);                 // 6/2 = 3 or 6/5 = 2 cuz we actually need 2 blocks to store all 6 data uh
    blocksRequired = value;                                        //get amount of blocksrequired to place in storage structure.
    indexRequiredBlock = ceil((double)blocksRequired / blockSize); // calcutate how much block pointer need to use
@@ -43,222 +38,21 @@ void addHContigous(int index, int size)
          printf("freed is %d and i is %d\n", freed[i], i);
       }
 
-
-      /*
-   for(int e = 0; e < blockSize; e++){ 
-  for(int i = q,k = 0;i <(q + blocksRequired); i++){
-    dataf[i] = freed[0] + temp2 + blocksRequired-1; 
-  //  printf("freed[0] %d\n" , freed[0]);
-  //  printf("dataf[i] \n" , dataf[i]);
-  //  bitmap[] = 0;
-   counter++;
-    counterSet++;
-  }
-    
-  }
-  */
-      /*
-   for(int i = q + counter;i <(q + size + counter);i++){//fill data from struct into dataf[] from storage struct
-         dataf[i] = d[index].data[k];
-         startLoc[i] = d[index].filename;//fill the startblock for the file into it
-         printf("printf data[] %d\n" , dataf[i]);
-         k++;
-      }
-*/
-
-      //         for(int e = freed[j]; e < blocksRequired; e++){
-      //   bitmap[j] = 0;
-
-      /*
-    int q = (freed[0] + temp2) * blockSize;
- for(k == (freed[i]+temp2)*blockSize){
-     for(int e = 0; e < blocksRequired; e++){ 
-    dataf[i] = freed[e] + temp2; 
-    printf("freed[0]  whyyyyyy %d\n" , freed[e] + temp2);
-    printf("dataf[i] \n" , dataf[i]);
-  //  bitmap[] = 0;
-    bitmap[freed[e]] = 0; 
-  }
-
- }
- */
-
-      /*
-// backup 
-      for(int j = 0; j < blocksRequired + 1; j++){
-         for (int i = (freed[j] + temp2) * blockSize; i < ((freed[j] + temp2) * blockSize + blockSize); i++)
-         {
-            if(i == (freed[i]+temp2)*blockSize || countIndex < indexRequiredBlock){ 
-                 printf("print the calcutions %d\n" ,(freed[i]+temp2)*blockSize );
-                     printf("print the countindex %d\n" , countIndex );
-                      printf("print the indexRequiredBlock %d\n" , indexRequiredBlock);
-                printf("go innnnnn %d\n" , countIndex); 
-              dataf[i] = freed[j] + temp2 + 1; 
-              bitmap[freed[j]] = 0;
-              countIndex++;  
-                   
-          }else{
-                  //   dataf[i] = d[index].data[k];
-                  //   startLoc[i] = d[index].filename;//fill the startblock for the file into it
-                  //      printf("print the calcutions %d\n" , dataf[i]);
-                 //    k++;
-                  //   bitmap[freed[j]] = 0; 
-         }
-         
-      }
-        }
-     
-     */
-
-      /*    
-  
-    for(int t = 0; t < indexRequiredBlock ; t++){
- 
-            for(int p = ((freed[p]+temp2)*blockSize); p <(freed[p]+temp2)*blockSize + blockSize;p++){
-               if(countIndex < blocksRequired){ 
-
-                printf("go innnnnn %d\n" , countIndex); 
-              dataf[p] = freed[t] + temp2 + countIndex; 
-              countIndex++;      
-               printf("print the indexRequiredBlock %d\n" ,   bitmap[freed[t]]);  
-               bitmap[freed[t]] = 0;   
-             
-          }else{
-              printf("print the calcutions %d\n" , bitmap[freed[t]] = 0);  
-             bitmap[freed[t]] = 0;
-
-          }
-          printf("runnnninggg here\n");
-       }
-         
-    }      
-    
- */
-      /*
-       
-      int countIndex = 1;
-      int countStart = indexRequiredBlock * blockSize;
-      int k = 0;
-      int totalBlockNeeded = indexRequiredBlock + blocksRequired;
-      printf("result %d\n" , (blocksRequired + indexRequiredBlock));
-      for (int j = 0; j < blocksRequired + indexRequiredBlock; j++)
-      {
-         for (int i = (freed[j] + temp2) * blockSize; i < (freed[j] + temp2) * blockSize + blockSize; i++) 
-         {  
-            if (countIndex < totalBlockNeeded) // put in the pointer 
-            {
-               if(indexRequiredBlock > 1){
-                  int extraBlock = indexRequiredBlock - 1;
-                  dataf[i] = freed[0] + temp2 + countIndex + extraBlock;         
-               }else
-               {
-               dataf[i] = freed[0] + temp2 + countIndex;
-               }
-                 bitmap[freed[j]] = 0;
-               countStart--;
-                     printf("go innnnnn data %d\n", dataf[i]);
-                 printf("go innnnnn index %d\n", countIndex);   
-             //  printf("go innnnnn 22222222222 %d\n", countStart);  
-                countIndex = countIndex + 1;
-            }
-            else
-            {
-               if (countIndex >= blocksRequired && countStart == 0) // add the datafile 
-               {
-                  dataf[i] = d[index].data[k];
-                  startLoc[i] = d[index].filename; //fill the startblock for the file into it
-                //  printf("data %d \n", d[index].data[k]);
-               //   printf("freed and bitmap inside %d \n", freed[j]);
-              //    printf("what is j %d \n", j);
-                  bitmap[freed[j]] = 0;
-                  k++;
-               }
-               else
-               {
-                  // minus off the block used by the pointer
-                  bitmap[freed[j]] = 0;
-                  countStart--;
-              //    printf("go innnnnn %d\n", countStart);
-               }
-            }
-         }
-      }
-*/
-      /*
- int indexRequiredBlock = ceil((double)blocksRequired / blockSize);
-      int countIndex = 0;
-      int countStart = indexRequiredBlock * blockSize;
-      int k = 0;
-      for (int j = 0; j < blocksRequired + indexRequiredBlock; j++)
-      {
-
-         for (int i = (freed[j] + temp2) * blockSize; i < (freed[j] + temp2) * blockSize + blockSize; i++)
-         {  
-            printf("print the first round %d\n", freed[0]);
-            if (countIndex < blocksRequired)
-            {
-
-               //    printf("go innnnnn %d\n" , countIndex);
-               dataf[i] = freed[j] + temp2 + countIndex;
-               countIndex++;
-               //  printf("print the indexRequiredBlock %d\n" ,   bitmap[freed[j]]);
-               bitmap[freed[j]] = 0;
-               countStart--;
-               printf("go innnnnn 22222222222 %d\n", countStart);
-            }
-            else
-            {
-               //     printf("print the calcutions %d\n" , bitmap[freed[j]]);
-               if (countIndex >= blocksRequired && countStart == 0)
-               {
-                 // dataf[i] = d[index].data[k];
-               //   startLoc[i] = d[index].filename; //fill the startblock for the file into it
-                  printf("data %d \n", d[index].data[k]);
-                  printf("freed and bitmap inside %d \n", freed[j]);
-                  printf("what is j %d \n", j);
-               //  bitmap[freed[j]] = 0;
-                  k++;
-               }
-               else
-               {
-                  bitmap[freed[j]] = 0;
-                  countStart--;
-                  printf("go innnnnn %d\n", countStart);
-               }
-            }
-         }
-      }
-
-      */
-
-      int indexRequiredBlock = ceil((double)blocksRequired / blockSize);
-
       int countIndex = 0;
       int countStart = indexRequiredBlock * blockSize;
       int blockReset = 0;
       int k = 0;
       for (int j = 0; j < blocksRequired + indexRequiredBlock; j++)
       {
-
          for (int i = (freed[j] + temp2) * blockSize; i < (freed[j] + temp2) * blockSize + blockSize; i++)
          {
-
             if (countIndex < blocksRequired)
             {
-               //  printf(" reset %d\n" , blockReset);
-           
-               //   freed[0] + temp2 + (blocksRequired + indexRequiredBlock - 1)
-                  dataf[i] = freed[0] + temp2 +  indexRequiredBlock + countIndex ;
-                  blockReset++;
-                  printf("result inside %d\n", dataf[i]);
-                  printf("reset counter\n");
-               
+               dataf[i] = freed[0] + temp2 + indexRequiredBlock + countIndex;
+               blockReset++;
                bitmap[freed[j]] = 0;
                countStart--;
                countIndex++;
-
-          //     printf("reset counter minus %d\n", blockReset);
-               // printf("go innnnnn 22222222222 %d\n", countStart);
             }
             else
             {
@@ -267,20 +61,16 @@ void addHContigous(int index, int size)
                   dataf[i] = d[index].data[k];
                   startLoc[i] = d[index].filename; //fill the startblock for the file into it
                   bitmap[freed[j]] = 0;
-                  //  printf("go innnnnn second Inside %d , i is %d\n", freed[j] , i);
                   k++;
                }
                else
                {
-                  //    printf("go innnnnn outside %d , i is %d\n", freed[j] , i);
-
                   bitmap[freed[j]] = 0;
                   countStart--;
                }
             }
          }
       }
-      startBlock++;
 
       //i swear go rmb what is temp2 cuz its everywhere so dumb for a temp int but i did this mess
       //temp2 is the starting block no. of the storage sturcture so if blocksize is 2 temp2 will be 22 if blocksize is 3 temp2 will be 11.
@@ -290,8 +80,8 @@ void addHContigous(int index, int size)
       }
       else
       {
-         dataf[c] = d[index].filename;               //add per add file into directory struct
-         startLoc[c] = freed[0] + temp2;             //add where it start into directory struct
+         dataf[c] = d[index].filename;                                             //add per add file into directory struct
+         startLoc[c] = freed[0] + temp2;                                           //add where it start into directory struct
          endLoc[c] = freed[0] + temp2 + (blocksRequired + indexRequiredBlock - 1); //add where it end into directory struct
          c++;
       }
@@ -331,7 +121,7 @@ int checkFuncNM()
       case 'd':
       case 'D':
          printf("\nEntered Delete Function\n");
-         //deleteLink(c);
+         deleteHMethod(c);
          break;
       default:
          printf("Reached Default"); //dk what to type in default should i even have a default here idk help me
@@ -462,17 +252,17 @@ void deleteHMethod(int index)
          t1 = dataf[i];                                                           //allocate into t1 to use
          t2 = startLoc[i];                                                        //allocate into t2 to use
          t3 = endLoc[i];                                                          //allocate into t3 to use
-         dataf[i] = 0;                                                            //set it to 0 cuz its been "deleted"
-         startLoc[i] = 0;                                                         //set it to 0 cuz its been "deleted"
-         endLoc[i] = 0;                                                           //set it to 0 cuz its been "deleted"
+         dataf[i] = -1;                                                           //set it to 0 cuz its been "deleted"
+         startLoc[i] = -1;                                                        //set it to 0 cuz its been "deleted"
+         endLoc[i] = -1;                                                          //set it to 0 cuz its been "deleted"
       }
    }
    printf("\nData in %d:", t1);
-   for (int i = t2 * blockSize; i < (t2 * blockSize + size); i++)
-   { //set dataf[] inthe storage struct into 0 so can use
+   for (int i = t2 * blockSize; i < (t2 * blockSize + size * 2); i++)
+   { //set dataf[] inthe storage struct into 0 so can use //*2 because each 6 data need 12 block
       printf(".%d.", dataf[i]);
-      dataf[i] = 0;
-      startLoc[i] = 0;
+      dataf[i] = -1;
+      startLoc[i] = -1;
    }
    printf("Has been deleted");
    printf("\n");
@@ -483,7 +273,7 @@ void deleteHMethod(int index)
 
    for (int i = 0; i < temp2; i++)
    {
-      if (dataf[i] == 0 && startLoc[i] == 0 && endLoc[i] == 0)
+      if (dataf[i] == -1 && startLoc[i] == -1 && endLoc[i] == -1)
       {
          for (int j = i; j < temp2; j++)
          {
