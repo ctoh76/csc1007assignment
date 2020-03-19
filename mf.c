@@ -18,9 +18,7 @@ void printDirectory();
 void initFreespace();
 void initArray();
 
-//int indexf[MAX], block[MAX], dataf[MAX],startLoc[MAX],endLoc[MAX] , bitmap[MAX], freed[MAX];
-//int count1;
-int blockSize, excessBlock, dirBlocks;//excess and dir block havent used need rmb to make it remove redudant blocks but if no time do jiu suan le
+int blockSize, excessBlock, dirBlocks;
 int anotherdirblock;
 
 void main(){
@@ -30,23 +28,23 @@ void main(){
 }
 
 
-void readFile(){//read csv and store everything into struct d[]
+void readFile(){
 
    char file_name[25];
    char *token;
    char buff[1024];
 
-   printf("Please Enter your desired csv file\n");//get csv filename
+   printf("Please Enter your desired csv file\n");
    scanf("%s",&file_name);
 
-   fp = fopen(file_name, "r"); // read mode
+   fp = fopen(file_name, "r"); 
 
    if (fp == NULL)
    {
-      perror("Error while opening the file.\n");//if file does not exist
+      perror("Error while opening the file.\n");
       exit(EXIT_FAILURE);
    }
-   while(fgets(buff,sizeof(buff),fp)){//store file into d[].func d[].filename d[].data
+   while(fgets(buff,sizeof(buff),fp)){
       int j = 0;
       token = strtok(buff,",");
       strcpy(d[e].func,token);
@@ -62,7 +60,7 @@ void readFile(){//read csv and store everything into struct d[]
       e++;
       
    } 
-   fclose(fp);//close the file
+   fclose(fp);
 }
 
 void methodSelection(){
@@ -102,7 +100,7 @@ void methodSelection(){
       }
 }
 
-void initArray(){//init array
+void initArray(){
    int choice;
    do{
       printf("\nPlease select an option: (1)BlockSize (2)No. of Blocks ");
@@ -123,7 +121,7 @@ void initArray(){//init array
             blockSize =(130-excessBlock)/anotherdirblock;
             break;
          default:
-            printf("Reached Default");//dk what to type in default should i even have a default here idk help me
+            printf("Reached Default");
             break;
       }
       if(blockSize<2 || blockSize > 43){
@@ -135,14 +133,6 @@ void initArray(){//init array
       }
       
    }while(count1 = 0);
-   //why blocksize must be 2 to 43 is cuz when u calculate right per block we have we need an index to store the added block de start and end
-   //so like if we put block size 1 we need like 130 index to fill in out file info into directory so means its impossible de so can only start from 2 as to why its until 43
-   //cuz if we used 44 so we will have we only have 2 pathetic blocks of size 44 then funny thing is use gonna need to throw away 42 block space cuz redudant 
-   //then 1 for directory 1 for storage which wont make sense uh u use such a big space of index 44
-   //to store 1 goddamn file info... anw this can edit de if u got better de lets follow it!!!
-
-      //excessBlock = 130%blockSize; dk how use this
-	   //dirBlocks = (130-excessBlock)/blockSize; same for this dk how use
       int temp[MAX]; 
 	   int counter = 0;
       int blockNum = 0;
@@ -150,7 +140,7 @@ void initArray(){//init array
       if(choice == 1)
       {
          for(int a = 0; a<MAX;a++)\
-         {//get no. of blocks
+         {
             counter = counter + 1;
             temp[a] = blockNum;
             if(counter == blockSize)
@@ -164,7 +154,7 @@ void initArray(){//init array
          
          blockSize = MAX/anotherdirblock;
          for(int a = 0; a<MAX;a++)
-         {//get no. of blocks
+         {
             counter = counter + 1;
             temp[a] = blockNum;
             if(counter == blockSize)
@@ -175,21 +165,21 @@ void initArray(){//init array
          }
       }
       
-      for(int i = 0;i < MAX; i++){//init the values and data/start/end to 0
+      for(int i = 0;i < MAX; i++){
 		   indexf[i] = i;
 		   block[i] = temp[i];
 		   dataf[i] = -1;
          startLoc[i] = -1;
          endLoc[i] = -1;
 	   }
-      for(int i = 0; i < blockNum; i++){//init bitmap for freespace
+      for(int i = 0; i < blockNum; i++){
          bitmap[i]=1;
       }
       if(choice==1)
       {
          if(excessBlock > 0)
          {
-            noOfBlock = dirBlocks -1;//total block no.
+            noOfBlock = dirBlocks -1;
             printf("%d",noOfBlock);
          }
          else
@@ -201,7 +191,7 @@ void initArray(){//init array
       {
          if(excessBlock > 0)
          {
-            noOfBlock = anotherdirblock -1;//total block no.
+            noOfBlock = anotherdirblock -1;
          }
          else
          {
@@ -211,16 +201,16 @@ void initArray(){//init array
       printf("Total Num of Blocks: %d",noOfBlock);
 }
 
-void printDirectory(){//print directory
+void printDirectory(){
    temp3 = noOfBlock; 
-   while(temp3 > (temp2 * blockSize)){//this is the cool shit which calculate the blocksize for directory and blocksize for storage temp is directory end block,temp2 is storage start block
+   while(temp3 > (temp2 * blockSize)){
       temp3 -= 1;
       temp2 += 1;
    }
    printf("*-------------Directory Section--------------*");
 	printf("\n|  Index    Block    FileData   Start    End\n"); 
 	for(int i = 0;i < (temp2 * blockSize); i++){
-   //   printf("why not running");
+   
       	printf("|   %d         %d         %d         %d       %d |\n",indexf[i],block[i],dataf[i],startLoc[i],endLoc[i]);
  
    }
@@ -233,8 +223,8 @@ void printStorage(){
 
    printf("*---------------Storage Section----------------*");
    printf("\n|  Index    Block    Entry\n");
-	for(int i = (temp2 * blockSize);i < MAX; i++){// need include something to push up the list if i decide to add a new file in it will appear at the bottom uh...
-      	printf("|   %d         %d         %d                    |\n",indexf[i],block[i],dataf[i]);//i add startLoc[] in this which reflects the start block of each file
+	for(int i = (temp2 * blockSize);i < MAX; i++){
+      	printf("|   %d         %d         %d                    |\n",indexf[i],block[i],dataf[i]);
    }
    printf("*-----------------------------------------------*\n");
    
@@ -242,9 +232,9 @@ void printStorage(){
    initFreespace();
 }
 
-void initFreespace(){//initialize a freespace bitmap based of the total noofblocks available in storage structure 
+void initFreespace(){
    for(int i = 0; i < noOfBlock; i++){
-      bitmap[i] = 1;//initiate all into 1 so that all is free (1 = free, 0 = used).
+      bitmap[i] = 1;
    }
 }
 
