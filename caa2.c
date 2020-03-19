@@ -72,11 +72,10 @@ void addCont(int index){
       //    c++;
       // }
       for(int i = 0; i < temp2 * blockSize; i++){
-         if(dataf[i] == -1){
+         if(dataf[i] == -1) {
             dataf[i] = d[index].filename;
             startLoc[i] = freed[0] + temp2;
             endLoc[i] = freed[0] + temp2 + (value -1);
-            printf("Current index == %d",i);
             break;
          }
       }
@@ -213,6 +212,7 @@ int freespaceCont(){
             }
             if(count < blocksRequired && bitmap[i] == 1){
                freed[count] = i;
+               printf("Current Free[] %d", freed[count]);
                count++;
             }
             else{
