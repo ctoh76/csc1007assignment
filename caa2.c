@@ -76,6 +76,7 @@ void addCont(int index){
             dataf[i] = d[index].filename;
             startLoc[i] = freed[0] + temp2;
             endLoc[i] = freed[0] + temp2 + (value -1);
+            printf("Current index == %d",i);
             break;
          }
       }
@@ -166,7 +167,6 @@ void deleteCont(int index){
          break;
       }
    }
-
    printf("\nData in %d:",t1);
    for(int i = t2*blockSize;i< (t2*blockSize+size);i++){
       printf(".%d.",dataf[i]);
@@ -175,9 +175,11 @@ void deleteCont(int index){
    }
    printf("Has been deleted");
    printf("\n");
-   for(int i = t2 - temp2; i< t3-temp2; i++){
+   for(int i = t2; i<=t3; i++){
+      printf("Freeing %d",i);
       bitmap[i] = 1;
    }
+   
 }
 
 int ifFullCont(){
@@ -185,6 +187,7 @@ int ifFullCont(){
    for(int i = 0; i < noOfBlock; i++){
       if(bitmap[i] == 0){
          countbitmap++;
+         printf("blocks left %d", noOfBlock-countbitmap);
       }
    }
    if(countbitmap>=noOfBlock){ 
