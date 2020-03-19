@@ -160,9 +160,8 @@ void initArray(){//init array
          }
       }else if(choice == 2)
       {
-         printf("dir:%d",anotherdirblock);
+         
          blockSize = MAX/anotherdirblock;
-         printf("bs: %d:",blockSize);
          for(int a = 0; a<MAX;a++)
          {//get no. of blocks
             counter = counter + 1;
@@ -208,6 +207,7 @@ void initArray(){//init array
             noOfBlock = dirBlocks;
          }
       }
+      printf("Total Num of Blocks: %d",noOfBlock);
 }
 
 void printDirectory(){//print directory
