@@ -212,7 +212,7 @@ void deleteCont(int index){//
                endLoc[j] = endLoc[j + 1];
             }
          }
-      }
+   }
 }
 
 
