@@ -52,6 +52,18 @@ int checkFunc(){//read csv and store everything into struct d[]
             break;
       } 
    }
+   /*for(int i = 0;i < temp2; i++){
+      int j = i + 1;
+      if(dataf[i] == -1 && startLoc[i] == -1 && endLoc[i] == -1){
+            dataf[i] = dataf[j];
+            startLoc[i] = startLoc[j];
+            endLoc[i] = endLoc[j];
+            dataf[j] = -1;
+            startLoc[j] = -1;
+            endLoc[j] = -1;
+      }
+   }*/
+
    return 0;
 }
 
@@ -63,7 +75,8 @@ void addCont(int index){
       size++;//eg. if file is 100 data is 101-106 size or filelength is 6
    }
    double value = ceil((double)size/blockSize);// 6/2 = 3 or 6/5 = 2 cuz we actually need 2 blocks to store all 6 data uh
-   blocksRequired = value;//get amount of blocksrequired to place in storage structure.
+   blocksRequired = value;
+   printf("blocks: %d",blocksRequired);//get amount of blocksrequired to place in storage structure.
    printf("\nAdding File %d and",d[index].filename);//print filename
    if(freespaceCont()){//run freespace to check got space or not
       printf("Not allocated due to full Storage\n");
@@ -100,7 +113,7 @@ void addCont(int index){
          l = freed[j];//freed[j] = block number to add in here very blurry cuz damn long do de
          bitmap[l] = 0;//put used(1) into the bitmap to show its used
       }
-      for(int i = 0;i < temp2; i++){
+      /*for(int i = 0;i < temp2; i++){
          if(dataf[i] == -1 && startLoc[i] == -1 && endLoc[i] == -1){
             for(int j = i;j < temp2; j++){
                dataf[j] = dataf[j + 1];
@@ -108,7 +121,7 @@ void addCont(int index){
                endLoc[j] = endLoc[j + 1];
             }
          }
-      }
+      }*/
    }
 }
 
@@ -155,7 +168,7 @@ void readCont(int index){
    }
    printf("\n");
 
-   for(int i = 0;i < temp2; i++){
+   /*for(int i = 0;i < temp2; i++){
          if(dataf[i] == -1 && startLoc[i] == -1 && endLoc[i] == -1){
             for(int j = i;j < temp2; j++){
                dataf[j] = dataf[j + 1];
@@ -163,7 +176,7 @@ void readCont(int index){
                endLoc[j] = endLoc[j + 1];
             }
          }
-      }
+      }*/
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 
@@ -204,20 +217,16 @@ void deleteCont(int index){//
       bitmap[i] = 1;
    }
 
-   for(int i = 0;i < temp2; i++){
-         if(dataf[i] == -1 && startLoc[i] == -1 && endLoc[i] == -1){
-            for(int j = i;j < temp2; j++){
-               dataf[j] = dataf[j + 1];
-               startLoc[j] = startLoc[j + 1];
-               endLoc[j] = endLoc[j + 1];
-            }
+   /*for(int i = 0;i < temp2; i++){
+      if(dataf[i] == -1 && startLoc[i] == -1 && endLoc[i] == -1){
+         for(int j = i;j < temp2; j++){
+            dataf[j] = dataf[j + 1];
+            startLoc[j] = startLoc[j + 1];
+            endLoc[j] = endLoc[j + 1];
          }
-   }
+      }
+   }*/
 }
-
-
-
-
 
 int ifFullCont(){//runs thru the who block to check if bitmap[] reaches all 0 #for bitmap[] it stores a value of 0 or 1 to indicate each block in storage structure is used or not used
    int countbitmap = 0;//counter
@@ -228,8 +237,8 @@ int ifFullCont(){//runs thru the who block to check if bitmap[] reaches all 0 #f
    }
    if(countbitmap>=noOfBlock){ //if counter bigger than or equal to total storage block(43) means fully used
       return 1; //return 1 or true
-   }else{
-      return 0; //return 0 or false
+   }else{ 
+     return 0;
    }
 }
 int freespaceCont(){
@@ -238,20 +247,25 @@ int freespaceCont(){
       return 1;//if ifFull() is full le return 1 or true to add func
    }
    else{  //if ifFull() is not full continue run
-
-      for(int i = 0; i < noOfBlock; i++){//scan the noOfblocks in the storage structure(basically 43)B22- B64
-         if(count == blocksRequired){//blocksrequired is calculated based on size or length of data in add divide by blocksize typed by user
-            break;// eg. if user type blocksize 2 and add file de data length is 6  6/2 = 3 if 3 == 3 break 
-         }//# for some cases where like if data input is 5 cuz its contiguous alloc so need ceiling it ceil(5/2) = 3
-         if(count < blocksRequired && bitmap[i] == 1){//eg. if count(0) less than blocksRequired(3) and bitmap of block 0 is free to use, freed[0] = block no(i)
-            freed[count] = i;//freed[count] stores the blockno its currently adding for example freed[0] = 4, 5 or 6
-            count++;
-         }
-         else{//else there isnt 3 space avail for blockrequired(3) clear counter and clear the freed[] basically reset it
-            for(int j = 0; j<blocksRequired;j++){//clear freed[] array 
-               freed[j] = 0;
+      if(blocksRequired == 0){
+         return 1;
+      }else if(blocksRequired>noOfBlock){
+         return 1;
+      }else{
+         for(int i = 0; i < noOfBlock; i++){//scan the noOfblocks in the storage structure(basically 43)B22- B64
+            if(count == blocksRequired){//blocksrequired is calculated based on size or length of data in add divide by blocksize typed by user
+               break;// eg. if user type blocksize 2 and add file de data length is 6  6/2 = 3 if 3 == 3 break 
+            }//# for some cases where like if data input is 5 cuz its contiguous alloc so need ceiling it ceil(5/2) = 3
+            if(count < blocksRequired && bitmap[i] == 1){//eg. if count(0) less than blocksRequired(3) and bitmap of block 0 is free to use, freed[0] = block no(i)
+               freed[count] = i;//freed[count] stores the blockno its currently adding for example freed[0] = 4, 5 or 6
+               count++;
             }
-            count = 0;//clear counter
+            else{//else there isnt 3 space avail for blockrequired(3) clear counter and clear the freed[] basically reset it
+               for(int j = 0; j<blocksRequired;j++){//clear freed[] array 
+                  freed[j] = 0;
+               }
+               count = 0;//clear counter
+            }
          }
       }
       printf(" found free ");
