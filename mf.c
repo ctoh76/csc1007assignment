@@ -57,6 +57,7 @@ void readFile(){//read csv and store everything into struct d[]
          d[e].data[j]= atoi(token);
          token = strtok(NULL,",");
          j++;
+         
       }
       e++;
       

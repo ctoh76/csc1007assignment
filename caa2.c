@@ -52,17 +52,27 @@ int checkFunc(){//read csv and store everything into struct d[]
             break;
       } 
    }
-   /*for(int i = 0;i < temp2; i++){
-      int j = i + 1;
+   /*
+   for(int i = 0; i<(temp2*blockSize); i++){
       if(dataf[i] == -1 && startLoc[i] == -1 && endLoc[i] == -1){
-            dataf[i] = dataf[j];
-            startLoc[i] = startLoc[j];
-            endLoc[i] = endLoc[j];
-            dataf[j] = -1;
-            startLoc[j] = -1;
-            endLoc[j] = -1;
+         printf("Temp2*blocksize = %d",(temp2*blockSize));
+         dataf[i] = dataf[i + 1];
+         printf("data.i = %d",dataf[i]);
+         startLoc[i] = startLoc[i + 1];
+         printf("startdoc.i = %d",startLoc[i]);
+         endLoc[i] = endLoc[i + 1];
+         printf("endLoc.i = %d");
+         dataf[i+1] = -1;
+         printf("data.i+1 = %d",dataf[i+1]);
+         startLoc[i+1] = -1;
+         printf("start.i+1 = %d",startLoc[i+1]);
+         endLoc[i+1] = -1;
+         printf("end.i+1 = %d",endLoc[i+1]);
       }
    }*/
+   
+
+
 
    return 0;
 }
@@ -100,14 +110,23 @@ void addCont(int index){
       }*/
       //i swear go rmb what is temp2 cuz its everywhere so dumb for a temp int but i did this mess
       //temp2 is the starting block no. of the storage sturcture so if blocksize is 2 temp2 will be 22 if blocksize is 3 temp2 will be 11.
-      if(c == temp2 * blockSize - 1){//create a counter for directory struct so if counter reaches the max block of directory struct which is 21 means full le by right shouldnt reach here will be damn weird
-         printf("Exceeded Directory allocated");
-      }else{
-         dataf[c] = d[index].filename;//add per add file into directory struct
-         startLoc[c] = freed[0] + temp2;//add where it start into directory struct
-         endLoc[c] = freed[0] + temp2 + (value -1);//add where it end into directory struct
-         c++;
+      // if(c == temp2 * blockSize - 1){//create a counter for directory struct so if counter reaches the max block of directory struct which is 21 means full le by right shouldnt reach here will be damn weird
+      //    printf("Exceeded Directory allocated");
+      // }else{
+      //    dataf[c] = d[index].filename;//add per add file into directory struct
+      //    startLoc[c] = freed[0] + temp2;//add where it start into directory struct
+      //    endLoc[c] = freed[0] + temp2 + (value -1);//add where it end into directory struct
+      //    c++;
+      // }
+      for(int i = 0; i < temp2 * blockSize; i++){
+         if(dataf[i] == -1){
+            dataf[i] = d[index].filename;//add per add file into directory struct
+            startLoc[i] = freed[0] + temp2;//add where it start into directory struct
+            endLoc[i] = freed[0] + temp2 + (value -1);
+            break;
+         }
       }
+
       int l = 0;//temp int
       for(int j = 0; j<blocksRequired; j++){//allocated into freespace
          l = freed[j];//freed[j] = block number to add in here very blurry cuz damn long do de
@@ -203,8 +222,18 @@ void deleteCont(int index){//
          dataf[i] = -1;//set it to -1 cuz its been "deleted"
          startLoc[i] = -1;//set it to -1 cuz its been "deleted"
          endLoc[i] = -1;//set it to -1 cuz its been "deleted"
+         break;
       }
    }
+
+   // for (int i = 0; i < (temp2*blockSize); i++) {
+   //    if(dataf[i] == d[index].filename) {
+   //       dataf[i] = -1;
+   //       break;
+   //    }
+
+   // }
+
    printf("\nData in %d:",t1);
    for(int i = t2*blockSize;i< (t2*blockSize+size);i++){//set dataf[] inthe storage struct into 0 so can use
       printf(".%d.",dataf[i]);
