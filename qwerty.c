@@ -12,7 +12,8 @@ void readLink();
 void deleteLink();
 
 int blockAvail;//dk which nvr used need to clear it when i make the code look pretty
-int blockSize, excessBlock, dirBlocks,k;//excess and dir block havent used need rmb to make it remove redudant blocks but if no time do jiu suan le
+int blockSize;
+int excessBlock, dirBlocks,k;//excess and dir block havent used need rmb to make it remove redudant blocks but if no time do jiu suan le
 int choice,anotherdirblock ;
 int count1;
 

@@ -15,11 +15,11 @@ int blockAvail;
 int volumecontrol1[] = {0}; 
 int volumecontrol2[] = {0}; 
 
-int blockSize, excessBlock, dirBlocks,k;
+int bs1, excessBlock, dirBlocks,k;
 int choice,anotherdirblock ;
 
 int checkFunc(){
-
+   int bs1 = blockSize;
    for(int c= 0; c < e;c++){
       char *function = d[c].func;
       switch(*function){
@@ -76,6 +76,7 @@ void addCont(int index){
             dataf[i] = d[index].filename;
             startLoc[i] = freed[0] + temp2;
             endLoc[i] = freed[0] + temp2 + (value -1);
+            printf("d:%d",dataf[i]);
             break;
          }
       }
@@ -110,20 +111,20 @@ void readCont(int index){
       }
    }
    int t1 = 0, t2 = 0,t3 = 0,t4 = 0;
-   for(int i = 0; i<temp2*blockSize; i++){
+   for(int i = 0; i<temp2*bs1; i++){
       if(d[index].filename == dataf[i]){
-         printf("File : %d \tStart: %d \tEnd: %d", dataf[i],startLoc[i],endLoc[i]);
          t1 = dataf[i];
          t2 = startLoc[i]; 
          t3 = endLoc[i];
+         printf("File : %d \tStart: %d \tEnd: %d", dataf[i],startLoc[i],endLoc[i]);
          t4 = 1;
       }
    }
-   for(int i = (temp2*blockSize); i<(noOfBlock+temp2)*blockSize; i++){
+   for(int i = (temp2*bs1); i<(noOfBlock+temp2)*bs1; i++){
       if(d[index].filename == dataf[i]){
          t1 = dataf[i];
          t2 = startLoc[i];
-         t3 = (i/blockSize);
+         t3 = (i/bs1);
          t4 = 2;
       }
    }
@@ -134,7 +135,7 @@ void readCont(int index){
    }else if(t4 == 2){
       printf("\nRead file %d(%d) from B%d",t2,t1,t3);
    }
-   for(int i = t2*blockSize;i<((t2*blockSize)+size);i++){
+   for(int i = t2*bs1;i<((t2*bs1)+size);i++){
       printf(".%d.",dataf[i]);
    }
    printf("\n");
@@ -168,7 +169,7 @@ void deleteCont(int index){
    }
    printf("\nData in %d:",t1);
    for(int i = t2*blockSize;i< (t2*blockSize+size);i++){
-      printf(".%d.",dataf[i]);
+      printf(".%d. i = %d",dataf[i],i);
       dataf[i] = -1;
       startLoc[i] = -1;
    }
@@ -185,14 +186,16 @@ int ifFullCont(){
    int countbitmap = 0;
    for(int i = 0; i < noOfBlock; i++){
       if(bitmap[i] == 0){
-         countbitmap++;
-         printf("blocks left %d", noOfBlock-countbitmap);
+         countbitmap++;    
       }
    }
+   printf("blocks left %d", noOfBlock-countbitmap);
    if(countbitmap>=noOfBlock){ 
       return 1;
-   }else{ 
-     return 0;
+   }else if((noOfBlock-countbitmap) < blocksRequired){ 
+      return 1;
+   }else{
+      return 0;
    }
 }
 int freespaceCont(){
@@ -200,7 +203,7 @@ int freespaceCont(){
    if(ifFullCont()){
       return 1;
    }
-   else{  
+   else{ 
       if(blocksRequired == 0){
          return 1;
       }else if(blocksRequired>noOfBlock){
@@ -212,7 +215,6 @@ int freespaceCont(){
             }
             if(count < blocksRequired && bitmap[i] == 1){
                freed[count] = i;
-               printf("Current Free[] %d", freed[count]);
                count++;
             }
             else{

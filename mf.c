@@ -18,7 +18,8 @@ void printDirectory();
 void initFreespace();
 void initArray();
 
-int blockSize, excessBlock, dirBlocks;
+int blockSize;
+int excessBlock, dirBlocks;
 int anotherdirblock;
 
 void main(){
