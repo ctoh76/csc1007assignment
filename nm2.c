@@ -58,10 +58,13 @@ void addHContigous(int index, int size)
             {
                if (countIndex >= blocksRequired && countStart == 0)
                {
-                  dataf[i] = d[index].data[k];
-                  startLoc[i] = d[index].filename; //fill the startblock for the file into it
-                  bitmap[freed[j]] = 0;
-                  k++;
+                  if (k < size)
+                  {
+                     dataf[i] = d[index].data[k];
+                     startLoc[i] = d[index].filename; //fill the startblock for the file into it
+                     bitmap[freed[j]] = 0;
+                     k++;
+                  }
                }
                else
                {
@@ -116,7 +119,7 @@ int checkFuncNM()
       case 'r':
       case 'R':
          printf("\nEntered Read Function\n");
-         //readHMethod(c);
+         readHMethod(c);
          break;
       case 'd':
       case 'D':
@@ -141,29 +144,19 @@ void addMethod(int index)
       *ptr++;
       size++; //eg. if file is 100 data is 101-106 size or filelength is 6
    }
-
-   if (size > 7)
-   { // check if data more than 8 , if more than run index allocation
-      // addIndex(index ,size);// call index add method
-      //  printf(" inside index printf %d" , size);
-      addHContigous(index, size);
-   }
-   else
-   {
-      addHContigous(index, size); // call contigous add method
-                                  //  addIndex(index ,size);// call index add method
-                                  //   printf("contigous printf %d" , size);
-   }
+   addHContigous(index, size);
 }
 
 void readHMethod(int index)
 {
-   //as when we read file the data stored is based on the index so like d[0].filename = 100 cuz we add 100 first then d[1].filename = 200 cuz we add 200 next
-   int size = 0; //so d[0].data is the data in d[0].filename which is 101-106, i basically count the length of it cuz idk why but i cant use sizeof
+   int fileNameYN = 0; // default means is it a file data
+
+   int size = 0;
    for (int c = 0; c < index; c++)
-   {                                          //cuz read 200 which is d[i].filename = 200 got no data!!! so need to look back into the filename 200 containing the data
-      if (d[index].filename == d[c].filename) //compare and find the damn size
+   {
+      if (d[index].filename == d[c].filename)
       {
+         
          int *ptr = d[c].data;
          while (*ptr != 0)
          { //to count the size of data basically is like len(data)
@@ -172,69 +165,27 @@ void readHMethod(int index)
          }
       }
    }
-   int t1 = 0, t2 = 0, t3 = 0, t4 = 0; //created 3 temp int to store the dataf[i] startLoc[i] endLoc[i]
-   for (int i = 0; i < temp2 * blockSize; i++)
-   { //this for loop run based on the directory structure cuz it runs from blk 0 to 21,lets say for blocksize 2 it runs from index 0 to index 43
-      if (d[index].filename == dataf[i])
-      {                                                                           //if the filename from the struct which store the readfile meaning like read 200 filename is 200 compare with the directory structure to find 200
-         printf("File : %d Start: %d End: %d", dataf[i], startLoc[i], endLoc[i]); //gets its file name which is 200 just to cfm de la then get its startLoc and endLoc which is like 25 and 27
-         t1 = dataf[i];                                                           //filename
-         t2 = startLoc[i];                                                        //if we  alr added 200 to block 25- block 27 and we read filename 200 should appear blk 25
-         t3 = endLoc[i];                                                          // should appear block 27
-         t4 = 1;
-      }
-   }
-   for (int i = (temp2 * blockSize); i < MAX; i++)
-   { //if user wanna find file data #for loop to run thru the storage struct
-      if (d[index].filename == dataf[i])
-      { //if filename = file data
-         printf("File : %d", startLoc[i]);
-         t1 = dataf[i];        //file data eg read 1401 t1 = 1401
-         t2 = startLoc[i];     //file start block
-         t3 = (i / blockSize); //file block location of the data
-         t4 = 2;               //condition
-      }
-   }
-   if (t1 != d[index].filename)
-   { //just to say if nosuch file it will be 0
-      printf("No such file as %d", d[index].filename);
-   }
-   else if (t4 == 1)
-   {
-      printf("\nData in %d:", t1); //filename which should be 200 but will varies depend on what we read
-   }
-   else if (t4 == 2)
-   {
-      printf("\nRead file %d(%d) from B%d", t2, t1, t3);
-   }
-   for (int i = t2 * blockSize; i < ((t2 * blockSize) + size); i++)
-   {                            //for loop from index(blk 25 * blocksize 2)start block of the file to index(blk 25 * blocksize + length of the data inside(6))
-      printf(".%d.", dataf[i]); //print the data
-   }
-   printf("\n");
 
-   for (int i = 0; i < temp2; i++)
-   {
-      if (dataf[i] == 0 && startLoc[i] == 0 && endLoc[i] == 0)
+  
+    for (int j = 0; j < blocksRequired + indexRequiredBlock; j++)
       {
-         for (int j = i; j < temp2; j++)
-         {
-            dataf[j] = dataf[j + 1];
-            startLoc[j] = startLoc[j + 1];
-            endLoc[j] = endLoc[j + 1];
-         }
+         
       }
-   }
    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 
 void deleteHMethod(int index)
 { //
    int size = 0;
+   int iffileName = 0;
+   int tempStart;
    for (int c = 0; c < index; c++)
    {
       if (d[index].filename == d[c].filename) //just to find the data's size
       {
+         iffileName = 1;
+         tempStart = d[index].filename;
+
          int *ptr = d[c].data;
          while (*ptr != 0)
          {
@@ -243,46 +194,64 @@ void deleteHMethod(int index)
          }
       }
    }
-   int t1 = 0, t2 = 0, t3 = 0;
-   for (int i = 0; i < temp2 * blockSize; i++)
-   {
-      if (d[index].filename == dataf[i])
-      {                                                                           //compare to find the file info in directory struct
-         printf("File : %d Start: %d End: %d", dataf[i], startLoc[i], endLoc[i]); //start from where and end where
-         t1 = dataf[i];                                                           //allocate into t1 to use
-         t2 = startLoc[i];                                                        //allocate into t2 to use
-         t3 = endLoc[i];                                                          //allocate into t3 to use
-         dataf[i] = -1;                                                           //set it to 0 cuz its been "deleted"
-         startLoc[i] = -1;                                                        //set it to 0 cuz its been "deleted"
-         endLoc[i] = -1;                                                          //set it to 0 cuz its been "deleted"
-      }
-   }
-   printf("\nData in %d:", t1);
-   for (int i = t2 * blockSize; i < (t2 * blockSize + size * 2); i++)
-   { //set dataf[] inthe storage struct into 0 so can use //*2 because each 6 data need 12 block
-      printf(".%d.", dataf[i]);
-      dataf[i] = -1;
-      startLoc[i] = -1;
-   }
-   printf("Has been deleted");
-   printf("\n");
-   for (int i = t2 - temp2; i < t3 - temp2; i++)
-   { //set bitmap back to 1 so its free but mainly is this bitmap cuz dataf nvr set 0 it oso can be overwrite
-      bitmap[i] = 1;
-   }
+
+   //printf(" this is size %d\n" , size);
+   int tempp = 0;
+   int tempp1 = 0;
+   int tempp2 = 0;
 
    for (int i = 0; i < temp2; i++)
    {
-      if (dataf[i] == -1 && startLoc[i] == -1 && endLoc[i] == -1)
+      if (tempStart == d[c].filename)
       {
+         printf(" this is plus wtffffffffffffffffffffffffffffff %d\n", d[c].filename);
          for (int j = i; j < temp2; j++)
          {
-            dataf[j] = dataf[j + 1];
-            startLoc[j] = startLoc[j + 1];
-            endLoc[j] = endLoc[j + 1];
+            //   tempp = dataf[j];
+            tempp1 = startLoc[j];
+            tempp2 = endLoc[j];
+            printf("tempp1  %d\n", tempp1);
+            printf("temmp2 %d\n", tempp2);
          }
       }
    }
+   // printf("data %d\n" , d[c].filename);
+
+   /*
+            for (int i = 0; i < temp2; i++)
+      {
+         if (dataf[i] == -1 && startLoc[i] == -1 && endLoc[i] == -1)
+         {
+            for (int j = i; j < temp2; j++)
+            {
+               dataf[j] = dataf[j + 1];
+               startLoc[j] = startLoc[j + 1];
+               endLoc[j] = endLoc[j + 1];
+            }
+         }
+      }
+*/
+   /*
+
+   if(iffileName == 1){
+         tempStart = 0;
+            int t1 = 0, t2 = 0,t3 = 0;
+   for(int i = 0; i<temp2*blockSize; i++){
+      if(d[index].filename == dataf[i]){//compare to find the file info in directory struct
+         printf("File : %d Start: %d End: %d", dataf[i],startLoc[i],endLoc[i]);//start from where and end where
+         t1 = dataf[i];//allocate into t1 to use
+         t2 = startLoc[i];//allocate into t2 to use
+         t3 = endLoc[i];//allocate into t3 to use
+         dataf[i] = -1;//set it to -1 cuz its been "deleted"
+         startLoc[i] = -1;//set it to -1 cuz its been "deleted"
+         endLoc[i] = -1;//set it to -1 cuz its been "deleted"
+      }
+   }
+
+   }else{
+      
+   }
+*/
 }
 
 int ifFull()
