@@ -140,7 +140,7 @@ void initArray(){
 
       if(choice == 1)
       {
-         for(int a = 0; a<MAX;a++)\
+         for(int a = 0; a<MAX;a++)
          {
             counter = counter + 1;
             temp[a] = blockNum;
