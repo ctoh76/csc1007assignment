@@ -5,7 +5,7 @@
 #include "caa2.c"
 #include "qwerty.c"
 #include "header.h"
-//#include "nm2.c"
+#include "nm2.c"
 
 //#include "iaa.c"
 FILE *fp;
@@ -91,7 +91,7 @@ void methodSelection(){
          case 4:
          // call method new method
             printDirectory();
-            //checkFuncNM();
+            checkFuncNM();
              printDirectory();
             break;
 

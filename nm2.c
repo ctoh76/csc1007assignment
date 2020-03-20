@@ -40,6 +40,7 @@ void addHContigous(int index, int size)
 
       int countIndex = 0;
       int countStart = indexRequiredBlock * blockSize;
+      printf("Countstart :%d",countStart);
       int blockReset = 0;
       int k = 0;
       for (int j = 0; j < blocksRequired + indexRequiredBlock; j++)
@@ -49,6 +50,7 @@ void addHContigous(int index, int size)
             if (countIndex < blocksRequired)
             {
                dataf[i] = freed[0] + temp2 + indexRequiredBlock + countIndex;
+               printf("D1: %d\n",dataf[i]);
                blockReset++;
                bitmap[freed[j]] = 0;
                countStart--;
@@ -58,10 +60,16 @@ void addHContigous(int index, int size)
             {
                if (countIndex >= blocksRequired && countStart == 0)
                {
-                  dataf[i] = d[index].data[k];
-                  startLoc[i] = d[index].filename; //fill the startblock for the file into it
-                  bitmap[freed[j]] = 0;
-                  k++;
+                  printf("countindex %d\t blocksreq %d",countIndex,blocksRequired);
+                  if(k<size){
+                     dataf[i] = d[index].data[k];
+                     startLoc[i] = d[index].filename; //fill the startblock for the file into it
+                     bitmap[freed[j]] = 0;
+                     printf("D2: %d\n",dataf[i]);
+                     k++; 
+                     printf("k:%d",k);
+                  }
+                  
                }
                else
                {
@@ -97,6 +105,7 @@ void addHContigous(int index, int size)
                endLoc[j] = endLoc[j + 1];
             }
          }
+         printf("|||||dataf[i] %d, statloc[i] $d,interested %d",dataf[i],startLoc[i],endLoc[i]);
       }
    }
 }
