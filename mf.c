@@ -65,9 +65,12 @@ void readFile(){
 }
 
 void methodSelection(){
+    
     int method_choice;
+   do{
       printf("\nPlease select allocation method: 1. contiguous 2. linked 3. indexed 4. New Method");
 		scanf("%d", &method_choice);
+      
       switch(method_choice)
 		{
 			case 1:
@@ -99,6 +102,8 @@ void methodSelection(){
             printf("Unable to understand your input");
             break;
       }
+ }while (method_choice!=4);
+      
 }
 
 void initArray(){
