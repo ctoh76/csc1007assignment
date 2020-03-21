@@ -63,30 +63,67 @@ void addLink(int index){
       size++;//eg. if file is 100 data is 101-106 size or filelength is 6
    }
    //get the blockSize
-   double value1 = ceil((double)size/(blockSize-1));
+   double value1 = ceil((double)size/(blockSize-1));  
    blocksRequired = value1;
-   printf("\nAdding File %d and",d[index].filename);//print filename
+  
+   printf("\nAdding File %d and",d[index].filename);//print filename data
    
    int j = 0;
    if(freespaceLink()){//run freespace to check got space or not
       printf("Not allocated due to full Storage\n");
    }else{
-      for(int i = freed[0]; i < (freed[0] + blocksRequired); i++){  //if the i=freed[0]=0 ,i less than 0+2(block require),i++
-         bitmap[i] = 0;//bitmap 0 =used
-      }
-      for(int i = 0; i < blocksRequired; i++){ 
+      
+      // for(int i = 0; i < blocksRequired; i++){ 
+      //    for(int k = ((freed[i]+temp2)*blockSize);k<(freed[i]+temp2)*blockSize + blockSize;k++){   //position freed[i]+temp=22*2=index 44,the first index,K is less than 44+2,46,K++   --> we know that we need 2 block each time for each data 
+      //       if(k == (freed[i]+temp2)*blockSize + blockSize - 1){  //44=2=46-1 =45 index //get the end of the block? //this if statement is to add nodes to the last blk. 
+               
+      //          dataf[k] = (freed[i+1] + temp2);
+            
+      //       }else{
+      //          if(j<size){
+      //             dataf[k]=d[index].data[j]; //insert the data
+      //             j++;
+      //          }else{
+      //             break;
+      //          }
+      //       }
+            
+      //    }
+        for(int i = 0; i < blocksRequired; i++){ 
+           printf("Start:%d\n",i);
          for(int k = ((freed[i]+temp2)*blockSize);k<(freed[i]+temp2)*blockSize + blockSize;k++){   //position freed[i]+temp=22*2=index 44,the first index,K is less than 44+2,46,K++   --> we know that we need 2 block each time for each data 
-            if(k == (freed[i]+temp2)*blockSize + blockSize - 1){  //44=2=46-1 =45 index
-               dataf[k] = (freed[i+1] + temp2);  //44 = 0+1+22 =23 ,index 45 store 23 ,Node
-               if(dataf[k] == freed[i]+temp2){  //44 ==22
-                  dataf[k] = -1;   
-               }
-            }else{
-               dataf[k]=d[index].data[j]; //insert the data
+          printf("starting index: %d\n",k);
+          if(k == (freed[i]+temp2)*blockSize + blockSize-1) {
+             printf("Last Block: %d\n",k);
+             if(freed[i + 1] != 0){
+                dataf[k] = freed[i+1]+temp2;
+               printf("Have %d + %d\n",freed[i+1], temp2);
+             }
+               
+             
+          }else{
+             if(j<size){
+                
+               dataf[k] = d[index].data[j];
+               printf(".%d.",dataf[k]);
                j++;
-            }
+             }else{
+                printf("Break here");
+                break;
+             }
+          } 
          }
+         printf("%d is free",freed[i]+temp2);
+         bitmap[freed[i]] = 0;//bitmap 0 =used
       }
+
+     
+             
+   
+
+
+
+      
 if(c == temp2 * blockSize - 1){//create a counter for directory struct so if counter reaches the max block of directory struct which is 21 means full le by right shouldnt reach here will be damn weird
          printf("Exceeded Directory allocated");
       }else{
@@ -123,16 +160,20 @@ int freespaceLink(){
       return 1;//if ifFull() is full le return 1 or true to add func
    }
    else{  //if ifFull() is not full continue run
-
+      for(int i =0;i<blocksRequired+1; i++){
+         freed[i]=0;
+      }
       for(int i = 0; i < noOfBlock; i++){//scan the noOfblocks in the storage structure(basically 43)B22- B64//# for some cases where like if data input is 5 cuz its contiguous alloc so need ceiling it ceil(5/2) = 3
          if(count == blocksRequired){
             break;
          }
          if(count < blocksRequired && bitmap[i] == 1){//eg. if count(0) less than blocksRequired(3) and bitmap of block 0 is free to use, freed[0] = block no(i)
             freed[count] = i;//freed[count] stores the blockno its currently adding for example freed[0] = 4, 5 or 6
-            count++;
+            printf("Fread[%d]=%d",count,i);  
+            count++; 
          }
-         
+
+           
       }
       printf(" found free ");
       for(int i = 0; i < blocksRequired; i++){//if found 3 space for blockrequired(3)
