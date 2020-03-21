@@ -19,7 +19,7 @@ int bs1, excessBlock, dirBlocks,k;
 int choice,anotherdirblock ;
 
 int checkFunc(){
-   int bs1 = blockSize;
+   bs1 = blockSize;
    for(int c= 0; c < e;c++){
       char *function = d[c].func;
       switch(*function){
@@ -40,11 +40,12 @@ int checkFunc(){
             break;
       } 
    }
-
+   //printf("BS : %d", bs1);
    return 0;
 }
 
 void addCont(int index){
+   //printf("BS : %d", bs1);
    int *ptr = d[index].data; 
    int size = 0;
    while(*ptr !=0){
@@ -76,7 +77,7 @@ void addCont(int index){
             dataf[i] = d[index].filename;
             startLoc[i] = freed[0] + temp2;
             endLoc[i] = freed[0] + temp2 + (value -1);
-            printf("d:%d",dataf[i]);
+           // printf("d:%d",dataf[i]);
             break;
          }
       }
@@ -99,6 +100,7 @@ void addCont(int index){
 }
 
 void readCont(int index){
+   //printf("BS : %d", bs1);
    int size = 0;
    for(int c= 0; c < index;c++){
       if(d[index].filename == d[c].filename)
@@ -110,6 +112,7 @@ void readCont(int index){
          }
       }
    }
+   //printf("Filedname: %d Size %d",d[index].filename,size);
    int t1 = 0, t2 = 0,t3 = 0,t4 = 0;
    for(int i = 0; i<temp2*bs1; i++){
       if(d[index].filename == dataf[i]){
@@ -132,32 +135,43 @@ void readCont(int index){
       printf("No such file as %d",d[index].filename);
    }else if(t4 == 1){
       printf("\nData in %d:",t1);
+      for(int i = t2*bs1;i<((t2*bs1)+size);i++){
+         printf(".%d.",dataf[i]);
+      }
    }else if(t4 == 2){
       printf("\nRead file %d(%d) from B%d",t2,t1,t3);
+      for(int i = t2*bs1;i<((t2*bs1)+size);i++){
+         printf(".%d.",dataf[i]);
+      }
    }
-   for(int i = t2*bs1;i<((t2*bs1)+size);i++){
-      printf(".%d.",dataf[i]);
-   }
+   // for(int i = t2*bs1;i<((t2*bs1)+size);i++){
+   //       printf(".%d.",dataf[i]);
+   // }
+
    printf("\n");
 }
 
 
 void deleteCont(int index){
    int size = 0;
-   for(int c= 0; c < index;c++){  
+   for(int c = 0; c< index; c++){  
       if(d[index].filename == d[c].filename)
       {
-         int *ptr = d[c].data;
-         while(*ptr !=0){
-            *ptr++;
-            size++;
-         }
+         for(int i = 0;i<temp2*blockSize;i++){
+            if(d[index].filename == dataf[i]){
+               int *ptr = d[c].data;
+               while(*ptr !=0){
+                  *ptr++;
+                  size++;
+               }
+            }
+         }  
       }
    }
    int t1 = 0, t2 = 0,t3 = 0;
    for(int i = 0; i<temp2*blockSize; i++){
       if(d[index].filename == dataf[i]){
-         printf("File : %d Start: %d End: %d", dataf[i],startLoc[i],endLoc[i]);
+         //printf("File : %d Start: %d End: %d", dataf[i],startLoc[i],endLoc[i]);
          t1 = dataf[i];
          t2 = startLoc[i];
          t3 = endLoc[i];
@@ -169,14 +183,13 @@ void deleteCont(int index){
    }
    printf("\nData in %d:",t1);
    for(int i = t2*blockSize;i< (t2*blockSize+size);i++){
-      printf(".%d. i = %d",dataf[i],i);
+      printf(".%d.",dataf[i]);
       dataf[i] = -1;
       startLoc[i] = -1;
    }
    printf("Has been deleted");
    printf("\n");
    for(int i = t2; i<=t3; i++){
-      printf("Freeing %d",i);
       bitmap[i] = 1;
    }
    
@@ -189,7 +202,6 @@ int ifFullCont(){
          countbitmap++;    
       }
    }
-   printf("blocks left %d", noOfBlock-countbitmap);
    if(countbitmap>=noOfBlock){ 
       return 1;
    }else if((noOfBlock-countbitmap) < blocksRequired){ 

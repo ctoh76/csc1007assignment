@@ -5,7 +5,7 @@
 #include "caa2.c"
 #include "qwerty.c"
 #include "header.h"
-//#include "nm2.c"
+#include "nm2.c"
 
 //#include "iaa.c"
 FILE *fp;
@@ -91,7 +91,7 @@ void methodSelection(){
          case 4:
          // call method new method
             printDirectory();
-            //checkFuncNM();
+            checkFuncNM();
              printDirectory();
             break;
 
@@ -140,7 +140,7 @@ void initArray(){
 
       if(choice == 1)
       {
-         for(int a = 0; a<MAX;a++)\
+         for(int a = 0; a<MAX;a++)
          {
             counter = counter + 1;
             temp[a] = blockNum;
