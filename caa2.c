@@ -64,14 +64,6 @@ void addCont(int index){
          dataf[i] = d[index].data[k];
          startLoc[i] = d[index].filename;
       }
-      // if(c == temp2 * blockSize - 1){
-      //    printf("Exceeded Directory allocated");
-      // }else{
-      //    dataf[c] = d[index].filename;//add per add file into directory struct
-      //    startLoc[c] = freed[0] + temp2;//add where it start into directory struct
-      //    endLoc[c] = freed[0] + temp2 + (value -1);//add where it end into directory struct
-      //    c++;
-      // }
       for(int i = 0; i < temp2 * blockSize; i++){
          if(dataf[i] == -1) {
             dataf[i] = d[index].filename;

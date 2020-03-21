@@ -6,7 +6,6 @@
 #include "qwerty.c"
 #include "header.h"
 #include "nm2.c"
-
 //#include "iaa.c"
 FILE *fp;
 
