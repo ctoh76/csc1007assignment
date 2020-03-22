@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <math.h> // for ceiling function
+#include <math.h> 
 #include "header.h"
 
-#define MAX 130 //define max size of data able to store
+#define MAX 130 
 
 int freespaceHMethod(int index);
 void addMethod(int index);
@@ -12,9 +12,10 @@ void readHMethod();
 void deleteHMethod();
 int checkFuncNM();
 void addIndex(int index);
+int indexfreespace(int index);
 
-int blocksRequired, blockAvail, indexRequiredBlock; //dk which nvr used need to clear it when i make the code look pretty
-int blockSize, excessBlock, dirBlocks, k;           //excess and dir block havent used need rmb to make it remove redudant blocks but if no time do jiu suan le
+int blocksRequired, blockAvail, indexRequiredBlock; 
+int blockSize, excessBlock, dirBlocks, k;           
 int choice, anotherdirblock;
 int count1;
 int blockSize, excessBlock, dirBlocks, k;
@@ -22,13 +23,13 @@ int readCount = 0;
 int store[MAX];
 
 int checkFuncNM()
-{ //read csv and store everything into struct d[]
+{ 
    for (int c = 0; c < e; c++)
-   {                              //interestingly enuf a readfile function i go put in here that after every func add, read or delete i go add immediately
-      char *function = d[c].func; //d[1].func
+   {                              
+      char *function = d[c].func;
       switch (*function)
       {
-      case 'a': //read until character a or A means add la, r or R means read, d or D means delete
+      case 'a':
       case 'A':
          printf("Reached add Func"); //1
          addMethod(c);
@@ -43,9 +44,6 @@ int checkFuncNM()
          printf("\nEntered Delete Function\n");
          deleteHMethod(c);
          break;
-      default:
-         printf("Reached Default"); //dk what to type in default should i even have a default here idk help me
-         break;
       }
    }
 
@@ -54,19 +52,19 @@ int checkFuncNM()
 
 void addMethod(int index)
 {
-   int *ptr = d[index].data; //get the length of file data inthe struct which stored in readfile()
+   int *ptr = d[index].data; 
    int size = 0;
    while (*ptr != 0)
    {
       *ptr++;
-      size++; //eg. if file is 100 data is 101-106 size or filelength is 6
+      size++; 
    }
-   double value = ceil((double)size / blockSize);                 // 6/2 = 3 or 6/5 = 2 cuz we actually need 2 blocks to store all 6 data uh
-   blocksRequired = value;                                        //get amount of blocksrequired to place in storage structure.
-   indexRequiredBlock = ceil((double)blocksRequired / blockSize); // calcutate how much block pointer need to use
-   printf("\nAdding File %d and ", d[index].filename);            //print filename
+   double value = ceil((double)size / blockSize);                
+   blocksRequired = value;                                       
+   //indexRequiredBlock = ceil((double)blocksRequired / blockSize); 
+   printf("\nAdding File %d and ", d[index].filename);          
    if (freespaceHMethod(index))
-   { //run freespace to check got space or not
+   {
       printf("Not allocated due to full Storage\n");
    }
    else
@@ -85,7 +83,6 @@ void addMethod(int index)
                dataf[i] = d[index].filename;
                startLoc[i] = freed[0] + temp2;
                endLoc[i] = freed[0] + temp2 + (value - 1);
-               // printf("d:%d",dataf[i]);
                break;
             }
          }
@@ -96,151 +93,133 @@ void addMethod(int index)
             l = freed[j];
             bitmap[l] = 0;
          }
-      
-
-      // int count = 0;
-      // int count1 = 0;
-      // for (int k = 0; k < (blocksRequired); k++)
-      // {
-      //    for (int i = ((freed[k] + temp2) * blockSize); i < (freed[k] + temp2) * blockSize + blockSize; i++)
-      //    {
-      //       if (k == 0 && count < blocksRequired)
-      //       {
-      //          dataf[i] = freed[count + 1] + temp2;
-      //          count++;
-      //          printf("count %d,data: %d", count, dataf[i]);
-      //       }
-      //       else
-      //       {
-      //          dataf[i] = -1;
-      //       }
-      //       if (k > 0 && count1 < size)
-      //       {
-      //          dataf[i] = d[index].data[count1];
-      //          count1++;
-      //          printf("c1 %d,data: %d", count1, dataf[i]);
-      //       }
-      //    }
-      // }
-      // for (int i = 0; i < temp2 * blockSize; i++)
-      // {
-      //    if (dataf[i] == -1)
-      //    {
-      //       dataf[i] = d[index].filename;
-      //       startLoc[i] = freed[0] + temp2;
-      //       endLoc[i] = freed[blocksRequired-1] + temp2;
-      //       // printf("d:%d",dataf[i]);
-      //       break;
-      //    }
-      // }
-
-      // int l = 0;
-      // for (int j = 0; j < blocksRequired; j++)
-      // {
-      //    l = freed[j];
-      //    bitmap[l] = 0;
-      //    printf("blk %d is use", l + temp2);
-      // }
-      // int countIndex = 0;
-      // int countStart = indexRequiredBlock * blockSize;
-      // int blockReset = 0;
-      // int k = 0;
-      // for (int j = 0; j < blocksRequired + indexRequiredBlock; j++)
-      // {
-      //    for (int i = (freed[j] + temp2) * blockSize; i < (freed[j] + temp2) * blockSize + blockSize; i++)
-      //    {
-      //       if (countIndex < blocksRequired)
-      //       {
-      //          dataf[i] = freed[0] + temp2 + indexRequiredBlock + countIndex;
-      //          blockReset++;
-      //          bitmap[freed[j]] = 0;
-      //          countStart--;
-      //          countIndex++;
-      //       }
-      //       else
-      //       {
-      //          if (countIndex >= blocksRequired && countStart == 0)
-      //          {
-      //             if (k < size)
-      //             {
-      //                dataf[i] = d[index].data[k];
-      //                startLoc[i] = d[index].filename; //fill the startblock for the file into it
-      //                bitmap[freed[j]] = 0;
-      //                k++;
-      //             }
-      //          }
-      //          else
-      //          {
-      //             bitmap[freed[j]] = 0;
-      //             countStart--;
-      //          }
-      //       }
-      //    }
-      // }
-
-      // //i swear go rmb what is temp2 cuz its everywhere so dumb for a temp int but i did this mess
-      // //temp2 is the starting block no. of the storage sturcture so if blocksize is 2 temp2 will be 22 if blocksize is 3 temp2 will be 11.
-      // if (c == temp2 * blockSize - 1)
-      // { //create a counter for directory struct so if counter reaches the max block of directory struct which is 21 means full le by right shouldnt reach here will be damn weird
-      //    printf("Exceeded Directory allocated");
-      // }
-      // else
-      // {
-      //    dataf[c] = d[index].filename;                                             //add per add file into directory struct
-      //    startLoc[c] = freed[0] + temp2;                                           //add where it start into directory struct
-      //    endLoc[c] = freed[0] + temp2 + (blocksRequired + indexRequiredBlock - 1); //add where it end into directory struct
-      //    c++;
-      // }
-
-      // for (int i = 0; i < temp2; i++)
-      // {
-      //    if (dataf[i] == -1 && startLoc[i] == -1 && endLoc[i] == -1)
-      //    {
-      //       for (int j = i; j < temp2; j++)
-      //       {
-      //          dataf[j] = dataf[j + 1];
-      //          startLoc[j] = startLoc[j + 1];
-      //          endLoc[j] = endLoc[j + 1];
-      //       }
-      //    }
-      // }
    }
 }
 void addIndex(int index){
-   
+   int *ptr = d[index].data; 
+   int size = 0;
+   while (*ptr != 0)
+   {
+      *ptr++;
+      size++; 
+   }
+      int count = 0;
+      int count1 = 0;
+      for (int k = 0; k < (blocksRequired); k++)
+      {
+         for (int i = ((freed[k] + temp2) * blockSize); i < (freed[k] + temp2) * blockSize + blockSize; i++)
+         {
+            if (k == 0 && count < blocksRequired)
+            {
+               dataf[i] = freed[count + 1] + temp2;
+               printf("count %d,data: %d", count, dataf[i]);
+               count++;
+               
+            }
+            else
+            {
+               dataf[i] = -1;
+            }
+            if (k > 0 && count1 < size)
+            {
+               dataf[i] = d[index].data[count1];
+               printf("c1 %d,data: %d", count1, dataf[i]);
+               count1++;
+               
+            }
+         }
+      }
+      for (int i = 0; i < temp2 * blockSize; i++)
+      {
+         if (dataf[i] == -1)
+         {
+            dataf[i] = d[index].filename;
+            startLoc[i] = freed[0] + temp2;
+            endLoc[i] = freed[blocksRequired-1] + temp2;
+            break;
+         }
+      }
+
+      int l = 0;
+      for (int j = 0; j < blocksRequired; j++)
+      {
+         l = freed[j];
+         bitmap[l] = 0;
+         printf("blk %d is use", l + temp2);
+      }
 }
 
 void readHMethod(int index)
 {
-   int *ptr = d[index].data;                  //get the length of file data inthe struct which stored in readfile()
-   int size = 0, counter = 0, timesToRun = 0; //, indexed=1;
-   while (*ptr != 0)
+   int size = 0;
+   for (int c = 0; c < index; c++)
    {
-      *ptr++;
-      size++; //eg. if file is 100 data is 101-106 size or filelength is 6
-   }
-
-   //If read value is file name e.g 100,200
-   for (int i = 0; i < temp2 * blockSize - 1; i++)
-   { //loop through the directory section
-      if (dataf[i] == d[index].filename)
-      { //if FileData of directory section is equal to read filename then go to that block and print data
-         timesToRun = endLoc[i] - startLoc[i] + 1;
-         printf("----------Index block----------\n");
-         printf("|  Index     Block      Entry  |\n");
-         //k to count number of times to run
-         for (int k = 0; k < blockSize * timesToRun; k++)
+      if (d[index].filename == d[c].filename)
+      {
+         for (int i = 0; i < temp2 * blockSize; i++)
          {
-            //readCount is a global variable so it will not reduce back to 0 when another read function is called
-            if (dataf[readCount + blockSize * temp2] != -1)
+            if (d[index].filename == dataf[i])
             {
-               printf("|   %d         %d         %d     |\n", indexf[blockSize * temp2 + readCount], block[blockSize * temp2 + readCount], dataf[blockSize * temp2 + readCount]);
+               int *ptr = d[c].data;
+               while (*ptr != 0)
+               {
+                  *ptr++;
+                  size++;
+               }
             }
-            readCount++;
          }
-         printf("---------------------------------\n");
       }
    }
+   int t1 = 0, t2 = 0, t3 = 0,t4 = 1;
+   for (int i = 0; i < temp2 * blockSize; i++)
+   {
+      if (d[index].filename == dataf[i])
+      {
+         t1 = dataf[i];
+         t2 = startLoc[i];
+         t3 = endLoc[i];
+         break;
+      }
+   }
+   printf("Data in %d",t1);
+   for (int i = t2 * blockSize; i < (t2 * blockSize)+blockSize; i++)
+   {
+      if(dataf[i]>100){
+         printf(".%d.",dataf[i]);
+      }else{
+         for(int k = dataf[i]*blockSize;k<dataf[i]*blockSize+blockSize;k++){
+            printf("..%d..",dataf[k]);
+         }
+      }
+   }
+
+
+
+   // int *ptr = d[index].data;              
+   // int size = 0, counter = 0, timesToRun = 0;
+   // while (*ptr != 0)
+   // {
+   //    *ptr++;
+   //    size++;
+   // }
+   // for (int i = 0; i < temp2 * blockSize - 1; i++)
+   // { 
+   //    if (dataf[i] == d[index].filename)
+   //    { 
+   //       timesToRun = endLoc[i] - startLoc[i] + 1;
+   //       printf("----------Index block----------\n");
+   //       printf("|  Index     Block      Entry  |\n");
+   //       for (int k = 0; k < blockSize * timesToRun; k++)
+   //       {
+   //          if (dataf[readCount + blockSize * temp2] != -1)
+   //          {
+   //             printf("|   %d         %d         %d     |\n", indexf[blockSize * temp2 + readCount], block[blockSize * temp2 + readCount], dataf[blockSize * temp2 + readCount]);
+   //          }
+   //          readCount++;
+   //       }
+   //       printf("---------------------------------\n");
+   //    }
+   // }
 
    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
@@ -275,10 +254,32 @@ void deleteHMethod(int index)
          t1 = dataf[i];
          t2 = startLoc[i];
          t3 = endLoc[i];
+         dataf[i] = -1;
+         startLoc[i] = -1;
+         endLoc[i] = -1;
          break;
       }
    }
-
+   printf("Deleting:");
+   for (int i = t2 * blockSize; i < (t2 * blockSize)+blockSize; i++)
+   {
+      if(dataf[i]>100){
+         printf(".%d.",dataf[i]);
+         dataf[i] = -1;
+         startLoc[i] = -1;
+         for(int j = t2;j<=t3; j++){
+            bitmap[j] = 1;
+         }
+      }else{
+         for(int k = dataf[i]*blockSize;k<dataf[i]*blockSize+blockSize;k++){
+            printf("..%d..",dataf[k]);
+            dataf[k] = -1;
+            startLoc[k] = -1;
+         }
+         bitmap[k] = 1;
+      }
+   }
+   
    // int checkIfV = 1;
    // int size = 0;
    // for (int c = 0; c < index; c++)
@@ -366,12 +367,15 @@ int freespaceHMethod(int index)
    }
    else
    { //if ifFull() is not full continue run
+      
       if (blocksRequired == 0)
       {
+         
          return 1;
       }
       else if (blocksRequired > noOfBlock)
       {
+         
          return 1;
       }
       else
@@ -380,16 +384,19 @@ int freespaceHMethod(int index)
          {
             if (count == blocksRequired)
             {
+               printf("reached 5");
                break;
             }
             if (count < blocksRequired && bitmap[i] == 1)
             {
+               
                freed[count] = i;
                count++;
                // totalavailspace ++;
             }
             else
             {
+               printf("reached 7");
                for (int j = 0; j < blocksRequired; j++)
                {
                   freed[j] = 0;
@@ -398,12 +405,14 @@ int freespaceHMethod(int index)
             }
             if (i == noOfBlock - 1)
             {
+               printf("Reach here");
                blocksRequired++;
                indexfreespace(index);
             }
             // else{totalavailspace >= blocksRequired}{
             //    indexfreespace();
             // }
+            return 0;
          }
       }
    }
@@ -420,7 +429,7 @@ int indexfreespace(int index)
    { //scan the noOfblocks in the storage structure(basically 43)B22- B64//# for some cases where like if data input is 5 cuz its contiguous alloc so need ceiling it ceil(5/2) = 3
       if (count == blocksRequired)
       {
-         addindex(index);
+         addIndex(index);
       }
       if (count < blocksRequired && bitmap[i] == 1)
       {                    //eg. if count(0) less than blocksRequired(3) and bitmap of block 0 is free to use, freed[0] = block no(i)
