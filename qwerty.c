@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>// for ceiling function
-#include <time.h> //Calculate the time spent
 #include "header.h"
 #define MAX 130//define max size of data able to store
 
@@ -24,7 +23,7 @@ int checkFuncLink(){  //read csv and store everything into struct d[]
       switch(*function){
          case 'a'://read until character a or A means add la, r or R means read, d or D means delete
          case 'A':
-            printf("\n\nReached add Function");//1
+            printf("\n\nReached add Function");
             addLink(c);
             break;
          case 'r':
@@ -43,6 +42,7 @@ int checkFuncLink(){  //read csv and store everything into struct d[]
    return 0;
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void addLink(int index){
    int count2;
@@ -58,7 +58,7 @@ void addLink(int index){
    blocksRequired = value1;
    printf("\nAdding File %d and",d[index].filename);//print filename data
 
-   clock_t begin = clock();
+
    int j = 0;
    if(freespaceLink()){//run freespace to check got space or not
       printf("Not allocated due to full Storage\n");
@@ -71,7 +71,7 @@ void addLink(int index){
             
              if(freed[i + 1] != 0){
                 dataf[k] = freed[i+1]+temp2;
-               startLoc[k] = d[index].filename;
+              startLoc[k] = d[index].filename;
              }
                
           }else{
@@ -92,9 +92,7 @@ void addLink(int index){
       
          bitmap[freed[i]] = 0;  //bitmap 0 means it is being used.
       }
-         clock_t end = clock();
-         double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
-         printf("Time taken for adding file : %lf sec\n", time_spent);
+         
       
 if(c == temp2 * blockSize - 1){//create a counter for directory struct so if counter reaches the max block of directory struct which is 21 means full le by right shouldnt reach here will be damn weird
          printf("Exceeded Directory allocated");
@@ -107,6 +105,8 @@ if(c == temp2 * blockSize - 1){//create a counter for directory struct so if cou
 
    }
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 int ifFullLink(){//runs thru the who block to check if bitmap[] reaches all 0 #for bitmap[] it stores a value of 0 or 1 to indicate each block in storage structure is used or not used
    int countbitmap = 0;//counter
@@ -125,6 +125,9 @@ int ifFullLink(){//runs thru the who block to check if bitmap[] reaches all 0 #f
       return 0;
    }
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 int freespaceLink(){
 
    int count = 0;//counter
@@ -177,7 +180,7 @@ void readLink(int index){
    }
  
 
-   clock_t begin = clock();
+   
    int t1 = 0, t2 = 0,t3 = 0,t4 = 0;//created 3 temp int to store the dataf[i] startLoc[i] endLoc[i]
    for(int i = 0; i<temp2*blockSize; i++){//this for loop run based on the directory structure cuz it runs from blk 0 to 21,lets say for blocksize 2 it runs from index 0 to index 43
       if(d[index].filename == dataf[i]){//if the filename from the struct which store the readfile meaning like read 200 filename is 200 compare with the directory structure to find 200
@@ -200,7 +203,7 @@ void readLink(int index){
       }
 
    }
-   if(t1 != d[index].filename){//just to say if nosuch file it will be 0
+   if(t1 != d[index].filename){//if there's no such file it will be 0
       printf("No such file as %d",d[index].filename);
    }else if(t4 == 1){
       printf("\nData in %d:",t1);//filename which should be 200 but will varies depend on what we read
@@ -230,22 +233,10 @@ void readLink(int index){
       }
    
    
-         clock_t end = clock();
-         double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
-         printf("\nTime taken for reading file: %lf sec\n", time_spent);
+      
    
         printf("\n\n");
-      for(int i = 0;i < temp2; i++){
-         if(dataf[i] == -1 && startLoc[i] == -1 && endLoc[i] == -1){
-            for(int j = i;j < temp2; j++){
-               dataf[j] = dataf[j + 1];
-               startLoc[j] = startLoc[j + 1];
-               endLoc[j] = endLoc[j + 1];
-            }
-
-         }
-          
-      }
+    
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -262,7 +253,7 @@ void deleteLink(int index){
          }
       }
    }
-   clock_t begin = clock();
+
    int t1 = 0, t2 = 0,t3 = 0;
    for(int i = 0; i<temp2*blockSize; i++){
       if(d[index].filename == dataf[i]){//compare to find the file info in directory struct
@@ -276,41 +267,22 @@ void deleteLink(int index){
       }
    }
    printf("\nData in %d:",t1);
-
+   double value1 = ceil((double)size/(blockSize-1));  
+   blocksRequired = value1;
+   
      int j = 0;
-
-      for(int i = t2 * blockSize; i<t2*blockSize + blockSize; i++){   
-         if(j<size+blocksRequired+1){
-            if(i == t2*blockSize + blockSize - 1){
-               t2 = dataf[i];
-               
-            }
-            if(t2 == -1 || t2 == 0){
-               break;
-            }
-            printf("%d.",dataf[i]);
-            j++;   
-            dataf[i] = -1;
-           startLoc[i] = -1;
-       
-         }
-      }
+       for(int i = t2*blockSize;i< (t2*blockSize+(blocksRequired*blockSize));i++){//set dataf[] inthe storage struct into 0 so can use //*2 because each 6 data need 12 block 
+      printf(".%d.",dataf[i]);
+      dataf[i] = -1;
+      startLoc[i] = -1;
+   }
+   
    
    printf("Has been deleted");
 
    for(int i = t2 - temp2; i< t3-temp2; i++){//set bitmap back to 1 so its free but mainly is this bitmap cuz dataf nvr set 0 it oso can be overwrite
       bitmap[i] = 1;
    }
-         clock_t end = clock();
-         double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
-         printf("\nTime taken for deleting file: %lf sec\n", time_spent);  
-   for(int i = 0;i < temp2; i++){
-         if(dataf[i] == -1 && startLoc[i] == -1 && endLoc[i] == -1){
-            for(int j = i;j < temp2; j++){
-               dataf[j] = dataf[j + 1];
-               startLoc[j] = startLoc[j + 1];
-               endLoc[j] = endLoc[j + 1];
-            }
-         }
-      }
+      
+ 
 }
