@@ -9,16 +9,13 @@
 
 
 int freespaceIndex();
-void addIndex();
+void addIndexM();
 void readIndex();
 void deleteIndex();
 int checkFuncIndex();
 
 
-int pos = 0,blockAvail,indexCounter = 0,
-readCount=0,deleteCount=0;//dk which nvr used need to clear it when i make the code look pretty
-int volumecontrol1[] = {0}; //nvr used
-int volumecontrol2[] = {0}; //nvr used dk what is volume control need recap abt it
+int pos = 0,blockAvail,indexCounter = 0,deleteCount=0;//dk which nvr used need to clear it when i make the code look pretty
 int store[MAX]={0};//here de all got used  
 int  excessBlock, dirBlocks,k;//excess and dir block havent used need rmb to make it remove redudant blocks but if no time do jiu suan le
 int choice,anotherdirblock , count1;
@@ -31,13 +28,6 @@ int choice,anotherdirblock , count1;
 //So your VCB is a string. To properly store it, should use a #define delimiter
 //E.g ("%d%s%d%s%d%s", noOfBlock, delimiter, noOfUsedBlock, delimiter, noOfFreeBlock, delimiter, bitmap)
 
-void printVolumeControlBlock(){
-	int arrayLength = sizeof(volumecontrol1)/sizeof(volumecontrol1[0]);
-	printf("|  Index    File data  \n");
-	for(int i = 0; i< arrayLength;i++){
-	printf("|    %d       %d    \n", volumecontrol1[i],volumecontrol2[i]);
-	}
-}
 
 
 int checkFuncIndex()
@@ -50,7 +40,7 @@ int checkFuncIndex()
       case 'a':
       case 'A':
          printf("Reached add Func"); //1
-         addIndex(c);
+         addIndexM(c);
          break;
       case 'r':
       case 'R':
@@ -67,7 +57,7 @@ int checkFuncIndex()
 
    return 0;
 }
-void addIndex(int index){
+void addIndexM(int index){
    int *ptr = d[index].data; //get the length of file data in the struct which stored in readfile()
    int size = 0;//, indexed=1;
       while(*ptr !=0){
