@@ -45,7 +45,6 @@ int checkFunc(){
 }
 
 void addCont(int index){
-   //printf("BS : %d", bs1);
    int *ptr = d[index].data; 
    int size = 0;
    while(*ptr !=0){
@@ -155,7 +154,6 @@ void deleteCont(int index){
    int t1 = 0, t2 = 0,t3 = 0;
    for(int i = 0; i<temp2*blockSize; i++){
       if(d[index].filename == dataf[i]){
-         //printf("File : %d Start: %d End: %d", dataf[i],startLoc[i],endLoc[i]);
          t1 = dataf[i];
          t2 = startLoc[i];
          t3 = endLoc[i];
