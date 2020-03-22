@@ -40,7 +40,6 @@ int checkFunc(){
             break;
       } 
    }
-   //printf("BS : %d", bs1);
    return 0;
 }
 

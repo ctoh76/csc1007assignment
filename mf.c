@@ -233,6 +233,7 @@ void printStorage(){
    printf("*-----------------------------------------------*\n");
    
    noOfBlock = noOfBlock-temp2;
+ 
 }
 
 void initFreespace(){
