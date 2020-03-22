@@ -231,8 +231,18 @@ void printStorage(){
       	printf("|   %d         %d         %d                    |\n",indexf[i],block[i],dataf[i]);
    }
    printf("*-----------------------------------------------*\n");
-   
+
+   printf("\n *----------------------------------------------------------*\n");
+   printf("Block Size of: %d Block required of: %d", blockSize);
    noOfBlock = noOfBlock-temp2;
+   for(int i =0; i <MAX; i ++){
+      if(dataf[i] == -1)
+      {
+         printf("\n Blocks that is available with free space for data  %d  | %d \n", block[i], dataf[i]);
+      }  
+   }
+   printf("*-------------------------------------------------------------*\n");
+   
 }
 
 void initFreespace(){
