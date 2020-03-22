@@ -238,11 +238,10 @@ void addHContigous(int index, int size)
                t1 = dataf[i];
                t2 = startLoc[i];
                t3 = endLoc[i];
-            }
-            else{
-               printf("Unable to delete");
+               break;
             }
          }
+         
          // int checkIfV = 1;
          // int size = 0;
          // for (int c = 0; c < index; c++)
