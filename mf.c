@@ -5,7 +5,7 @@
 #include "caa2.c"
 #include "qwerty.c"
 #include "header.h"
-#include "nm2.c"
+#include "nm.c"
 
 //#include "iaa.c"
 FILE *fp;
@@ -65,42 +65,46 @@ void readFile()
    fclose(fp);
 }
 
-void methodSelection()
-{
-   int method_choice;
-   printf("\nPlease select allocation method: 1. contiguous 2. linked 3. indexed 4. New Method");
-   scanf("%d", &method_choice);
-   switch (method_choice)
-   {
-   case 1:
-      printf("inside first method");
-      // call method contigous
-      printDirectory();
-      checkFunc();
-      printDirectory();
-      break;
-   case 2:
-      printDirectory();
-      checkFuncLink();
-      printDirectory();
+void methodSelection(){
+    
+    int method_choice;
+   do{
+      printf("\nPlease select allocation method: 1. contiguous 2. linked 3. indexed 4. New Method");
+		scanf("%d", &method_choice);
+      
+      switch(method_choice)
+		{
+			case 1:
+            printf("inside first method");
+            // call method contigous
+            printDirectory();
+            checkFunc();
+            printDirectory();
+            break;
+			case 2:
+            printDirectory();
+            checkFuncLink();
+            printDirectory();
 
-      // call method linked
-      break;
-   case 3:
-      printDirectory();
-      // call method indexedB
-      break;
-   case 4:
-      // call method new method
-      printDirectory();
-      checkFuncNM();
-      printDirectory();
-      break;
+   // call method linked
+            break;
+         case 3:
+            printDirectory();
+            // call method indexedB
+            break;
+         case 4:
+         // call method new method
+            printDirectory();
+            checkFuncNM();
+             printDirectory();
+            break;
 
-   default:
-      printf("Unable to understand your input");
-      break;
-   }
+         default:
+            printf("Unable to understand your input");
+            break;
+      }
+ }while (method_choice!=4);
+      
 }
 
 void initArray()
