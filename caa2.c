@@ -62,6 +62,7 @@ void addCont(int index){
       int q = (freed[0] + temp2) * blockSize;
       for(int i = q,k = 0;i <(q + size) && k<size;i++,k++){
          dataf[i] = d[index].data[k];
+         printf("File Data: %d\n", dataf[i]);
          startLoc[i] = d[index].filename;
       }
       for(int i = 0; i < temp2 * blockSize; i++){
