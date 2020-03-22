@@ -5,7 +5,7 @@
 #include "caa2.c"
 #include "qwerty.c"
 #include "header.h"
-#include "nm2.c"
+#include "nm.c"
 
 //#include "iaa.c"
 FILE *fp;
