@@ -6,7 +6,7 @@
 #include "qwerty.c"
 #include "header.h"
 #include "nm.c"
-
+#include "indexAllocation.c"
 //#include "iaa.c"
 FILE *fp;
 
@@ -79,19 +79,21 @@ void methodSelection(){
             break;
 			case 2:
             printDirectory();
-            checkFuncLink();
+           checkFuncLink();
             printDirectory();
 
    // call method linked
             break;
          case 3:
             printDirectory();
+            checkFuncIndex();
+            printDirectory();
             // call method indexedB
             break;
          case 4:
          // call method new method
             printDirectory();
-            checkFuncNM();
+           // checkFuncNM();
              printDirectory();
             break;
 
@@ -196,10 +198,11 @@ void initArray(){
          }
          else
          {
-            noOfBlock = dirBlocks;
+            noOfBlock = anotherdirblock;
          }
       }
       printf("Total Num of Blocks: %d",noOfBlock);
+      initFreespace();
 }
 
 void printDirectory(){
@@ -230,7 +233,6 @@ void printStorage(){
    printf("*-----------------------------------------------*\n");
    
    noOfBlock = noOfBlock-temp2;
-   initFreespace();
 }
 
 void initFreespace(){
@@ -238,4 +240,3 @@ void initFreespace(){
       bitmap[i] = 1;
    }
 }
-

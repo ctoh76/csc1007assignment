@@ -11,49 +11,39 @@ void addLink();
 void readLink();
 void deleteLink();
 
-int blockAvail;//dk which nvr used need to clear it when i make the code look pretty
 int blockSize;
-int excessBlock, dirBlocks,k;//excess and dir block havent used need rmb to make it remove redudant blocks but if no time do jiu suan le
 int choice,anotherdirblock ;
 int count1;
+int checkFuncLink(){  //read csv and store everything into struct d[]
 
-int checkFuncLink(){//read csv and store everything into struct d[]
 
-   /*for(int i = 0; i<5; i++){
-      printf("Filename: %d\n",d[i].filename);
-      printf("Data Func: %s\n",d[i].func);
-      for(int k = 0;k < 6;k++){
-         printf("data: %d\n",d[i].data[k]);
-      }
-   }*/
-   for(int c= 0; c < e;c++){//interestingly enuf a readfile function i go put in here that after every func add, read or delete i go add immediately
-     // printf("function  %s" , d[0].func);
-    //  printf("why not running here ");
+   for(int c= 0; c < e;c++){//readfile function that after every function add, read or delete will add immidiately 
+
       char *function = d[c].func;//d[1].func
       switch(*function){
          case 'a'://read until character a or A means add la, r or R means read, d or D means delete
          case 'A':
-            printf("Reached add Func");//1
+            printf("\n\nReached add Function");
             addLink(c);
             break;
          case 'r':
          case 'R':
-            printf("\nEntered Read Function\n");
+            printf("\n\nEntered Read Function\n");
             readLink(c);
             break;
          case 'd':
          case 'D':
-            printf("\nEntered Delete Function\n");
+            printf("\n\nEntered Delete Function\n");
             deleteLink(c);
-            break;
-         default:
-            printf("Reached Default");//dk what to type in default should i even have a default here idk help me
             break;
       } 
    }
 
    return 0;
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 void addLink(int index){
    int count2;
    int *ptr = d[index].data; //get the data length of file data inthe struct which stored in readfile()
@@ -62,67 +52,47 @@ void addLink(int index){
       *ptr++;
       size++;//eg. if file is 100 data is 101-106 size or filelength is 6
    }
+
    //get the blockSize
    double value1 = ceil((double)size/(blockSize-1));  
    blocksRequired = value1;
-  
    printf("\nAdding File %d and",d[index].filename);//print filename data
-   
+
+
    int j = 0;
    if(freespaceLink()){//run freespace to check got space or not
       printf("Not allocated due to full Storage\n");
-   }else{
-      
-      // for(int i = 0; i < blocksRequired; i++){ 
-      //    for(int k = ((freed[i]+temp2)*blockSize);k<(freed[i]+temp2)*blockSize + blockSize;k++){   //position freed[i]+temp=22*2=index 44,the first index,K is less than 44+2,46,K++   --> we know that we need 2 block each time for each data 
-      //       if(k == (freed[i]+temp2)*blockSize + blockSize - 1){  //44=2=46-1 =45 index //get the end of the block? //this if statement is to add nodes to the last blk. 
-               
-      //          dataf[k] = (freed[i+1] + temp2);
-            
-      //       }else{
-      //          if(j<size){
-      //             dataf[k]=d[index].data[j]; //insert the data
-      //             j++;
-      //          }else{
-      //             break;
-      //          }
-      //       }
-            
-      //    }
+   }else{ 
         for(int i = 0; i < blocksRequired; i++){ 
-           printf("Start:%d\n",i);
+          
          for(int k = ((freed[i]+temp2)*blockSize);k<(freed[i]+temp2)*blockSize + blockSize;k++){   //position freed[i]+temp=22*2=index 44,the first index,K is less than 44+2,46,K++   --> we know that we need 2 block each time for each data 
-          printf("starting index: %d\n",k);
+          
           if(k == (freed[i]+temp2)*blockSize + blockSize-1) {
-             printf("Last Block: %d\n",k);
+            
              if(freed[i + 1] != 0){
                 dataf[k] = freed[i+1]+temp2;
-               printf("Have %d + %d\n",freed[i+1], temp2);
+              startLoc[k] = d[index].filename;
              }
                
-             
           }else{
              if(j<size){
                 
                dataf[k] = d[index].data[j];
-               printf(".%d.",dataf[k]);
+               startLoc[k] = d[index].filename;
+               printf("File Data:");
+               printf("%d\n",dataf[k]);
                j++;
              }else{
-                printf("Break here");
+              
                 break;
              }
           } 
          }
-         printf("%d is free",freed[i]+temp2);
-         bitmap[freed[i]] = 0;//bitmap 0 =used
+         
+      
+         bitmap[freed[i]] = 0;  //bitmap 0 means it is being used.
       }
-
-     
-             
-   
-
-
-
+         
       
 if(c == temp2 * blockSize - 1){//create a counter for directory struct so if counter reaches the max block of directory struct which is 21 means full le by right shouldnt reach here will be damn weird
          printf("Exceeded Directory allocated");
@@ -135,6 +105,8 @@ if(c == temp2 * blockSize - 1){//create a counter for directory struct so if cou
 
    }
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 int ifFullLink(){//runs thru the who block to check if bitmap[] reaches all 0 #for bitmap[] it stores a value of 0 or 1 to indicate each block in storage structure is used or not used
    int countbitmap = 0;//counter
@@ -153,6 +125,9 @@ int ifFullLink(){//runs thru the who block to check if bitmap[] reaches all 0 #f
       return 0;
    }
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 int freespaceLink(){
 
    int count = 0;//counter
@@ -169,25 +144,26 @@ int freespaceLink(){
          }
          if(count < blocksRequired && bitmap[i] == 1){//eg. if count(0) less than blocksRequired(3) and bitmap of block 0 is free to use, freed[0] = block no(i)
             freed[count] = i;//freed[count] stores the blockno its currently adding for example freed[0] = 4, 5 or 6
-            printf("Fread[%d]=%d",count,i);  
+            //printf("Fread[%d]=%d",count,i);  
             count++; 
          }
 
            
       }
       printf(" found free ");
-      for(int i = 0; i < blocksRequired; i++){//if found 3 space for blockrequired(3)
+      for(int i = 0; i < blocksRequired; i++){ //if found 3 space for blockrequired(3)
          printf("-B%d-",freed[i]+temp2);//print which block is free
       }
-      printf("BitMap");
+      printf("\nBitMap");
       for(int i = 0; i < noOfBlock; i++){
          printf("%d",bitmap[i]);
       }
       printf("\n");
-      return 0;//then return 0 or false # i might have messed up whether 0 is true or false but basically return it to the add function
+      return 0;//then return 0 or false 
    }
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void readLink(int index){
    //as when we read file the data stored is based on the index so like d[0].filename = 100 cuz we add 100 first then d[1].filename = 200 cuz we add 200 next
@@ -202,11 +178,14 @@ void readLink(int index){
          }
       }
    }
+ 
+
+   
    int t1 = 0, t2 = 0,t3 = 0,t4 = 0;//created 3 temp int to store the dataf[i] startLoc[i] endLoc[i]
    for(int i = 0; i<temp2*blockSize; i++){//this for loop run based on the directory structure cuz it runs from blk 0 to 21,lets say for blocksize 2 it runs from index 0 to index 43
       if(d[index].filename == dataf[i]){//if the filename from the struct which store the readfile meaning like read 200 filename is 200 compare with the directory structure to find 200
          printf("File : %d Start: %d End: %d", dataf[i],startLoc[i],endLoc[i]);//gets its file name which is 200 just to cfm de la then get its startLoc and endLoc which is like 25 and 27
-         t1 = dataf[i];//filename
+         t1 = dataf[i];// data file name
          t2 = startLoc[i];//if we  alr added 200 to block 25- block 27 and we read filename 200 should appear blk 25 
          t3 = endLoc[i]; // should appear block 27
          t4 = 1;
@@ -214,42 +193,55 @@ void readLink(int index){
    }
     for(int i = (temp2*blockSize); i<MAX; i++){//if user wanna find file data #for loop to run thru the storage struct
       if(d[index].filename == dataf[i]){//if filename = file data 
-         printf("File : %d",startLoc[i]);
+         printf("File: %d",startLoc[i]);
          t1 = dataf[i];//file data eg read 1401 t1 = 1401 t1=300 store the file name
          t2 = startLoc[i];//file start block t2 =39 start
          t3 = (i/blockSize);//file block location of the data t3 =44 end 
          t4 = 2;//condition t4 =1 
+ 
          
       }
 
    }
-   if(t1 != d[index].filename){//just to say if nosuch file it will be 0
+   if(t1 != d[index].filename){//if there's no such file it will be 0
       printf("No such file as %d",d[index].filename);
    }else if(t4 == 1){
       printf("\nData in %d:",t1);//filename which should be 200 but will varies depend on what we read
    }else if(t4 == 2){
       printf("\nRead file %d(%d) from B%d",t2,t1,t3);
    }
+   int j = 0;
 
-   for(int i =t2*blockSize;i<((t2*blockSize)+(size*2));i++){//for loop from index(blk 22* blocksize 2 =44)i=44(start index),i<(44+6(length))50 i++ ,get the data in this range 
-     printf("%.d.",dataf[i]);//print the data
-   }
-   printf("\n");
-   for(int i = 0;i < temp2; i++){
-         if(dataf[i] == -1 && startLoc[i] == -1 && endLoc[i] == -1){
-            for(int j = i;j < temp2; j++){
-               dataf[j] = dataf[j + 1];
-               startLoc[j] = startLoc[j + 1];
-               endLoc[j] = endLoc[j + 1];
-            }
-
-         }
+      for(int i = t2 * blockSize; i<t2*blockSize + blockSize; i++){
           
+         if(j<size+blocksRequired+1){
+            if(i == t2*blockSize + blockSize - 1){
+               t2 = dataf[i];
+               
+            }
+            if(t2 == -1 || t2 == 0){
+               break;
+            }
+            if(dataf[i] == -1){
+               break;
+            }
+            printf(".%d.",dataf[i]);
+         
+            j++;
+              
+         }
       }
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+   
+   
+      
+   
+        printf("\n\n");
+    
 }
 
-void deleteLink(int index){//
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void deleteLink(int index){
    int size = 0;
    for(int c= 0; c < index;c++){  
       if(d[index].filename == d[c].filename)//just to find the data's size
@@ -261,6 +253,7 @@ void deleteLink(int index){//
          }
       }
    }
+
    int t1 = 0, t2 = 0,t3 = 0;
    for(int i = 0; i<temp2*blockSize; i++){
       if(d[index].filename == dataf[i]){//compare to find the file info in directory struct
@@ -274,24 +267,22 @@ void deleteLink(int index){//
       }
    }
    printf("\nData in %d:",t1);
-   for(int i = t2*blockSize;i< (t2*blockSize+size*2);i++){//set dataf[] inthe storage struct into 0 so can use //*2 because each 6 data need 12 block 
+   double value1 = ceil((double)size/(blockSize-1));  
+   blocksRequired = value1;
+   
+     int j = 0;
+       for(int i = t2*blockSize;i< (t2*blockSize+(blocksRequired*blockSize));i++){//set dataf[] inthe storage struct into 0 so can use //*2 because each 6 data need 12 block 
       printf(".%d.",dataf[i]);
       dataf[i] = -1;
       startLoc[i] = -1;
    }
+   
+   
    printf("Has been deleted");
-   printf("\n");
+
    for(int i = t2 - temp2; i< t3-temp2; i++){//set bitmap back to 1 so its free but mainly is this bitmap cuz dataf nvr set 0 it oso can be overwrite
       bitmap[i] = 1;
    }
-
-   for(int i = 0;i < temp2; i++){
-         if(dataf[i] == -1 && startLoc[i] == -1 && endLoc[i] == -1){
-            for(int j = i;j < temp2; j++){
-               dataf[j] = dataf[j + 1];
-               startLoc[j] = startLoc[j + 1];
-               endLoc[j] = endLoc[j + 1];
-            }
-         }
-      }
+      
+ 
 }
