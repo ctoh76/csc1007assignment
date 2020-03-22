@@ -5,7 +5,7 @@
 #include "caa2.c"
 #include "qwerty.c"
 #include "header.h"
-//#include "nm.c"
+#include "nm.c"
 #include "indexAllocation.c"
 //#include "iaa.c"
 FILE *fp;

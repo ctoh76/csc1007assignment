@@ -19,7 +19,7 @@ int blockSize, excessBlock, dirBlocks, k;
 int choice, anotherdirblock;
 int count1;
 int blockSize, excessBlock, dirBlocks, k;
-int readCount = 0;
+//int readCount = 0;
 int store[MAX];
 
 int checkFuncNM()
