@@ -79,15 +79,6 @@ void addCont(int index){
          l = freed[j];
          bitmap[l] = 0;
       }
-      /*for(int i = 0;i < temp2; i++){
-         if(dataf[i] == -1 && startLoc[i] == -1 && endLoc[i] == -1){
-            for(int j = i;j < temp2; j++){
-               dataf[j] = dataf[j + 1];
-               startLoc[j] = startLoc[j + 1];
-               endLoc[j] = endLoc[j + 1];
-            }
-         }
-      }*/
    }
 }
 
